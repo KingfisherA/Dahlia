@@ -1,0 +1,83 @@
+#pragma once
+
+#include <string>
+#include <ImGui/imgui.h>
+#include <glm/glm.hpp>
+#include "GraphicsEngine/Utilities/Memory.h"
+#include "GraphicsEngine/Layers/LayerStack.h"
+
+namespace GEng
+{
+    class Display;
+    class Event;
+    class Layer;
+    class WindowCloseEvent;
+    class KeyPressedEvent;
+    class KeyReleasedEvent;
+    class MouseButtonPressedEvent;
+    class MouseButtonReleasedEvent;
+    class MouseMoveEvent;
+    class MouseScrollEvent;
+    class WindowResizeEvent;
+    class Framebuffer;
+    class ImGuiLayer;
+
+    class GraphicsApp
+    {
+    public:
+        GraphicsApp(const char *displayTitle, size_t width, size_t height);
+        virtual ~GraphicsApp() {}
+
+        int Run();
+
+        void OnEvent(Event &e);
+
+        void PushLayer(Layer *layer);
+        void PushOverlay(Layer *overlay);
+
+        Framebuffer &GetViewportFramebuffer() { return *mViewportFramebuffer; }
+        const inline Display &GetDisplay() const { return *m_Window; }
+        constexpr double GetDeltaTime() const { return m_DeltaTime; }
+        constexpr double GetTime() const { return m_Time; }
+
+    protected:
+        virtual void OnViewportResize() {}
+        virtual void OnRender() {}
+        virtual void OnRenderImGui() {}
+
+        virtual bool OnWindowResized(WindowResizeEvent &e);
+        virtual bool OnWindowClose(WindowCloseEvent &e);
+        virtual bool OnKeyPressed(KeyPressedEvent &e);
+        virtual bool OnKeyReleased(KeyReleasedEvent &e);
+        virtual bool OnMouseButtonPressed(MouseButtonPressedEvent &e);
+        virtual bool OnMouseButtonReleased(MouseButtonReleasedEvent &e);
+        virtual bool OnMouseMove(MouseMoveEvent &e);
+        virtual bool OnMouseScroll(MouseScrollEvent &e);
+        bool mIsViewportFocused = false;
+        bool mRenderViewport = true;
+
+        void RenderViewport();
+        void RenderCameraPanel();
+        void RenderSceneInformation();
+
+        std::string m_VersionStr, m_VendorStr, m_ShadingLanguageStr;
+
+        bool m_IsRunning = true;
+        uRef<Display> m_Window;
+        sRef<Framebuffer> mViewportFramebuffer = nullptr;
+        ImVec2 m_viewPortPanelSize = {0, 0};
+        ImVec2 m_lastViewportSize = {0, 0};
+
+        ImGuiLayer *m_ImGuiLayer = nullptr;
+        LayerStack m_LayerStack;
+
+        double m_Time = 0.0;
+        double m_DeltaTime = 0.0;
+        glm::dvec2 m_MouseLastPos;
+        int m_MouseButtonDown = -1;
+        int m_KeyDown = -1;
+        int m_KeyMods = 0;
+
+        double mLastScrollTime = 0.0;
+    };
+}

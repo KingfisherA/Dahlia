@@ -5,10 +5,11 @@
 #include <glm/glm.hpp>
 #include "GraphicsEngine/Utilities/Memory.h"
 #include "GraphicsEngine/Layers/LayerStack.h"
+#include "GraphicsEngine/GUI/Display.h"
+#include "GraphicsEngine/3D/Framebuffer.h"
 
 namespace GEng
 {
-    class Display;
     class Event;
     class Layer;
     class WindowCloseEvent;
@@ -25,10 +26,11 @@ namespace GEng
     class GraphicsApp
     {
     public:
-        GraphicsApp(const char *displayTitle, size_t width, size_t height);
+        GraphicsApp(const char *displayTitle, size_t width, size_t height, const FramebufferSpecification &viewportSpec);
         virtual ~GraphicsApp() {}
 
-        int Run();
+        bool Init();
+        void Run();
 
         void OnEvent(Event &e);
 
@@ -43,7 +45,8 @@ namespace GEng
     protected:
         virtual void OnViewportResize() {}
         virtual void OnRender() {}
-        virtual void OnRenderImGui() {}
+        virtual void OnImGuiRender() {}
+        virtual bool OnInit() { return true; }
 
         virtual bool OnWindowResized(WindowResizeEvent &e);
         virtual bool OnWindowClose(WindowCloseEvent &e);
@@ -79,5 +82,15 @@ namespace GEng
         int m_KeyMods = 0;
 
         double mLastScrollTime = 0.0;
+
+    private:
+        struct InitParams
+        {
+            const char *displayTitle = nullptr;
+            size_t width = 0, height = 0;
+            FramebufferSpecification viewportSpec;
+        };
+
+        uRef<InitParams> mInitParams = nullptr;
     };
 }

@@ -24,7 +24,6 @@ GEng::GLFWDisplay::~GLFWDisplay()
 //
 void GEng::GLFWDisplay::Refresh()
 {
-
 	glfwSwapBuffers(m_WindowID);
 	glfwPollEvents();
 }

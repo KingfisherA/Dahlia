@@ -17,9 +17,21 @@ namespace GEng
 
 #define BIND_EVENT_FNC(x) std::bind(&GraphicsApp::x, this, std::placeholders::_1)
 
-    GraphicsApp::GraphicsApp(const char *displayTitle, size_t width, size_t height) : m_MouseLastPos(0.0f)
+    GraphicsApp::GraphicsApp(const char *displayTitle, size_t width, size_t height, const FramebufferSpecification &viewportSpec) : m_MouseLastPos(0.0f)
     {
-        m_Window.reset(Display::Create({displayTitle, width, height}));
+        mInitParams = std::make_unique<InitParams>();
+        mInitParams->displayTitle = displayTitle;
+        mInitParams->width = width;
+        mInitParams->height = height;
+        mInitParams->viewportSpec = viewportSpec;
+    }
+
+    bool GraphicsApp::Init()
+    {
+        if (mInitParams == nullptr)
+            return false;
+
+        m_Window.reset(Display::Create({mInitParams->displayTitle, mInitParams->width, mInitParams->height}));
         m_Window->BindEventCallback(BIND_EVENT_FNC(OnEvent));
 
         m_VersionStr = (const char *)glGetString(GL_VERSION);
@@ -33,14 +45,17 @@ namespace GEng
         m_ImGuiLayer = new ImGuiLayer(m_Window.get());
         PushOverlay(m_ImGuiLayer);
 
-        mViewportFramebuffer = Framebuffer::Create(FramebufferSpecification{800, 600, 1, {FramebufferAttachment(PixelFormat::RGBA8), FramebufferAttachment(PixelFormat::DEPTH24_STENCIL8)}});
+        mViewportFramebuffer = Framebuffer::Create(mInitParams->viewportSpec);
         mViewportFramebuffer->Bind();
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         mViewportFramebuffer->Unbind();
+
+        mInitParams.reset();
+        return this->OnInit();
     }
 
-    int GraphicsApp::Run()
+    void GraphicsApp::Run()
     {
         while (m_IsRunning)
         {
@@ -71,14 +86,12 @@ namespace GEng
 
             if (mRenderViewport)
                 this->RenderViewport();
-            this->OnRenderImGui();
+            this->OnImGuiRender();
 
             m_ImGuiLayer->End();
 
             m_Window->Refresh();
         }
-
-        return 0;
     }
 
     void GraphicsApp::RenderViewport()
@@ -89,8 +102,7 @@ namespace GEng
         {
             mIsViewportFocused = ImGui::IsWindowFocused();
             m_viewPortPanelSize = ImGui::GetContentRegionAvail();
-            ImGui::Image(mViewportFramebuffer->QueryTextureAttachment()->GetRendererID(), ImVec2{(float)mViewportFramebuffer->GetWidth(),
-                                                                                                 (float)mViewportFramebuffer->GetHeight()});
+            ImGui::Image(mViewportFramebuffer->QueryTextureAttachment()->GetRendererID(), ImVec2{(float)mViewportFramebuffer->GetWidth(), (float)mViewportFramebuffer->GetHeight()}, {0, 1}, {1, 0});
         }
         ImGui::End();
         ImGui::PopStyleVar();

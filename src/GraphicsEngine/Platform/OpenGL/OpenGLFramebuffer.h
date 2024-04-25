@@ -28,6 +28,8 @@ namespace GEng
 		virtual const FramebufferSpecification &GetSpecification() const override { return specification; }
 		virtual FramebufferSpecification &GetSpecification() override { return specification; }
 
+		virtual unsigned int GetRenderID() const { return m_FBOID; }
+
 	private:
 		void ClearAttachments();
 

@@ -25,8 +25,9 @@ namespace Example
 		GEng::Camera &GetCamera() { return mCam; }
 
 	protected:
-		virtual void OnRenderImGui() override;
+		virtual void OnImGuiRender() override;
 		virtual void OnViewportResize() override;
+		virtual bool OnInit() override;
 
 	private:
 		void RenderCameraPanel();

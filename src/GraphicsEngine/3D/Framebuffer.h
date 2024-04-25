@@ -52,6 +52,8 @@ namespace GEng
 		inline const size_t GetWidth() const { return GetSpecification().Width; }
 		inline const size_t GetHeight() const { return GetSpecification().Height; }
 
+		virtual unsigned int GetRenderID() const = 0;
+
 		static sRef<Framebuffer> Create(const FramebufferSpecification &spec);
 	};
 }

@@ -21,6 +21,7 @@
 
 #include "GraphicsEngine/Utilities/IO.h"
 #include "GraphicsEngine/Utilities/PathUtils.h"
+#include "GraphicsEngine/3D/Framebuffer.h"
 
 // #define IMSPINNER_DEMO
 // #include "GUI/ImSpinner.h"
@@ -30,7 +31,13 @@
 int main(int argc, char **argv)
 {
 	Example::Application app;
-	return app.Run();
+	if (!app.Init())
+	{
+		std::cout << "Failed to initilise application \n";
+		return EXIT_FAILURE;
+	}
+	app.Run();
+	return EXIT_SUCCESS;
 }
 
 #pragma endregion
@@ -47,17 +54,8 @@ namespace Example
 
 #define BIND_EVENT_FNC(x) std::bind(&Application::x, this, std::placeholders::_1)
 
-	Application::Application() : GraphicsApp("Example Graphics Engine Application", 800, 600)
+	Application::Application() : GraphicsApp("Example Graphics Engine Application", 800, 600, FramebufferSpecification{800, 600, 1, {FramebufferAttachment(PixelFormat::RGBA8), FramebufferAttachment(PixelFormat::DEPTH24_STENCIL8)}})
 	{
-		std::cout << "Example Application\n";
-
-		glDisable(GL_CULL_FACE);
-		glEnable(GL_DEPTH_TEST);
-		glDepthFunc(GL_LESS);
-
-		this->mRenderViewport = false;
-		mCam.MoveTo(glm::vec3(0.0f, 0.0f, 0.0f), 10.0f);
-		UpdateProjectionMatrix();
 	}
 
 	Application::~Application()
@@ -70,7 +68,7 @@ namespace Example
 												   (float)mViewportFramebuffer->GetSpecification().Width / (float)mViewportFramebuffer->GetSpecification().Height, NEAR_PLANE, FAR_PLANE);
 	}
 
-	void Application::OnRenderImGui()
+	void Application::OnImGuiRender()
 	{
 		RenderCameraPanel();
 		RenderSceneInformation();
@@ -79,6 +77,21 @@ namespace Example
 	void Application::OnViewportResize()
 	{
 		UpdateProjectionMatrix();
+	}
+
+	bool Application::OnInit()
+	{
+		std::cout << "Example Application\n";
+
+		glDisable(GL_CULL_FACE);
+		glEnable(GL_DEPTH_TEST);
+		glDepthFunc(GL_LESS);
+
+		this->mRenderViewport = false;
+		mCam.MoveTo(glm::vec3(0.0f, 0.0f, 0.0f), 10.0f);
+		UpdateProjectionMatrix();
+
+		return true;
 	}
 
 	void Application::RenderCameraPanel()

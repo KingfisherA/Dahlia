@@ -51,7 +51,7 @@ namespace ImSpinner
     static const ImColor red{ 1.f,0.f,0.f,1.f };
 
 #define DECLPROP(name, type, def) \
-    struct name { \
+      struct  name { \
       type value = def; \
       operator type() { return value; } \
       name(const type& v) : value(v) {} \
@@ -74,8 +74,8 @@ namespace ImSpinner
     constexpr float PI_DIV_4 = IM_PI / 4.f;
     constexpr float PI_DIV_2 = IM_PI / 2.f;
     constexpr float PI_2 = IM_PI * 2.f;
-    template<class T> constexpr float PI_DIV(T d) { return IM_PI / (float)d; }
-    template<class T> constexpr float PI_2_DIV(T d) { return PI_2 / (float)d; }
+    template<  class T> constexpr float PI_DIV(T d) { return IM_PI / (float)d; }
+    template<  class T> constexpr float PI_2_DIV(T d) { return PI_2 / (float)d; }
 
     DECLPROP(SpinnerType, SpinnerTypeT, e_st_rainbow)
         DECLPROP(Radius, float, 16.f)
@@ -129,7 +129,7 @@ namespace ImSpinner
                                 void set(type h) { m_##type = h.value;} \
                                 template<typename First, typename... Args> \
                                 void set(const type& h, const Args&... args) { set##type(h.value); this->template set<Args...>(args...); }
-        struct SpinnerConfig {
+          struct  SpinnerConfig {
             SpinnerConfig() {}
             template<typename none = void> void set() {}
 
@@ -1546,7 +1546,7 @@ namespace ImSpinner
 
         const float start = ImFmod((float)ImGui::GetTime() * speed, (float)strlen(text));
 
-        struct Segment { ImVec2 b, e; };
+          struct  Segment { ImVec2 b, e; };
         const float q = 1.f, hq = q * 0.5f, xq = thickness / radius;
         const Segment segments[] = { { ImVec2{-hq, 0.0f}, ImVec2{hq, 0.0f} }, /*central*/
                                      { ImVec2{-hq - xq, 0.0f}, ImVec2{-hq - xq, -q} }, /*left up*/
@@ -3876,7 +3876,7 @@ namespace ImSpinner
     }
 
     namespace detail {
-        static struct SpinnerDraw { SpinnerTypeT type; void (*func)(const char*, const detail::SpinnerConfig&); } spinner_draw_funcs[e_st_count] = {
+        static   struct  SpinnerDraw { SpinnerTypeT type; void (*func)(const char*, const detail::SpinnerConfig&); } spinner_draw_funcs[e_st_count] = {
           { e_st_rainbow, [](const char* label, const detail::SpinnerConfig& c) { SpinnerRainbow(label, c.m_Radius, c.m_Thickness, c.m_Color, c.m_Speed, c.m_AngleMin, c.m_AngleMax); } },
           { e_st_angle,   [](const char* label, const detail::SpinnerConfig& c) { SpinnerAng(label, c.m_Radius, c.m_Thickness, c.m_Color, c.m_BgColor, c.m_Speed, c.m_Angle); } },
           { e_st_dots,    [](const char* label, const detail::SpinnerConfig& c) { SpinnerDots(label, c.m_FloatPtr, c.m_Radius, c.m_Thickness, c.m_Color, c.m_Speed, c.m_Dots, c.m_MinThickness); } },

@@ -1,9 +1,11 @@
 #pragma once
+
+#include "GraphicsEngine/GEng_API.h"
 #include "GraphicsEngine/3D/Texture.h"
 
 namespace GEng
 {
-	class OpenGLTexture2D : public Texture2D
+	GENG_API class OpenGLTexture2D : public Texture2D
 	{
 	public:
 		using byte = unsigned char;

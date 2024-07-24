@@ -1,9 +1,11 @@
 #pragma once
+
+#include "GraphicsEngine/GEng_API.h"
 #include "GraphicsEngine/Layers/Layer.h"
 
 namespace GEng
 {
-	class LayerStack
+	GENG_API class LayerStack
 	{
 	public:
 		using LayerVec = std::vector<Layer *>;

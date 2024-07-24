@@ -1,4 +1,6 @@
 #pragma once
+
+#include "GraphicsEngine/GEng_API.h"
 #include <string_view>
 #include <string>
 #include <unordered_map>
@@ -10,7 +12,7 @@
 
 namespace GEng
 {
-	class ShaderProgram
+	GENG_API class ShaderProgram
 	{
 	public:
 		using ShaderKeyMap = std::unordered_map<std::string, std::string>;
@@ -37,7 +39,7 @@ namespace GEng
 		static sRef<ShaderProgram> CreateFromFile(const std::string_view combinedShaderFile);
 		static sRef<ShaderProgram> CreateFromFile(const std::string_view vertexFile, const std::string_view fragmentFile);
 
-		struct Preprocessor
+		GENG_API struct Preprocessor
 		{
 		public:
 			static void PreprocessShaderType(const std::string combinedSourceCode, std::string *vertexOutput,

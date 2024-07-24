@@ -1,4 +1,7 @@
 #pragma once
+
+#include "GraphicsEngine/GEng_API.h"
+
 #include <array>
 #include <vector>
 #include "GraphicsEngine/Utilities/Memory.h"
@@ -15,7 +18,7 @@ namespace GEng
 #pragma endregion
 
 	//
-	class Mesh
+	GENG_API class Mesh
 	{
 	public:
 		using byte = unsigned char;
@@ -77,7 +80,7 @@ namespace GEng
 		6, 1, 10, 9, 0, 11, 9, 11, 2, 9, 2, 5, 7, 2, 11};
 
 	//
-	class Geometry
+	GENG_API class Geometry
 	{
 	public:
 		using TriangleI = glm::vec<3, unsigned int>;

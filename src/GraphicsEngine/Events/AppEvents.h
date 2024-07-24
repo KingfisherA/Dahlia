@@ -1,10 +1,11 @@
 #pragma once
-#include "GraphicsEngine/Events.h"
+#include "GraphicsEngine/GEng_API.h"
+#include "GraphicsEngine/Events/Events.h"
 
 namespace GEng
 {
 
-	class AppRender : public Event
+	GENG_API class AppRender : public Event
 	{
 	public:
 		AppRender(size_t deltaTime) : m_deltaTime(deltaTime) {}

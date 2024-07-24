@@ -1,5 +1,6 @@
 #pragma once
 
+#include "GraphicsEngine/GEng_API.h"
 #include "GraphicsEngine/Events/Events.h"
 #include <sstream>
 #include <glm/glm.hpp>
@@ -9,7 +10,7 @@ namespace GEng
 	// Size vector of dimension 2
 	using svec2 = glm::vec<2, size_t>;
 
-	class WindowResizeEvent : public Event
+	GENG_API class WindowResizeEvent : public Event
 	{
 	public:
 		WindowResizeEvent(size_t widthIn, size_t heightIn) : width(widthIn),
@@ -33,7 +34,7 @@ namespace GEng
 		size_t width = 0, height = 0;
 	};
 
-	class WindowMovedEvent : public Event
+	GENG_API class WindowMovedEvent : public Event
 	{
 	public:
 		WindowMovedEvent(svec2 newPos) : winPos(newPos) {}
@@ -47,7 +48,7 @@ namespace GEng
 		svec2 winPos = {0, 0};
 	};
 
-	class WindowFocusEvent : public Event
+	GENG_API class WindowFocusEvent : public Event
 	{
 	public:
 		WindowFocusEvent(bool lostFocusIn) : lostFocus(lostFocusIn) {}
@@ -61,7 +62,7 @@ namespace GEng
 		bool lostFocus = false;
 	};
 
-	class WindowCloseEvent : public Event
+	GENG_API class WindowCloseEvent : public Event
 	{
 	public:
 		WindowCloseEvent() {}

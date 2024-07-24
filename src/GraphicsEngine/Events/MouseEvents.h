@@ -1,4 +1,6 @@
 #pragma once
+
+#include "GraphicsEngine/GEng_API.h"
 #include "GraphicsEngine/Events/Events.h"
 #include <glm/glm.hpp>
 
@@ -7,7 +9,7 @@ namespace GEng
 	// Size vector of dimension 2
 	using svec2 = glm::vec<2, size_t>;
 
-	enum class MouseButton
+	GENG_API enum class MouseButton
 	{
 		None = -1,
 		Right = GLFW_MOUSE_BUTTON_RIGHT,
@@ -15,7 +17,7 @@ namespace GEng
 		Left = GLFW_MOUSE_BUTTON_LEFT
 	};
 
-	class MouseButtonPressedEvent : public Event
+	GENG_API class MouseButtonPressedEvent : public Event
 	{
 	public:
 		MouseButtonPressedEvent(MouseButton buttonIn) : button(buttonIn) {}
@@ -31,7 +33,7 @@ namespace GEng
 		MouseButton button;
 	};
 
-	class MouseButtonReleasedEvent : public Event
+	GENG_API class MouseButtonReleasedEvent : public Event
 	{
 	public:
 		MouseButtonReleasedEvent(MouseButton buttonIn) : button(buttonIn) {}
@@ -47,7 +49,7 @@ namespace GEng
 		MouseButton button;
 	};
 
-	class MouseMoveEvent : public Event
+	GENG_API class MouseMoveEvent : public Event
 	{
 	public:
 		MouseMoveEvent(glm::dvec2 pos) : mMousePos(pos) {}
@@ -63,7 +65,7 @@ namespace GEng
 		// MouseButton buttonPressed;
 	};
 
-	class MouseScrollEvent : public Event
+	GENG_API class MouseScrollEvent : public Event
 	{
 	public:
 		MouseScrollEvent(float xOffIn, float yOffIn) : xOffset(xOffIn), yOffset(yOffIn) {}

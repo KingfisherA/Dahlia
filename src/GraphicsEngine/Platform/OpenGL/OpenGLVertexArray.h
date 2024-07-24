@@ -1,5 +1,6 @@
 #pragma once
 
+#include "GraphicsEngine/GEng_API.h"
 #include <unordered_map>
 
 #include "GraphicsEngine/3D/VertexArray.h"
@@ -7,7 +8,7 @@
 
 namespace GEng
 {
-	class OpenGLVertexArray : public VertexArray
+	GENG_API class OpenGLVertexArray : public VertexArray
 	{
 	public:
 		OpenGLVertexArray();

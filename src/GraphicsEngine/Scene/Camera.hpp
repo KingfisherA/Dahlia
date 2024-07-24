@@ -1,10 +1,11 @@
 #pragma once
 
+#include "GraphicsEngine/GEng_API.h"
 #include <glm/glm.hpp>
 
 namespace GEng
 {
-	class Camera
+	GENG_API class Camera
 	{
 	public:
 		Camera();

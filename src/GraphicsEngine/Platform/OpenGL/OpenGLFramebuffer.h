@@ -1,4 +1,6 @@
 #pragma once
+
+#include "GraphicsEngine/GEng_API.h"
 #include <map>
 #include "GraphicsEngine/3D/Framebuffer.h"
 #include "GraphicsEngine/Platform/OpenGL/OpenGLFramebuffer.h"
@@ -6,7 +8,7 @@
 
 namespace GEng
 {
-	class OpenGLFramebuffer : public Framebuffer
+	GENG_API class OpenGLFramebuffer : public Framebuffer
 	{
 	public:
 		OpenGLFramebuffer(const FramebufferSpecification &spec);

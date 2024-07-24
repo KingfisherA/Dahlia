@@ -1,10 +1,11 @@
 #pragma once
 
+#include"GraphicsEngine/GEng_API.h"
 #include "GraphicsEngine/Platform/OpenGL/OpenGLCore.h"
 #include "GraphicsEngine/Utilities/Assert.h"
 #include <string>
 
-enum class API
+GENG_API enum class API
 {
 	OpenGL = 0
 };
@@ -13,7 +14,7 @@ constexpr API PROGRAM_API = API::OpenGL;
 
 namespace GEng
 {
-	class APICore
+	GENG_API class APICore
 	{
 	public:
 		static void Initilise()

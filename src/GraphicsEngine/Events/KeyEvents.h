@@ -1,9 +1,11 @@
 #pragma once
+
+#include "GraphicsEngine/GEng_API.h"
 #include "GraphicsEngine/Events/Events.h"
 
 namespace GEng
 {
-	class KeyEvent : public Event
+	GENG_API class KeyEvent : public Event
 	{
 	public:
 		KeyEvent(int keyCodeIn, int modsIn) : mKeyCode(keyCodeIn), mMods(modsIn) {}
@@ -18,7 +20,7 @@ namespace GEng
 		int mKeyCode, mMods;
 	};
 
-	class KeyPressedEvent : public KeyEvent
+	GENG_API class KeyPressedEvent : public KeyEvent
 	{
 	public:
 		KeyPressedEvent(int keyCode, int mods, unsigned int repeatCountIn) : KeyEvent(keyCode, mods), repeatCount(repeatCountIn) {}
@@ -31,7 +33,7 @@ namespace GEng
 		unsigned int repeatCount;
 	};
 
-	class KeyReleasedEvent : public KeyEvent
+	GENG_API class KeyReleasedEvent : public KeyEvent
 	{
 	public:
 		KeyReleasedEvent(int keyCode, int mods) : KeyEvent(keyCode, mods) {}
@@ -39,7 +41,7 @@ namespace GEng
 		EVENT_CLASS_FUNCTIONS(KeyReleased)
 	};
 
-	class KeyTypedEvent : public Event
+	GENG_API class KeyTypedEvent : public Event
 	{
 	public:
 		KeyTypedEvent(unsigned int charCodeIn) : charCode(charCodeIn) {}

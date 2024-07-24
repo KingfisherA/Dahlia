@@ -1,15 +1,16 @@
 #pragma once
 
+#include "GraphicsEngine/GEng_API.h"
 #include "GraphicsEngine/GUI/Display.h"
 
 #include <GLFW/glfw3.h>
 
 namespace GEng
 {
-	constexpr size_t OPENGL_MAJOR_VERSION = 4;
-	constexpr size_t OPENGL_MINOR_VERSION = 6;
+	 constexpr size_t OPENGL_MAJOR_VERSION = 4;
+	 constexpr size_t OPENGL_MINOR_VERSION = 6;
 
-	class GLFWDisplay : public Display
+	GENG_API class GLFWDisplay : public Display
 	{
 	public:
 		GLFWDisplay(const DisplayProps &properties);
@@ -38,7 +39,7 @@ namespace GEng
 
 		GLFWwindow *m_WindowID = nullptr;
 
-		struct GLFWData
+		GENG_API struct  GLFWData
 		{
 			std::string title;
 			size_t width = 0, height = 0;

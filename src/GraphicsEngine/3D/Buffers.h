@@ -1,22 +1,24 @@
 #pragma once
+
+#include"GraphicsEngine/GEng_API.h"
 #include "GraphicsEngine/Utilities/Memory.h"
 
 namespace GEng
 {
-	struct VertexLayout
+	GENG_API struct VertexLayout
 	{
 		unsigned char eleSize = 0;
 		size_t offset = 0;
 		size_t stride = 0;
 	};
 
-	enum class BufferUsage : unsigned char
+	GENG_API enum class BufferUsage : unsigned char
 	{
 		StaticUpdate,
 		DynamicUpdate
 	};
 
-	class VertexBuffer
+	GENG_API class VertexBuffer
 	{
 	public:
 		virtual ~VertexBuffer() {}
@@ -32,7 +34,7 @@ namespace GEng
 		static sRef<VertexBuffer> Create(const float *data, size_t floatCount, BufferUsage usage = BufferUsage::StaticUpdate);
 	};
 
-	class IndexBuffer
+	GENG_API class IndexBuffer
 	{
 	public:
 		virtual ~IndexBuffer() {}

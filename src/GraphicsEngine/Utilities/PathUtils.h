@@ -1,9 +1,11 @@
 #pragma once
+
+#include "GraphicsEngine/GEng_API.h"
 #include "boost/filesystem.hpp"
 
 namespace GEng
 {
-	class PathUtils
+	GENG_API class PathUtils
 	{
 	public:
 		static void Init()
@@ -20,8 +22,11 @@ namespace GEng
 
 		static boost::filesystem::path GetAssetPath()
 		{
-			// return boost::filesystem::initial_path().append("\\Assets");
+#ifdef OS_LINUX
 			return boost::filesystem::path("/media/charlie/Data/dev/C++/SCESS/Assets");
+#elif OS_WIN
+			return boost::filesystem::path("D:/dev/C++/SCESS/Assets");
+#endif // OS
 		}
 
 		static boost::filesystem::path GetAssetPath(const std::string_view relativeAsset)

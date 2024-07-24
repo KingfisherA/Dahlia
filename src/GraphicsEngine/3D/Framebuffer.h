@@ -1,4 +1,6 @@
 #pragma once
+
+#include "GraphicsEngine/GEng_API.h"
 #include "GraphicsEngine/Utilities/Memory.h"
 #include "GraphicsEngine/3D/Texture.h"
 #include <vector>
@@ -6,7 +8,7 @@
 namespace GEng
 {
 
-	struct FramebufferAttachment
+	GENG_API struct FramebufferAttachment
 	{
 	public:
 		FramebufferAttachment() = default;
@@ -17,7 +19,7 @@ namespace GEng
 		bool Renderbuffer = false;
 	};
 
-	struct FramebufferAttachmentSpecification
+	GENG_API struct FramebufferAttachmentSpecification
 	{
 		FramebufferAttachmentSpecification() = default;
 		FramebufferAttachmentSpecification(const std::initializer_list<FramebufferAttachment> &attachments)
@@ -26,14 +28,14 @@ namespace GEng
 		std::vector<FramebufferAttachment> Attachments;
 	};
 
-	struct FramebufferSpecification
+	GENG_API struct  FramebufferSpecification
 	{
 	public:
 		size_t Width = 0, Height = 0, Samples = 1;
 		FramebufferAttachmentSpecification Attachments;
 	};
 
-	class Framebuffer
+	GENG_API class Framebuffer
 	{
 	public:
 		virtual ~Framebuffer() = default;

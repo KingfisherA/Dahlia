@@ -1,10 +1,11 @@
 #pragma once
 
+#include "GraphicsEngine/GEng_API.h"
 #include <thread>
 
 namespace GEng
 {
-	class Thread
+	GENG_API class Thread
 	{
 	public:
 		Thread() : mThread(nullptr), mThreadFinished(false) {}

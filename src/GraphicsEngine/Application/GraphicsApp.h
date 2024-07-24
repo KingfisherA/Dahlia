@@ -1,5 +1,6 @@
 #pragma once
 
+#include "GraphicsEngine/GEng_API.h"
 #include <string>
 #include <ImGui/imgui.h>
 #include <glm/glm.hpp>
@@ -23,7 +24,7 @@ namespace GEng
     class Framebuffer;
     class ImGuiLayer;
 
-    class GraphicsApp
+    GENG_API class GraphicsApp
     {
     public:
         GraphicsApp(const char *displayTitle, size_t width, size_t height, const FramebufferSpecification &viewportSpec);
@@ -84,7 +85,7 @@ namespace GEng
         double mLastScrollTime = 0.0;
 
     private:
-        struct InitParams
+        GENG_API struct InitParams
         {
             const char *displayTitle = nullptr;
             size_t width = 0, height = 0;

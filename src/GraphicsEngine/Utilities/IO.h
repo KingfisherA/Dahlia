@@ -1,13 +1,15 @@
 #pragma once
+
+#include"GraphicsEngine/GENG_API.h"
 #include <string>
 #include <string_view>
 
 namespace GEng::IO
 {
-	std::string ReadTextFile(const std::string_view filePath);
+	GENG_API std::string ReadTextFile(const std::string_view filePath);
 
 	namespace Dir
 	{
-		std::string_view GetDirectoryFromPath(const std::string_view path);
+		GENG_API std::string_view GetDirectoryFromPath(const std::string_view path);
 	}
 }

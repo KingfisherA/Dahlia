@@ -1,17 +1,19 @@
 #pragma once
+
+#include "GraphicsEngine/GEng_API.h"
 #include "GraphicsEngine/Layers/Layer.h"
 #include "GraphicsEngine/Events/Events.h"
 
 namespace ImGui
 {
-	void TextCentered(const char *txt);
+	GENG_API void TextCentered(const char *txt);
 }
 
 namespace GEng
 {
 	class Display;
 
-	class ImGuiLayer : public Layer
+	GENG_API class ImGuiLayer : public Layer
 	{
 	public:
 		ImGuiLayer(const Display *mainDisplay);

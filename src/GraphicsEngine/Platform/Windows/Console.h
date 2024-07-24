@@ -1,10 +1,12 @@
 #pragma once
+
+#include "GraphicsEngine/GEng_API.h"
 #include <iostream>
 
 #ifdef PLATFORM_WIN
 namespace GEng
 {
-	enum class ConsoleColour : unsigned char
+	GENG_API enum class ConsoleColour : unsigned char
 	{
 		Black = 0,
 		Blue = 1,
@@ -23,7 +25,7 @@ namespace GEng
 		BrightYellow = 14
 	};
 
-	class Console
+	GENG_API class Console
 	{
 	public:
 		//

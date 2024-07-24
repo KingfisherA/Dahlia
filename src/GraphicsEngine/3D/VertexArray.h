@@ -1,4 +1,6 @@
 #pragma once
+
+#include"GraphicsEngine/GEng_API.h"
 #include "GraphicsEngine/3D/Buffers.h"
 #include "GraphicsEngine/Utilities/Memory.h"
 #include "GraphicsEngine/Maths/Geometry.hpp"
@@ -6,7 +8,7 @@
 
 namespace GEng
 {
-	struct VertexSpecification
+	GENG_API struct  VertexSpecification
 	{
 		unsigned char vertexSize = 3;
 		// In floats
@@ -21,7 +23,7 @@ namespace GEng
 	using Index = unsigned int;
 	constexpr Index IndexUndefined = (Index)-1;
 
-	class VertexArray
+	GENG_API class VertexArray
 	{
 	public:
 		virtual ~VertexArray() {}

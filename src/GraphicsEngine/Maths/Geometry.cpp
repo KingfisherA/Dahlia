@@ -14,9 +14,9 @@
 namespace GEng
 {
 	//
-	struct hash_pair
+	GENG_API struct hash_pair
 	{
-		template <class T1, class T2>
+		template <class T1,class T2>
 		size_t operator()(const std::pair<T1, T2> &p) const
 		{
 			auto hash1 = std::hash<T1>{}(p.first);

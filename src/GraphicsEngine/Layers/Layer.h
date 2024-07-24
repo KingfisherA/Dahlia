@@ -1,5 +1,6 @@
 #pragma once
 
+#include "GraphicsEngine/GEng_API.h"
 #include "GraphicsEngine/Events/Events.h"
 #include "GraphicsEngine/Utilities/Memory.h"
 #include "GraphicsEngine/Platform/OpenGL/OpenGLCore.h"
@@ -9,7 +10,7 @@ namespace GEng
 	class Framebuffer;
 	class Camera;
 
-	class Layer
+	GENG_API class Layer
 	{
 	public:
 		Layer(const std::string_view name = "Layer");

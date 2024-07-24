@@ -20,7 +20,7 @@ namespace GEng
 		}
 	}
 
-#pragma region OpenGLVertexBuffer Class
+#pragma region OpenGLVertexBuffer GENG_API class
 
 	OpenGLVertexBuffer::OpenGLVertexBuffer(BufferUsage usageIn) : m_Usage(usageIn)
 	{
@@ -76,7 +76,7 @@ namespace GEng
 
 #pragma endregion
 
-#pragma region OpenGLIndexBuffer Class
+#pragma region OpenGLIndexBuffer GENG_API class
 
 	OpenGLIndexBuffer::OpenGLIndexBuffer(BufferUsage usageIn) : m_Usage(usageIn)
 	{

@@ -1,5 +1,6 @@
 #pragma once
 
+#include"GraphicsEngine/GEng_API.h"
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
@@ -12,10 +13,10 @@
 namespace GEng
 {
 	using GLid = unsigned int;
-	class OpenGLCore
+	GENG_API class OpenGLCore
 	{
 	public:
-		enum class Blending
+		GENG_API enum class Blending
 		{
 			Alpha,
 			Additive

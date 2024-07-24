@@ -1,14 +1,16 @@
 #pragma once
+
+#include "GraphicsEngine/GEng_API.h"
 #include <string>
 #include <string_view>
 #include <functional>
 
 namespace GEng
 {
-	class Event;
-	class EventDispatcher;
+	 class Event;
+	 class EventDispatcher;
 
-	enum class EventType
+	GENG_API enum class EventType
 	{
 		None = 0,
 		WindowClose,
@@ -40,16 +42,16 @@ namespace GEng
 	};
 
 #define EVENT_CLASS_FUNCTIONS(type)                                             \
-	static EventType GetStaticType() { return EventType ::type; }               \
-	virtual EventType GetEventType() const override { return GetStaticType(); } \
-	virtual std::string_view GetName() const override { return std::string_view(#type); }
+	 static EventType GetStaticType() { return EventType ::type; }               \
+	 virtual EventType GetEventType() const override { return GetStaticType(); } \
+	 virtual std::string_view GetName() const override { return std::string_view(#type); }
 
 #define EVENT_CLASS_CATEGORY_FNS(cat) \
 	virtual int GetCategoryFlags() const override { return cat; }
 
-	class Event
+	GENG_API class Event
 	{
-		friend class EventDispatcher;
+		friend GENG_API class EventDispatcher;
 
 	public:
 		virtual EventType GetEventType() const = 0;
@@ -64,7 +66,7 @@ namespace GEng
 		bool m_Handled = false;
 	};
 
-	class EventDispatcher
+	GENG_API class EventDispatcher
 	{
 	private:
 		Event &m_Event;

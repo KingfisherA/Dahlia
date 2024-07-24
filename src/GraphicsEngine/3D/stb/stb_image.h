@@ -67,7 +67,7 @@ RECENT REVISION HISTORY:
       2.12  (2016-04-02) fix typo in 2.11 PSD fix that caused crashes
       2.11  (2016-04-02) 16-bit PNGS; enable SSE2 in non-gcc x64
                          RGB-format JPEG; remove white matting in PSD;
-                         allocate large structures on the stack;
+                         allocate large   struct ures on the stack;
                          correct channel count for PNG & BMP
       2.10  (2016-01-22) avoid warning introduced in 2.09
       2.09  (2016-01-16) 16-bit TGA; comments in PNM files; STBI_REALLOC_SIZED
@@ -407,7 +407,7 @@ extern "C"
     // load image by filename, open file, or memory buffer
     //
 
-    typedef struct
+    typedef   struct 
     {
         int (*read)(void *user, char *data, int size); // fill 'data' with 'size' bytes.  return number of bytes actually read
         void (*skip)(void *user, int n);               // skip the next 'n' bytes, or 'unget' the last -n bytes if negative
@@ -756,7 +756,7 @@ static int stbi__sse2_available(void)
 {
     // If we're even attempting to compile this on GCC/Clang, that means
     // -msse2 is on, which means the compiler is allowed to use SSE2
-    // instructions at will, and so are we.
+    // in  struct ions at will, and so are we.
     return 1;
 }
 #endif
@@ -788,11 +788,11 @@ static int stbi__sse2_available(void)
 
 ///////////////////////////////////////////////
 //
-//  stbi__context struct and start_xxx functions
+//  stbi__context   struct  and start_xxx functions
 
-// stbi__context structure is our basic context used by all images, so it
+// stbi__context   struct ure is our basic context used by all images, so it
 // contains all the IO context, plus some basic image information
-typedef struct
+typedef   struct 
 {
     stbi__uint32 img_x, img_y;
     int img_n, img_out_n;
@@ -888,7 +888,7 @@ enum
     STBI_ORDER_BGR
 };
 
-typedef struct
+typedef   struct 
 {
     int bits_per_channel;
     int num_channels;
@@ -2107,7 +2107,7 @@ static stbi_uc *stbi__hdr_to_ldr(float *data, int x, int y, int comp)
 // huffman decoding acceleration
 #define FAST_BITS 9 // larger handles more cases; smaller stomps less cache
 
-typedef struct
+typedef   struct 
 {
     stbi_uc fast[1 << FAST_BITS];
     // weirdly, repacking this into AoS is a 10% speed loss, instead of a win
@@ -2118,7 +2118,7 @@ typedef struct
     int delta[17]; // old 'firstsymbol' - old 'firstcode'
 } stbi__huffman;
 
-typedef struct
+typedef   struct 
 {
     stbi__context *s;
     stbi__huffman huff_dc[4];
@@ -2132,7 +2132,7 @@ typedef struct
     int img_mcu_w, img_mcu_h;
 
     // definition of jpeg image component
-    struct
+      struct 
     {
         int id;
         int h, v;
@@ -2795,7 +2795,7 @@ static void stbi__idct_block(stbi_uc *out, int out_stride, short data[64])
 // fully "transparent".
 static void stbi__idct_simd(stbi_uc *out, int out_stride, short data[64])
 {
-    // This is constructed to match our regular (generic) integer IDCT exactly.
+    // This is con  struct ed to match our regular (generic) integer IDCT exactly.
     __m128i row0, row1, row2, row3, row4, row5, row6, row7;
     __m128i tmp;
 
@@ -3149,7 +3149,7 @@ static void stbi__idct_simd(stbi_uc *out, int out_stride, short data[64])
         uint8x8_t p6 = vqrshrun_n_s16(row6, 1);
         uint8x8_t p7 = vqrshrun_n_s16(row7, 1);
 
-        // again, these can translate into one instruction, but often don't.
+        // again, these can translate into one in  struct ion, but often don't.
 #define dct_trn8_8(x, y)               \
     {                                  \
         uint8x8x2_t t = vtrn_u8(x, y); \
@@ -4348,7 +4348,7 @@ static void stbi__cleanup_jpeg(stbi__jpeg *j)
     stbi__free_jpeg_components(j, j->s->img_n, 0);
 }
 
-typedef struct
+typedef   struct 
 {
     resample_row_func resample;
     stbi_uc *line0, *line1;
@@ -4667,7 +4667,7 @@ static int stbi__jpeg_info(stbi__context *s, int *x, int *y, int *comp)
 
 // zlib-style huffman encoding
 // (jpegs packs from left, zlib from right, so can't share code)
-typedef struct
+typedef   struct 
 {
     stbi__uint16 fast[1 << STBI__ZFAST_BITS];
     stbi__uint16 firstcode[16];
@@ -4749,11 +4749,11 @@ static int stbi__zbuild_huffman(stbi__zhuffman *z, const stbi_uc *sizelist, int 
 
 // zlib-from-memory implementation for PNG reading
 //    because PNG allows splitting the zlib stream arbitrarily,
-//    and it's annoying structurally to have PNG call ZLIB call PNG,
+//    and it's annoying   struct urally to have PNG call ZLIB call PNG,
 //    we require PNG read all the IDATs and combine them into a single
 //    memory buffer
 
-typedef struct
+typedef   struct 
 {
     stbi_uc *zbuffer, *zbuffer_end;
     int num_bits;
@@ -5259,7 +5259,7 @@ STBIDEF int stbi_zlib_decode_noheader_buffer(char *obuffer, int olen, const char
 //      - uses stb_zlib, a PD zlib implementation with fast huffman decoding
 
 #ifndef STBI_NO_PNG
-typedef struct
+typedef   struct 
 {
     stbi__uint32 length;
     stbi__uint32 type;
@@ -5283,7 +5283,7 @@ static int stbi__check_png_header(stbi__context *s)
     return 1;
 }
 
-typedef struct
+typedef   struct 
 {
     stbi__context *s;
     stbi_uc *idata, *expanded, *out;
@@ -6341,7 +6341,7 @@ static int stbi__shiftsigned(unsigned int v, int shift, int bits)
     return (int)((unsigned)v * mul_table[bits]) >> shift_table[bits];
 }
 
-typedef struct
+typedef   struct 
 {
     int bpp, offset, hsz;
     unsigned int mr, mg, mb, ma, all_a;
@@ -7499,7 +7499,7 @@ static int stbi__pic_test_core(stbi__context *s)
     return 1;
 }
 
-typedef struct
+typedef   struct 
 {
     stbi_uc size, type, channel;
 } stbi__pic_packet;
@@ -7718,14 +7718,14 @@ static int stbi__pic_test(stbi__context *s)
 // GIF loader -- public domain by Jean-Marc Lienher -- simplified/shrunk by stb
 
 #ifndef STBI_NO_GIF
-typedef struct
+typedef   struct 
 {
     stbi__int16 prefix;
     stbi_uc first;
     stbi_uc suffix;
 } stbi__gif_lzw;
 
-typedef struct
+typedef   struct 
 {
     int w, h;
     stbi_uc *out;        // output buffer (always 4 components)
@@ -9167,7 +9167,7 @@ STBIDEF int stbi_is_16_bit_from_callbacks(stbi_io_callbacks const *c, void *user
       2.14  (2017-03-03) remove deprecated STBI_JPEG_OLD; fixes for Imagenet JPGs
       2.13  (2016-11-29) add 16-bit API, only supported for PNG right now
       2.12  (2016-04-02) fix typo in 2.11 PSD fix that caused crashes
-      2.11  (2016-04-02) allocate large structures on the stack
+      2.11  (2016-04-02) allocate large   struct ures on the stack
                          remove white matting for transparent PSD
                          fix reported channel count for PNG & BMP
                          re-enable SSE2 in non-gcc 64-bit
@@ -9220,7 +9220,7 @@ STBIDEF int stbi_is_16_bit_from_callbacks(stbi_io_callbacks const *c, void *user
       1.41  (2014-06-25)
               fix search&replace from 1.36 that messed up comments/error messages
       1.40  (2014-06-22)
-              fix gcc struct-initialization warning
+              fix gcc   struct -initialization warning
       1.39  (2014-06-15)
               fix to TGA optimization when req_comp != number of components in TGA;
               fix to GIF loading because BMP wasn't rewinding (whoops, no GIFs in my test suite)

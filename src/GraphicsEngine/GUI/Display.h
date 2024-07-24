@@ -1,15 +1,17 @@
 #pragma once
+
+#include "GraphicsEngine/GEng_API.h"
 #include "GraphicsEngine/Events/Events.h"
 
 namespace GEng
 {
-	struct DisplayProps
+	GENG_API struct DisplayProps
 	{
 		std::string title;
 		size_t width = 0, height = 0;
 	};
 
-	class Display
+	GENG_API class Display
 	{
 	public:
 		using EventCallbackFnc = std::function<void(Event &)>;

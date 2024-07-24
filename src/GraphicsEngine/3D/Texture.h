@@ -1,5 +1,6 @@
 #pragma once
 
+#include "GraphicsEngine/GEng_API.h"
 #include "GraphicsEngine/Utilities/Memory.h"
 #include <string_view>
 #include <glm/glm.hpp>
@@ -10,7 +11,7 @@ namespace GEng
 {
 	using Dimension2D = glm::vec<2, size_t>;
 
-	struct PixelFormat
+	GENG_API struct PixelFormat
 	{
 	public:
 		enum PixelEnum : unsigned char
@@ -90,7 +91,7 @@ namespace GEng
 		PixelEnum mValue = PixelEnum::None;
 	};
 
-	class TextureLoader
+	GENG_API class TextureLoader
 	{
 	public:
 		using byte = unsigned char;
@@ -111,13 +112,13 @@ namespace GEng
 		PixelFormat m_imageFormat;
 	};
 
-	enum class MipmapFiltering : unsigned char
+	GENG_API enum class MipmapFiltering : unsigned char
 	{
 		Bilinear,
 		Trilinear
 	};
 
-	class Texture
+	GENG_API class Texture
 	{
 	public:
 		virtual ~Texture() = default;
@@ -128,7 +129,7 @@ namespace GEng
 		virtual void *GetRendererID() const noexcept = 0;
 	};
 
-	class Texture2D : public Texture
+	GENG_API class Texture2D : public Texture
 	{
 	public:
 		using byte = unsigned char;

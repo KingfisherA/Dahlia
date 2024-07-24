@@ -1,5 +1,6 @@
 #pragma once
 
+#include "GraphicsEngine/GEng_API.h"
 #include <string_view>
 #include <glm/glm.hpp>
 
@@ -8,7 +9,7 @@
 
 namespace GEng
 {
-	class OpenGLShaderProgram : public ShaderProgram
+	GENG_API class OpenGLShaderProgram : public ShaderProgram
 	{
 	public:
 		using UniformLocMap = std::unordered_map<std::string_view, int>;

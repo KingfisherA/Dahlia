@@ -1,10 +1,12 @@
 #pragma once
+
+#include "GraphicsEngine/GEng_API.h"
 #include "GraphicsEngine/3D/Buffers.h"
 #include"GraphicsEngine/Platform/OpenGL/OpenGLCore.h"
 
 namespace GEng
 {
-	class OpenGLVertexBuffer : public VertexBuffer
+	GENG_API class OpenGLVertexBuffer : public VertexBuffer
 	{
 	public:
 		OpenGLVertexBuffer(BufferUsage usageIn);
@@ -26,7 +28,7 @@ namespace GEng
 		BufferUsage m_Usage;
 	};
 
-	class OpenGLIndexBuffer : public IndexBuffer
+	GENG_API class OpenGLIndexBuffer : public IndexBuffer
 	{
 	public:
 		OpenGLIndexBuffer(BufferUsage usageIn);

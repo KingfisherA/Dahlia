@@ -69,8 +69,8 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>opengl32.lib;glew32s.lib;glfw3.lib;ImGui.lib;libboost_filesystem-vc143-mt-gd-x64-1_83.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\..\Libraries\boost_1_83_0\stage\lib;..\..\Libraries\ImGui\bin\windows\Release-x64;..\..\Libraries\glfw-3.3.2\lib\x64;..\..\Libraries\glew-2.1.0\lib\Release\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>OpenGL32.lib;glew32s.lib;glfw3.lib;ImGui.lib;libboost_filesystem-vc143-mt-gd-x64-1_83.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\Libraries\boost_1_83_0\stage\lib;..\..\Libraries\ImGui\bin\windows\Release-x64;..\..\Libraries\glfw-3.3.2\lib\x64;..\..\Libraries\glew-2.1.0\lib\Release\x64;C:\Program Files (x86)\Windows Kits\10\Lib\10.0.22000.0\um\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImportLibrary>bin\windows\Debug-x64\GraphicsEngine_Shared\GraphicsEngine_Shared.lib</ImportLibrary>
       <AdditionalOptions>/NODEFAULTLIB:"LIBCMTD" /NODEFAULTLIB:"LIBCMT" %(AdditionalOptions)</AdditionalOptions>
     </Link>
@@ -96,8 +96,8 @@
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>opengl32.lib;glew32s.lib;glfw3.lib;ImGui.lib;libboost_filesystem-vc143-mt-x64-1_83.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\..\Libraries\boost_1_83_0\stage\lib;..\..\Libraries\ImGui\bin\windows\Release-x64;..\..\Libraries\glfw-3.3.2\lib\x64;..\..\Libraries\glew-2.1.0\lib\Release\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>OpenGL32.lib;glew32s.lib;glfw3.lib;ImGui.lib;libboost_filesystem-vc143-mt-x64-1_83.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\Libraries\boost_1_83_0\stage\lib;..\..\Libraries\ImGui\bin\windows\Release-x64;..\..\Libraries\glfw-3.3.2\lib\x64;..\..\Libraries\glew-2.1.0\lib\Release\x64;C:\Program Files (x86)\Windows Kits\10\Lib\10.0.22000.0\um\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImportLibrary>bin\windows\Release-x64\GraphicsEngine_Shared\GraphicsEngine_Shared.lib</ImportLibrary>
       <AdditionalOptions>/NODEFAULTLIB:"LIBCMTD" /NODEFAULTLIB:"LIBCMT" %(AdditionalOptions)</AdditionalOptions>
     </Link>

@@ -18,6 +18,7 @@
     "src/GraphicsEngine/Events/KeyEvents.h"
     "src/GraphicsEngine/Events/MouseEvents.h"
     "src/GraphicsEngine/Events/WindowEvents.h"
+  "src/GraphicsEngine/GEng_API.h"
     "src/GraphicsEngine/GUI/Display.cpp"
     "src/GraphicsEngine/GUI/Display.h"
     "src/GraphicsEngine/GUI/ImGuiBuild.cpp"
@@ -64,22 +65,24 @@
 if(CMAKE_BUILD_TYPE STREQUAL Debug)
   set_target_properties("GraphicsEngine" PROPERTIES
     OUTPUT_NAME "GraphicsEngine"
-    ARCHIVE_OUTPUT_DIRECTORY "/media/charlie/Data/dev/C++/GraphicsEngine/bin/linux/Debug-x64"
-    LIBRARY_OUTPUT_DIRECTORY "/media/charlie/Data/dev/C++/GraphicsEngine/bin/linux/Debug-x64"
-    RUNTIME_OUTPUT_DIRECTORY "/media/charlie/Data/dev/C++/GraphicsEngine/bin/linux/Debug-x64"
+    ARCHIVE_OUTPUT_DIRECTORY "/media/charlie/Data/dev/C++/GraphicsEngine/bin/linux/Debug-x64/GraphicsEngine"
+    LIBRARY_OUTPUT_DIRECTORY "/media/charlie/Data/dev/C++/GraphicsEngine/bin/linux/Debug-x64/GraphicsEngine"
+    RUNTIME_OUTPUT_DIRECTORY "/media/charlie/Data/dev/C++/GraphicsEngine/bin/linux/Debug-x64/GraphicsEngine"
   )
 endif()
 target_include_directories("GraphicsEngine" PRIVATE
   $<$<CONFIG:Debug>:/media/charlie/Data/dev/C++/GraphicsEngine/src>
   $<$<CONFIG:Debug>:/usr/include>
   $<$<CONFIG:Debug>:/usr/local/include>
-  $<$<CONFIG:Debug>:/media/charlie/Data/dev/Libraries/C++/glm>
-  $<$<CONFIG:Debug>:/media/charlie/Data/dev/Libraries/C++/ImGui>
+  $<$<CONFIG:Debug>:/media/charlie/Data/dev/Libraries/glm>
+  $<$<CONFIG:Debug>:/media/charlie/Data/dev/Libraries/ImGui>
+  $<$<CONFIG:Debug>:/media/charlie/Data/dev/Libraries>
 )
 target_compile_definitions("GraphicsEngine" PRIVATE
+  $<$<CONFIG:Debug>:OS_LINUX>
+  $<$<CONFIG:Debug>:GENG_STATIC>
+  $<$<CONFIG:Debug>:GENG_BUILD>
   $<$<CONFIG:Debug>:CONFIG_DEBUG>
-  $<$<CONFIG:Debug>:_DEBUG>
-  $<$<CONFIG:Debug>:CONFIG_RELEASE>
 )
 target_link_directories("GraphicsEngine" PRIVATE
 )
@@ -87,9 +90,11 @@ target_link_libraries("GraphicsEngine"
 )
 target_compile_options("GraphicsEngine" PRIVATE
   $<$<AND:$<CONFIG:Debug>,$<COMPILE_LANGUAGE:C>>:-m64>
-  $<$<AND:$<CONFIG:Debug>,$<COMPILE_LANGUAGE:C>>:-O2>
+  $<$<AND:$<CONFIG:Debug>,$<COMPILE_LANGUAGE:C>>:-O0>
+  $<$<AND:$<CONFIG:Debug>,$<COMPILE_LANGUAGE:C>>:-g>
   $<$<AND:$<CONFIG:Debug>,$<COMPILE_LANGUAGE:CXX>>:-m64>
-  $<$<AND:$<CONFIG:Debug>,$<COMPILE_LANGUAGE:CXX>>:-O2>
+  $<$<AND:$<CONFIG:Debug>,$<COMPILE_LANGUAGE:CXX>>:-O0>
+  $<$<AND:$<CONFIG:Debug>,$<COMPILE_LANGUAGE:CXX>>:-g>
   $<$<AND:$<CONFIG:Debug>,$<COMPILE_LANGUAGE:CXX>>:-std=c++20>
 )
 if(CMAKE_BUILD_TYPE STREQUAL Debug)
@@ -104,19 +109,24 @@ endif()
 if(CMAKE_BUILD_TYPE STREQUAL Release)
   set_target_properties("GraphicsEngine" PROPERTIES
     OUTPUT_NAME "GraphicsEngine"
-    ARCHIVE_OUTPUT_DIRECTORY "/media/charlie/Data/dev/C++/GraphicsEngine/bin/linux/Release-x64"
-    LIBRARY_OUTPUT_DIRECTORY "/media/charlie/Data/dev/C++/GraphicsEngine/bin/linux/Release-x64"
-    RUNTIME_OUTPUT_DIRECTORY "/media/charlie/Data/dev/C++/GraphicsEngine/bin/linux/Release-x64"
+    ARCHIVE_OUTPUT_DIRECTORY "/media/charlie/Data/dev/C++/GraphicsEngine/bin/linux/Release-x64/GraphicsEngine"
+    LIBRARY_OUTPUT_DIRECTORY "/media/charlie/Data/dev/C++/GraphicsEngine/bin/linux/Release-x64/GraphicsEngine"
+    RUNTIME_OUTPUT_DIRECTORY "/media/charlie/Data/dev/C++/GraphicsEngine/bin/linux/Release-x64/GraphicsEngine"
   )
 endif()
 target_include_directories("GraphicsEngine" PRIVATE
   $<$<CONFIG:Release>:/media/charlie/Data/dev/C++/GraphicsEngine/src>
   $<$<CONFIG:Release>:/usr/include>
   $<$<CONFIG:Release>:/usr/local/include>
-  $<$<CONFIG:Release>:/media/charlie/Data/dev/Libraries/C++/glm>
-  $<$<CONFIG:Release>:/media/charlie/Data/dev/Libraries/C++/ImGui>
+  $<$<CONFIG:Release>:/media/charlie/Data/dev/Libraries/glm>
+  $<$<CONFIG:Release>:/media/charlie/Data/dev/Libraries/ImGui>
+  $<$<CONFIG:Release>:/media/charlie/Data/dev/Libraries>
 )
 target_compile_definitions("GraphicsEngine" PRIVATE
+  $<$<CONFIG:Release>:OS_LINUX>
+  $<$<CONFIG:Release>:GENG_STATIC>
+  $<$<CONFIG:Release>:GENG_BUILD>
+  $<$<CONFIG:Release>:CONFIG_RELEASE>
 )
 target_link_directories("GraphicsEngine" PRIVATE
 )
@@ -124,7 +134,9 @@ target_link_libraries("GraphicsEngine"
 )
 target_compile_options("GraphicsEngine" PRIVATE
   $<$<AND:$<CONFIG:Release>,$<COMPILE_LANGUAGE:C>>:-m64>
+  $<$<AND:$<CONFIG:Release>,$<COMPILE_LANGUAGE:C>>:-O2>
   $<$<AND:$<CONFIG:Release>,$<COMPILE_LANGUAGE:CXX>>:-m64>
+  $<$<AND:$<CONFIG:Release>,$<COMPILE_LANGUAGE:CXX>>:-O2>
   $<$<AND:$<CONFIG:Release>,$<COMPILE_LANGUAGE:CXX>>:-std=c++20>
 )
 if(CMAKE_BUILD_TYPE STREQUAL Release)

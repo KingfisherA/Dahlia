@@ -112,7 +112,7 @@ namespace GEng
 		//
 		static sRef<Mesh> CreateCube(float size = 1.0f);
 		//
-		static sRef<Mesh> CreateCircle(float radius, unsigned int segments);
+		static sRef<Mesh> CreateCircle(float radius, size_t segments);
 		static sRef<Mesh> CreateRings(float innerRadius, float outerRadius, unsigned int segments);
 		static sRef<Mesh> CreateHalfRings(float innerRadius, float outerRadius, unsigned int segments);
 		//

@@ -8,9 +8,9 @@ if(CMAKE_BUILD_TYPE STREQUAL Debug)
   )
   set_target_properties("Example" PROPERTIES
     OUTPUT_NAME "Example"
-    ARCHIVE_OUTPUT_DIRECTORY "/media/charlie/Data/dev/C++/GraphicsEngine/bin/linux/Debug-x64"
-    LIBRARY_OUTPUT_DIRECTORY "/media/charlie/Data/dev/C++/GraphicsEngine/bin/linux/Debug-x64"
-    RUNTIME_OUTPUT_DIRECTORY "/media/charlie/Data/dev/C++/GraphicsEngine/bin/linux/Debug-x64"
+    ARCHIVE_OUTPUT_DIRECTORY "/media/charlie/Data/dev/C++/GraphicsEngine/bin/linux/Debug-x64/Example"
+    LIBRARY_OUTPUT_DIRECTORY "/media/charlie/Data/dev/C++/GraphicsEngine/bin/linux/Debug-x64/Example"
+    RUNTIME_OUTPUT_DIRECTORY "/media/charlie/Data/dev/C++/GraphicsEngine/bin/linux/Debug-x64/Example"
   )
 endif()
 target_include_directories("Example" PRIVATE
@@ -18,14 +18,17 @@ target_include_directories("Example" PRIVATE
   $<$<CONFIG:Debug>:/media/charlie/Data/dev/C++/GraphicsEngine/src>
   $<$<CONFIG:Debug>:/usr/include>
   $<$<CONFIG:Debug>:/usr/local/include>
-  $<$<CONFIG:Debug>:/media/charlie/Data/dev/Libraries/C++/glm>
-  $<$<CONFIG:Debug>:/media/charlie/Data/dev/Libraries/C++/ImGui>
+  $<$<CONFIG:Debug>:/media/charlie/Data/dev/Libraries/glm>
+  $<$<CONFIG:Debug>:/media/charlie/Data/dev/Libraries/ImGui>
+  $<$<CONFIG:Debug>:/media/charlie/Data/dev/Libraries>
 )
 target_compile_definitions("Example" PRIVATE
+  $<$<CONFIG:Debug>:OS_LINUX>
+  $<$<CONFIG:Debug>:GENG_STATIC>
   $<$<CONFIG:Debug>:CONFIG_DEBUG>
-  $<$<CONFIG:Debug>:_DEBUG>
 )
 target_link_directories("Example" PRIVATE
+  $<$<CONFIG:Debug>:/media/charlie/Data/dev/Libraries/ImGui/bin/linux/Release-x64>
 )
 target_link_libraries("Example"
   $<$<CONFIG:Debug>:GraphicsEngine>
@@ -40,7 +43,6 @@ target_link_libraries("Example"
   $<$<CONFIG:Debug>:X11>
   $<$<CONFIG:Debug>:Xxf86vm>
   $<$<CONFIG:Debug>:pthread>
-  $<$<CONFIG:Debug>:nfd>
   $<$<CONFIG:Debug>:gtk-3>
   $<$<CONFIG:Debug>:z>
   $<$<CONFIG:Debug>:gdk-3>
@@ -48,8 +50,10 @@ target_link_libraries("Example"
 )
 target_compile_options("Example" PRIVATE
   $<$<AND:$<CONFIG:Debug>,$<COMPILE_LANGUAGE:C>>:-m64>
+  $<$<AND:$<CONFIG:Debug>,$<COMPILE_LANGUAGE:C>>:-O0>
   $<$<AND:$<CONFIG:Debug>,$<COMPILE_LANGUAGE:C>>:-g>
   $<$<AND:$<CONFIG:Debug>,$<COMPILE_LANGUAGE:CXX>>:-m64>
+  $<$<AND:$<CONFIG:Debug>,$<COMPILE_LANGUAGE:CXX>>:-O0>
   $<$<AND:$<CONFIG:Debug>,$<COMPILE_LANGUAGE:CXX>>:-g>
   $<$<AND:$<CONFIG:Debug>,$<COMPILE_LANGUAGE:CXX>>:-std=c++20>
 )
@@ -68,9 +72,9 @@ if(CMAKE_BUILD_TYPE STREQUAL Release)
   )
   set_target_properties("Example" PROPERTIES
     OUTPUT_NAME "Example"
-    ARCHIVE_OUTPUT_DIRECTORY "/media/charlie/Data/dev/C++/GraphicsEngine/bin/linux/Release-x64"
-    LIBRARY_OUTPUT_DIRECTORY "/media/charlie/Data/dev/C++/GraphicsEngine/bin/linux/Release-x64"
-    RUNTIME_OUTPUT_DIRECTORY "/media/charlie/Data/dev/C++/GraphicsEngine/bin/linux/Release-x64"
+    ARCHIVE_OUTPUT_DIRECTORY "/media/charlie/Data/dev/C++/GraphicsEngine/bin/linux/Release-x64/Example"
+    LIBRARY_OUTPUT_DIRECTORY "/media/charlie/Data/dev/C++/GraphicsEngine/bin/linux/Release-x64/Example"
+    RUNTIME_OUTPUT_DIRECTORY "/media/charlie/Data/dev/C++/GraphicsEngine/bin/linux/Release-x64/Example"
   )
 endif()
 target_include_directories("Example" PRIVATE
@@ -78,13 +82,17 @@ target_include_directories("Example" PRIVATE
   $<$<CONFIG:Release>:/media/charlie/Data/dev/C++/GraphicsEngine/src>
   $<$<CONFIG:Release>:/usr/include>
   $<$<CONFIG:Release>:/usr/local/include>
-  $<$<CONFIG:Release>:/media/charlie/Data/dev/Libraries/C++/glm>
-  $<$<CONFIG:Release>:/media/charlie/Data/dev/Libraries/C++/ImGui>
+  $<$<CONFIG:Release>:/media/charlie/Data/dev/Libraries/glm>
+  $<$<CONFIG:Release>:/media/charlie/Data/dev/Libraries/ImGui>
+  $<$<CONFIG:Release>:/media/charlie/Data/dev/Libraries>
 )
 target_compile_definitions("Example" PRIVATE
+  $<$<CONFIG:Release>:OS_LINUX>
+  $<$<CONFIG:Release>:GENG_STATIC>
   $<$<CONFIG:Release>:CONFIG_RELEASE>
 )
 target_link_directories("Example" PRIVATE
+  $<$<CONFIG:Release>:/media/charlie/Data/dev/Libraries/ImGui/bin/linux/Release-x64>
 )
 target_link_libraries("Example"
   $<$<CONFIG:Release>:GraphicsEngine>
@@ -99,7 +107,6 @@ target_link_libraries("Example"
   $<$<CONFIG:Release>:X11>
   $<$<CONFIG:Release>:Xxf86vm>
   $<$<CONFIG:Release>:pthread>
-  $<$<CONFIG:Release>:nfd>
   $<$<CONFIG:Release>:gtk-3>
   $<$<CONFIG:Release>:z>
   $<$<CONFIG:Release>:gdk-3>

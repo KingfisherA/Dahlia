@@ -24,6 +24,8 @@ namespace GEng
     class Framebuffer;
     class ImGuiLayer;
 
+    using size_t = std::size_t;
+
     GENG_API class GraphicsApp
     {
     public:
@@ -77,12 +79,18 @@ namespace GEng
 
         double m_Time = 0.0;
         double m_DeltaTime = 0.0;
-        glm::dvec2 m_MouseLastPos;
+
+        glm::dvec2 mCurrentMousePos;
+        glm::dvec2 mLastMousePos;
+        glm::dvec2 mDeltaMousePos;
         int m_MouseButtonDown = -1;
         int m_KeyDown = -1;
         int m_KeyMods = 0;
 
+        double mDeltaScroll = 0.0;
         double mLastScrollTime = 0.0;
+
+        std::string mViewportName;
 
     private:
         GENG_API struct InitParams

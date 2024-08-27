@@ -9,31 +9,42 @@
 #include "GraphicsEngine/Events/WindowEvents.h"
 #include "GraphicsEngine/Application/GraphicsApp.h"
 
-namespace Example
-{
-	class Application : public GEng::GraphicsApp
-	{
-	public:
-		Application();
-		virtual ~Application();
+namespace GEng {
+    class VertexArray;
+    class ShaderProgram;
+}
 
-		void UpdateProjectionMatrix();
+namespace Example {
+    class Application : public GEng::GraphicsApp {
+    public:
+        Application();
+        virtual ~Application();
 
-		inline glm::mat4 &GetProjectionMatrix() { return projectionMatrix; }
+        void UpdateProjectionMatrix();
 
-		const GEng::Camera &GetCamera() const { return mCam; }
-		GEng::Camera &GetCamera() { return mCam; }
+        inline glm::mat4 &GetProjectionMatrix() { return projectionMatrix; }
 
-	protected:
-		virtual void OnImGuiRender() override;
-		virtual void OnViewportResize() override;
-		virtual bool OnInit() override;
+        const GEng::Camera &GetCamera() const { return mCam; }
+        GEng::Camera &GetCamera() { return mCam; }
 
-	private:
-		void RenderCameraPanel();
-		void RenderSceneInformation();
+    protected:
+        virtual void OnRender() override;
+        virtual void OnImGuiRender() override;
+        virtual void OnViewportResize() override;
+        virtual bool OnInit() override;
 
-		GEng::Camera mCam;
-		glm::mat4 projectionMatrix;
-	};
+        virtual bool OnMouseMove(GEng::MouseMoveEvent &e) override;
+        virtual bool OnMouseScroll(GEng::MouseScrollEvent &e) override;
+
+    private:
+        void RenderCameraPanel();
+        void RenderSceneInformation();
+
+        GEng::Camera mCam;
+        glm::mat4 projectionMatrix;
+
+        GLenum mRenderStyle = GL_FILL;
+        sRef<GEng::VertexArray> mVAO;
+        sRef<GEng::ShaderProgram> mShader;
+    };
 }

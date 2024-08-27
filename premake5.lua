@@ -8,13 +8,10 @@ workspace "GraphicsEngine"
 	}
 
 filter{"system:linux"}
-	publicLibDir = "/media/charlie/Data/dev/Libraries/C++/"
 	defines{"OS_LINUX"}
 
 filter{"system:windows"}
-	publicLibDir = "D:/dev/Libraries/"
 	defines{"OS_WIN"}
-	
 	outputdir = "%{os.host()}/%{cfg.buildcfg}-x64/%{prj.name}"
 	libDir = "%{wks.location}/libs/"
 
@@ -43,8 +40,9 @@ project "GraphicsEngine"
 		  "%{wks.location}/src/",
 		  "/usr/include",
 		  "/usr/local/include",
-		  publicLibDir .. "glm",
-		  publicLibDir .. "ImGui"
+		  "/media/charlie/Data/dev/Libraries/glm",
+		  "/media/charlie/Data/dev/Libraries/ImGui",
+          "/media/charlie/Data/dev/Libraries/"
 		}
 	
 	filter{"system:windows"}
@@ -52,26 +50,31 @@ project "GraphicsEngine"
 		includedirs
 		{
 		  "%{wks.location}/src/",
-		  publicLibDir .. "glfw-3.3.2/include",
-		  publicLibDir .. "glew-2.1.0/include",
-		  publicLibDir .. "glm",
-		  publicLibDir .. "boost_1_83_0",
-		  publicLibDir .. "ImGui",
-		  publicLibDir
+		  "D:/dev/Libraries/glfw-3.3.2/include",
+		  "D:/dev/Libraries/glew-2.1.0/include",
+		  "D:/dev/Libraries/glm",
+		  "D:/dev/Libraries/boost_1_83_0",
+		  "D:/dev/Libraries/ImGui",
+		  "D:/dev/Libraries/"
 		}
+
+    filter {"configurations:Debug", "system:windows"}
+        buildoptions{"/MDd"}
+
+    filter {"configurations:Release", "system:windows"}
+        buildoptions{"/MD"}
 	
 	
 	filter { "configurations:Debug"}
 		symbols "On"
 		optimize "Off"
 		defines { "CONFIG_DEBUG" }
-		buildoptions{"/MDd"}
+		
 		
 	filter { "configurations:Release"}
 		optimize "On"
 		symbols "Off"
 		defines { "CONFIG_RELEASE"}
-		buildoptions{"/MD"}
 
 project "GraphicsEngine_Shared"
 	kind "SharedLib"
@@ -98,9 +101,13 @@ project "GraphicsEngine_Shared"
 		  "%{wks.location}/src/",
 		  "/usr/include",
 		  "/usr/local/include",
-		  publicLibDir .. "glm",
-		  publicLibDir .. "ImGui"
+		  "/media/charlie/Data/dev/Libraries/glm",
+		  "/media/charlie/Data/dev/Libraries/ImGui",
+          "/media/charlie/Data/dev/Libraries/"
 		}
+        libdirs{
+        "/media/charlie/Data/dev/Libraries/ImGui/bin/linux/Release-x64"}
+		links { "glfw3", "ImGui", "boost_filesystem", "GLEW.a", "GL", "m", "Xrandr", "Xi", "X11", "Xxf86vm", "pthread", "gtk-3", "z", "gdk-3", "glib-2.0" }
 	
 	
 	filter{"system:windows"}
@@ -109,35 +116,41 @@ project "GraphicsEngine_Shared"
 		{
 		  "%{wks.location}/src/Example",
 		  "%{wks.location}/src/",
-		  publicLibDir .. "glfw-3.3.2/include",
-		  publicLibDir .. "glew-2.1.0/include",
-		  publicLibDir .. "glm",
-		  publicLibDir .. "boost_1_83_0",
-		  publicLibDir .. "ImGui",
-		  publicLibDir
+		  "D:/dev/Libraries/glfw-3.3.2/include",
+		  "D:/dev/Libraries/glew-2.1.0/include",
+		  "D:/dev/Libraries/glm",
+		  "D:/dev/Libraries/boost_1_83_0",
+		  "D:/dev/Libraries/ImGui",
+		  "D:/dev/Libraries/"
 		}
-		libdirs{
-		publicLibDir .. "boost_1_83_0/stage/lib/",
-		publicLibDir .. "ImGui/bin/windows/Release-x64/",
-		publicLibDir .. "glfw-3.3.2/lib/x64",
-		publicLibDir .. "glew-2.1.0/lib/Release/x64"}
-		links { "opengl32", "glew32s", "glfw3", "ImGui"}
+		libdirs
+        {
+		    "D:/dev/Libraries/boost_1_83_0/stage/lib/",
+		    "D:/dev/Libraries/ImGui/bin/windows/Release-x64/",
+		    "D:/dev/Libraries/glfw-3.3.2/lib/x64",
+		    "D:/dev/Libraries/glew-2.1.0/lib/Release/x64",
+			"C:/Program Files (x86)/Windows Kits/10/Lib/10.0.22000.0/um/x64"
+        }
+		links { "OpenGL32.lib", "glew32s", "glfw3", "ImGui"}
 		linkoptions { '/NODEFAULTLIB:"LIBCMTD" /NODEFAULTLIB:"LIBCMT"' }
 	
+    filter {"configurations:Debug", "system:windows"}
+        buildoptions{"/MDd"}
+        links {"libboost_filesystem-vc143-mt-gd-x64-1_83"}
+
+    filter {"configurations:Release", "system:windows"}
+        buildoptions{"/MD"}
+        links{"libboost_filesystem-vc143-mt-x64-1_83"}
 	
 	filter { "configurations:Debug"}
 		symbols "On"
 		optimize "Off"
 		defines { "CONFIG_DEBUG" }
-		buildoptions{"/MDd"}
-		links {"libboost_filesystem-vc143-mt-gd-x64-1_83"}
 		
 	filter { "configurations:Release"}
 		optimize "On"
 		symbols "Off"
 		defines { "CONFIG_RELEASE"}
-		buildoptions{"/MD"}
-		links{"libboost_filesystem-vc143-mt-x64-1_83"}
 
 
 project "Example"
@@ -166,10 +179,13 @@ project "Example"
 		  "%{wks.location}/src/",
 		  "/usr/include",
 		  "/usr/local/include",
-		  publicLibDir .. "glm",
-		  publicLibDir .. "ImGui"
+		  "/media/charlie/Data/dev/Libraries/glm",
+		  "/media/charlie/Data/dev/Libraries/ImGui",
+          "/media/charlie/Data/dev/Libraries/"
 		}
-		links { "glfw3", "ImGui", "boost_filesystem", "GLEW.a", "GL", "m", "Xrandr", "Xi", "X11", "Xxf86vm", "pthread", "nfd", "gtk-3", "z", "gdk-3", "glib-2.0", "GraphicsEngine" }
+        libdirs{
+        "/media/charlie/Data/dev/Libraries/ImGui/bin/linux/Release-x64"}
+		links { "glfw3", "ImGui", "boost_filesystem", "GLEW.a", "GL", "m", "Xrandr", "Xi", "X11", "Xxf86vm", "pthread", "gtk-3", "z", "gdk-3", "glib-2.0", "GraphicsEngine" }
 		--linkoptions { "`pkg-config --libs gtk+-3.0`" }
 	
 	filter{"system:windows"}
@@ -178,30 +194,35 @@ project "Example"
 		{
 		  "%{wks.location}/src/Example",
 		  "%{wks.location}/src/",
-		  publicLibDir .. "glfw-3.3.2/include",
-		  publicLibDir .. "glew-2.1.0/include",
-		  publicLibDir .. "glm",
-		  publicLibDir .. "boost_1_83_0",
-		  publicLibDir .. "ImGui",
-		  publicLibDir
+		  "D:/dev/Libraries/glfw-3.3.2/include",
+		  "D:/dev/Libraries/glew-2.1.0/include",
+		  "D:/dev/Libraries/glm",
+		  "D:/dev/Libraries/boost_1_83_0",
+		  "D:/dev/Libraries/ImGui",
+		  "D:/dev/Libraries/"
 		}
 		libdirs{
-		publicLibDir .. "boost_1_83_0/stage/lib/",
-		publicLibDir .. "ImGui/bin/windows/Release-x64/",
-		publicLibDir .. "glfw-3.3.2/lib/x64",
-		publicLibDir .. "glew-2.1.0/lib/Release/x64"}
+		"D:/dev/Libraries/boost_1_83_0/stage/lib/",
+		"D:/dev/Libraries/ImGui/bin/windows/Release-x64/",
+		"D:/dev/Libraries/glfw-3.3.2/lib/x64",
+		"D:/dev/Libraries/glew-2.1.0/lib/Release/x64"}
 		links { "opengl32", "glew32s", "glfw3", "ImGui", "GraphicsEngine"}
 		linkoptions { '/NODEFAULTLIB:"LIBCMTD" /NODEFAULTLIB:"LIBCMT"' }
 
+    filter {"configurations:Debug", "system:windows"}
+        buildoptions{"/MDd"}
+        links {"libboost_filesystem-vc143-mt-gd-x64-1_83"}
+
+    filter {"configurations:Release", "system:windows"}
+        buildoptions{"/MD"}
+        links{"libboost_filesystem-vc143-mt-x64-1_83"}
 
 	filter { "configurations:Debug" }
 		defines { "CONFIG_DEBUG" }
-		links {"libboost_filesystem-vc143-mt-gd-x64-1_83"}
 		symbols "On"
 		optimize "Off"
 
 	filter { "configurations:Release" }
 		defines { "CONFIG_RELEASE" }
-		links {"libboost_filesystem-vc143-mt-x64-1_83"}
 		optimize "On"
 		symbols "Off"

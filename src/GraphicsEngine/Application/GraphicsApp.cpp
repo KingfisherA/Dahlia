@@ -17,7 +17,7 @@ namespace GEng
 
 #define BIND_EVENT_FNC(x) std::bind(&GraphicsApp::x, this, std::placeholders::_1)
 
-    GraphicsApp::GraphicsApp(const char *displayTitle, size_t width, size_t height, const FramebufferSpecification &viewportSpec) : m_MouseLastPos(0.0f)
+    GraphicsApp::GraphicsApp(const char *displayTitle, size_t width, size_t height, const FramebufferSpecification &viewportSpec)
     {
         mInitParams = std::make_unique<InitParams>();
         mInitParams->displayTitle = displayTitle;
@@ -68,7 +68,8 @@ namespace GEng
             if (m_viewPortPanelSize.x != this->m_lastViewportSize.x ||
                 m_viewPortPanelSize.y != this->m_lastViewportSize.y)
             {
-                mViewportFramebuffer->Resize((size_t)m_viewPortPanelSize.x, (size_t)m_viewPortPanelSize.y);
+                if (m_viewPortPanelSize.x > 10 && m_viewPortPanelSize.y > 10)
+                    mViewportFramebuffer->Resize((size_t)m_viewPortPanelSize.x, (size_t)m_viewPortPanelSize.y);
 
                 for (Layer *layer : m_LayerStack)
                     layer->Resize((size_t)m_viewPortPanelSize.x, (size_t)m_viewPortPanelSize.y);
@@ -98,7 +99,7 @@ namespace GEng
     {
         // ImGui::ShowDemoWindow(nullptr);
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{0, 0});
-        if (ImGui::Begin("Viewport", nullptr))
+        if (ImGui::Begin(mViewportName.c_str(), nullptr))
         {
             mIsViewportFocused = ImGui::IsWindowFocused();
             m_viewPortPanelSize = ImGui::GetContentRegionAvail();
@@ -186,17 +187,17 @@ namespace GEng
 
     bool GraphicsApp::OnMouseMove(MouseMoveEvent &e)
     {
-        const glm::dvec2 &mousePos = e.GetMousePos();
-        glm::dvec2 deltaMouse(mousePos.x - m_MouseLastPos.x, mousePos.y - m_MouseLastPos.y);
+        mCurrentMousePos = e.GetMousePos();
+        mDeltaMousePos = mCurrentMousePos - mLastMousePos;
 
-        m_MouseLastPos = mousePos;
+        mLastMousePos = mCurrentMousePos;
         return true;
     }
 
     bool GraphicsApp::OnMouseScroll(MouseScrollEvent &e)
     {
         double currentScrollTime = m_Window->GetTime();
-        double deltaScroll = glm::max(1.0 / (currentScrollTime - mLastScrollTime), 1.0) * glm::sign(e.GetYOffset());
+        mDeltaScroll = glm::max(1.0 / (currentScrollTime - mLastScrollTime), 1.0) * glm::sign(e.GetYOffset());
         mLastScrollTime = currentScrollTime;
 
         return false;

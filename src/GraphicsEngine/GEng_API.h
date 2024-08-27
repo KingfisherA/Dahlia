@@ -1,6 +1,5 @@
 #pragma once
 
-
 #ifdef _WIN32 || _WIN64 || _W64
 
 #ifdef GENG_STATIC
@@ -13,4 +12,6 @@
 #endif
 #endif
 
+#else
+#define GENG_API
 #endif

@@ -47,9 +47,9 @@ namespace GEng
 		io.ConfigWindowsMoveFromTitleBarOnly = true;
 
 		//..\..\..\assets\fonts\ubuntu\Ubuntu - R.ttf
-		std::string fontPath = PathUtils::GetAssetPath(R"(Fonts/Ubuntu-Light.ttf)").string();
-		io.FontDefault = io.Fonts->AddFontFromFileTTF(fontPath.c_str(), 19.0f);
-		io.Fonts->AddFontFromFileTTF(fontPath.c_str(), 48.0f);
+		const char* fontPath = "/usr/share/fonts/truetype/ubuntu/UbuntuSans[wdth,wght].ttf";
+		io.FontDefault = io.Fonts->AddFontFromFileTTF(fontPath, 19.0f);
+		io.Fonts->AddFontFromFileTTF(fontPath, 48.0f);
 		// Setup Dear ImGui style
 		ImGui::StyleColorsDark();
 

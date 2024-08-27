@@ -8,6 +8,7 @@
 #include "GraphicsEngine/Scene/Camera.hpp"
 #include "GraphicsEngine/Events/WindowEvents.h"
 #include "GraphicsEngine/Application/GraphicsApp.h"
+#include "GraphicsEngine/GUI/TextString.h"
 
 namespace GEng {
     class VertexArray;
@@ -46,5 +47,7 @@ namespace Example {
         GLenum mRenderStyle = GL_FILL;
         sRef<GEng::VertexArray> mVAO;
         sRef<GEng::ShaderProgram> mShader;
+
+        GEng::TextString mText;
     };
 }

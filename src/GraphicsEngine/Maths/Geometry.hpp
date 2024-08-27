@@ -26,6 +26,8 @@ namespace GEng
 		Mesh() : Mesh(0) {}
 		Mesh(const size_t bufferByteSize);
 		~Mesh();
+
+		static sRef<Mesh> RemoveIndexing(const sRef<Mesh> mesh);
 		//
 		float *GetVertexArray(const size_t floatCount = 0);
 		float *GetNormalsArray(const size_t floatCount = 0);

@@ -101,13 +101,16 @@ namespace Example {
 #ifdef _WIN32
         const char* shaderFilePath = R"(D:\dev\C++\GraphicsEngine\Assets\Shaders\ColourDiffuse.glsl)";
 #else
-        const char* shaderFilePath = "/media/charlie/Data/dev/C++/GraphicsEngine/Assets/Shaders/ColourDiffuse.glsl";
+        const char* shaderFilePath = "../../../../Assets/Shaders/ColourDiffuse.glsl";
 #endif
         mShader = GEng::ShaderProgram::CreateFromFile(shaderFilePath);
 
         mShader->Bind();
         mShader->UploadMatF("uTransformMatrix", glm::mat4(1.0f));
         mShader->Unbind();
+
+        mText.Init();
+        mText.UploadText("Hello world!", 80.0f);
 
         return true;
     }
@@ -142,14 +145,19 @@ namespace Example {
         glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        mShader->Bind();
-        mShader->UploadMatF("uPVMatrix", projectionMatrix*mCam.GetViewMatrix());
+        glm::mat4 pvMatrix =projectionMatrix*mCam.GetViewMatrix();
 
-        mVAO->Bind();
-        mVAO->SubmitArrays(GL_TRIANGLES);
-        mVAO->Unbind();
+        // mShader->Bind();
+        // mShader->UploadMatF("uPVMatrix", pvMatrix);
+        //
+        // mVAO->Bind();
+        // mVAO->SubmitArrays(GL_TRIANGLES);
+        // mVAO->Unbind();
+        //
+        // mShader->Unbind();
 
-        mShader->Unbind();
+        float aspect = (float)mViewportFramebuffer->GetWidth()/(float)mViewportFramebuffer->GetHeight();
+        mText.DrawText(glm::ortho(-aspect, aspect, 1.0f, -1.0f));
 
         mViewportFramebuffer->Unbind();
     }

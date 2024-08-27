@@ -25,6 +25,8 @@
     "src/GraphicsEngine/GUI/ImGuiLayer.cpp"
     "src/GraphicsEngine/GUI/ImGuiLayer.h"
     "src/GraphicsEngine/GUI/ImSpinner.h"
+    "src/GraphicsEngine/GUI/TextString.cpp"
+    "src/GraphicsEngine/GUI/TextString.h"
     "src/GraphicsEngine/Layers/Layer.cpp"
     "src/GraphicsEngine/Layers/Layer.h"
     "src/GraphicsEngine/Layers/LayerStack.cpp"
@@ -65,18 +67,20 @@
 if(CMAKE_BUILD_TYPE STREQUAL Debug)
   set_target_properties("GraphicsEngine" PROPERTIES
     OUTPUT_NAME "GraphicsEngine"
-    ARCHIVE_OUTPUT_DIRECTORY "/media/charlie/Data/dev/C++/GraphicsEngine/bin/linux/Debug-x64/GraphicsEngine"
-    LIBRARY_OUTPUT_DIRECTORY "/media/charlie/Data/dev/C++/GraphicsEngine/bin/linux/Debug-x64/GraphicsEngine"
-    RUNTIME_OUTPUT_DIRECTORY "/media/charlie/Data/dev/C++/GraphicsEngine/bin/linux/Debug-x64/GraphicsEngine"
+    ARCHIVE_OUTPUT_DIRECTORY "/media/charlie/SSD/dev/C++/GraphicsEngine/bin/linux/Debug-x64/GraphicsEngine"
+    LIBRARY_OUTPUT_DIRECTORY "/media/charlie/SSD/dev/C++/GraphicsEngine/bin/linux/Debug-x64/GraphicsEngine"
+    RUNTIME_OUTPUT_DIRECTORY "/media/charlie/SSD/dev/C++/GraphicsEngine/bin/linux/Debug-x64/GraphicsEngine"
   )
 endif()
 target_include_directories("GraphicsEngine" PRIVATE
-  $<$<CONFIG:Debug>:/media/charlie/Data/dev/C++/GraphicsEngine/src>
+  $<$<CONFIG:Debug>:/media/charlie/SSD/dev/C++/GraphicsEngine/src>
   $<$<CONFIG:Debug>:/usr/include>
   $<$<CONFIG:Debug>:/usr/local/include>
-  $<$<CONFIG:Debug>:/media/charlie/Data/dev/Libraries/glm>
-  $<$<CONFIG:Debug>:/media/charlie/Data/dev/Libraries/ImGui>
-  $<$<CONFIG:Debug>:/media/charlie/Data/dev/Libraries>
+  $<$<CONFIG:Debug>:/media/charlie/SSD/dev/Libraries/glm>
+  $<$<CONFIG:Debug>:/media/charlie/SSD/dev/Libraries/ImGui>
+  $<$<CONFIG:Debug>:/media/charlie/SSD/dev/Libraries>
+  $<$<CONFIG:Debug>:/usr/include/freetype2>
+  $<$<CONFIG:Debug>:/usr/include/libpng16>
 )
 target_compile_definitions("GraphicsEngine" PRIVATE
   $<$<CONFIG:Debug>:OS_LINUX>
@@ -109,18 +113,20 @@ endif()
 if(CMAKE_BUILD_TYPE STREQUAL Release)
   set_target_properties("GraphicsEngine" PROPERTIES
     OUTPUT_NAME "GraphicsEngine"
-    ARCHIVE_OUTPUT_DIRECTORY "/media/charlie/Data/dev/C++/GraphicsEngine/bin/linux/Release-x64/GraphicsEngine"
-    LIBRARY_OUTPUT_DIRECTORY "/media/charlie/Data/dev/C++/GraphicsEngine/bin/linux/Release-x64/GraphicsEngine"
-    RUNTIME_OUTPUT_DIRECTORY "/media/charlie/Data/dev/C++/GraphicsEngine/bin/linux/Release-x64/GraphicsEngine"
+    ARCHIVE_OUTPUT_DIRECTORY "/media/charlie/SSD/dev/C++/GraphicsEngine/bin/linux/Release-x64/GraphicsEngine"
+    LIBRARY_OUTPUT_DIRECTORY "/media/charlie/SSD/dev/C++/GraphicsEngine/bin/linux/Release-x64/GraphicsEngine"
+    RUNTIME_OUTPUT_DIRECTORY "/media/charlie/SSD/dev/C++/GraphicsEngine/bin/linux/Release-x64/GraphicsEngine"
   )
 endif()
 target_include_directories("GraphicsEngine" PRIVATE
-  $<$<CONFIG:Release>:/media/charlie/Data/dev/C++/GraphicsEngine/src>
+  $<$<CONFIG:Release>:/media/charlie/SSD/dev/C++/GraphicsEngine/src>
   $<$<CONFIG:Release>:/usr/include>
   $<$<CONFIG:Release>:/usr/local/include>
-  $<$<CONFIG:Release>:/media/charlie/Data/dev/Libraries/glm>
-  $<$<CONFIG:Release>:/media/charlie/Data/dev/Libraries/ImGui>
-  $<$<CONFIG:Release>:/media/charlie/Data/dev/Libraries>
+  $<$<CONFIG:Release>:/media/charlie/SSD/dev/Libraries/glm>
+  $<$<CONFIG:Release>:/media/charlie/SSD/dev/Libraries/ImGui>
+  $<$<CONFIG:Release>:/media/charlie/SSD/dev/Libraries>
+  $<$<CONFIG:Release>:/usr/include/freetype2>
+  $<$<CONFIG:Release>:/usr/include/libpng16>
 )
 target_compile_definitions("GraphicsEngine" PRIVATE
   $<$<CONFIG:Release>:OS_LINUX>

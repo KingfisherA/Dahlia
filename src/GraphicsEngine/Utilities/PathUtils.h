@@ -23,7 +23,7 @@ namespace GEng
 		static boost::filesystem::path GetAssetPath()
 		{
 #ifdef OS_LINUX
-			return boost::filesystem::path("/media/charlie/Data/dev/C++/SCESS/Assets");
+			return boost::filesystem::path("../../../Assets");
 #elif OS_WIN
 			return boost::filesystem::path("D:/dev/C++/SCESS/Assets");
 #endif // OS

@@ -35,6 +35,54 @@ namespace GEng {
         byteBuffer = nullptr;
     }
 
+    sRef<Mesh> Mesh::RemoveIndexing(const sRef<Mesh> mesh) {
+        if (!mesh->IsIndexed())
+            return mesh;
+
+        size_t count = 0;
+        if (mesh->GetVertexArray() != nullptr)
+            count += mesh->GetIndexIntCount() * (size_t) mesh->vertexElementSize * sizeof(float);
+        if (mesh->GetNormalsArray() != nullptr)
+            count += mesh->GetIndexIntCount() * (size_t) mesh->vertexElementSize * sizeof(float);
+        if (mesh->GetTexCoordsArray() != nullptr)
+            count += mesh->GetIndexIntCount() * 2 * sizeof(float);
+        sRef<Mesh> meshCopy = std::make_shared<Mesh>(count);
+        meshCopy->vertexElementSize = mesh->vertexElementSize;
+
+        float *vertices = nullptr;
+        if (mesh->GetVertexArray() != nullptr)
+            vertices = meshCopy->GetVertexArray(mesh->GetIndexIntCount() * (size_t) mesh->vertexElementSize);
+
+        float *normals = nullptr;
+        if (mesh->GetNormalsArray() != nullptr)
+            normals = meshCopy->GetVertexArray(mesh->GetIndexIntCount() * (size_t) mesh->vertexElementSize);
+
+        float *texCoords = nullptr;
+        if (mesh->GetTexCoordsArray() != nullptr)
+            texCoords = meshCopy->GetVertexArray(mesh->GetIndexIntCount() * 2);
+
+        size_t j = 0;
+        for (size_t i = 0; i < mesh->GetIndexIntCount(); i++) {
+            unsigned int index = mesh->GetIndiciesArray()[i];
+            if (vertices) {
+                for (uint8_t k = 0; k < mesh->vertexElementSize; k++) {
+                    vertices[j++] = mesh->GetVertexArray()[index * (size_t) mesh->vertexElementSize + k];
+                }
+            }
+            if (normals) {
+                for (uint8_t k = 0; k < mesh->vertexElementSize; k++) {
+                    normals[j++] = mesh->GetNormalsArray()[index * (size_t) mesh->vertexElementSize + k];
+                }
+            }
+            if (texCoords) {
+                texCoords[j++] = mesh->GetTexCoordsArray()[index * 2 + 0];
+                texCoords[j++] = mesh->GetTexCoordsArray()[index * 2 + 1];
+            }
+        }
+
+        return meshCopy;
+    }
+
     //
     float *Mesh::GetVertexArray(const size_t floatCount) {
         if (floatCount == 0 || vArray != nullptr)
@@ -755,7 +803,7 @@ namespace GEng {
         sRef<Mesh> circleMesh = make<Mesh>(numberOfVerts * 2 * sizeof(float) +
                                            numberOfIndices * sizeof(unsigned int));
         circleMesh->vertexElementSize = 2;
-        float *vertices = circleMesh->GetVertexArray(numberOfVerts*2);
+        float *vertices = circleMesh->GetVertexArray(numberOfVerts * 2);
         unsigned int *indices = circleMesh->GetIndiciesArray(numberOfIndices);
 
         vertices[0] = 0.0f;
@@ -772,7 +820,7 @@ namespace GEng {
         indices[1] = 1;
         indices[2] = segments;
 
-        for (size_t i = 1; i < numberOfIndices/3; i++) {
+        for (size_t i = 1; i < numberOfIndices / 3; i++) {
             indices[i * 3 + 0] = 0;
             indices[i * 3 + 1] = i;
             indices[i * 3 + 2] = i + 1;

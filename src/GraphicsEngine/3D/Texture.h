@@ -7,147 +7,149 @@
 
 #include <GL/glew.h>
 
-namespace GEng
-{
-	using Dimension2D = glm::vec<2, size_t>;
+namespace GEng {
+    using Dimension2D = glm::vec<2, size_t>;
 
-	GENG_API struct PixelFormat
-	{
-	public:
-		enum PixelEnum : unsigned char
-		{
-			None = 0,
+    GENG_API struct PixelFormat {
+    public:
+        enum PixelEnum : unsigned char {
+            None = 0,
 
-			// Colour
-			RGB,
-			RGBA8,
-			RG,
-			RED_INTEGER,
+            // Colour
+            R,
+            RGB,
+            RGBA8,
+            RG,
+            RED_INTEGER,
 
-			// Depth/stencil
-			DEPTH24_STENCIL8
-		};
+            // Depth/stencil
+            DEPTH24_STENCIL8
+        };
 
-		PixelFormat() noexcept = default;
-		PixelFormat(PixelEnum pixEnum) noexcept : mValue(pixEnum) {}
-		PixelFormat(const PixelFormat &format) noexcept : mValue(format.mValue) {}
-		PixelFormat(PixelFormat &&format) noexcept : mValue(format.mValue) {}
+        PixelFormat() noexcept = default;
 
-		inline operator PixelEnum() noexcept { return mValue; }
-		inline PixelFormat &operator=(const PixelFormat &format) noexcept
-		{
-			mValue = format.mValue;
-			return *this;
-		}
-		inline PixelFormat &operator=(PixelFormat &&format) noexcept
-		{
-			mValue = format.mValue;
-			return *this;
-		}
+        PixelFormat(PixelEnum pixEnum) noexcept : mValue(pixEnum) {
+        }
 
-		static bool IsDepth(PixelFormat format) noexcept
-		{
-			switch (format)
-			{
-			case GEng::PixelFormat::None:
-				return false;
+        PixelFormat(const PixelFormat &format) noexcept : mValue(format.mValue) {
+        }
 
-			case GEng::PixelFormat::RGBA8:
-				return false;
+        PixelFormat(PixelFormat &&format) noexcept : mValue(format.mValue) {
+        }
 
-			case GEng::PixelFormat::RED_INTEGER:
-				return false;
+        inline operator PixelEnum() noexcept { return mValue; }
 
-			case GEng::PixelFormat::DEPTH24_STENCIL8:
-				return true;
-			}
-		}
-		bool IsDepth() { return IsDepth(*this); }
-		static GLenum FormatToGL(PixelFormat format) noexcept
-		{
-			switch (format)
-			{
-			case GEng::PixelFormat::None:
-				return GL_NONE;
+        inline PixelFormat &operator=(const PixelFormat &format) noexcept {
+            mValue = format.mValue;
+            return *this;
+        }
 
-			case GEng::PixelFormat::RGB:
-				return GL_RGB;
+        inline PixelFormat &operator=(PixelFormat &&format) noexcept {
+            mValue = format.mValue;
+            return *this;
+        }
 
-			case GEng::PixelFormat::RGBA8:
-				return GL_RGBA;
+        static bool IsDepth(PixelFormat format) noexcept {
+            switch (format) {
+                case GEng::PixelFormat::DEPTH24_STENCIL8:
+                    return true;
 
-			case GEng::PixelFormat::RG:
-				return GL_RG;
+                default:
+                    return false;
+            }
+        }
 
-			case GEng::PixelFormat::RED_INTEGER:
-				return GL_RED;
+        bool IsDepth() { return IsDepth(*this); }
 
-			case GEng::PixelFormat::DEPTH24_STENCIL8:
-				return GL_DEPTH24_STENCIL8;
-			}
-		}
-		GLenum FormatToGL() { return FormatToGL(*this); }
+        static GLenum FormatToGL(PixelFormat format) noexcept {
+            switch (format) {
+                case GEng::PixelFormat::None:
+                    return GL_NONE;
 
-		PixelEnum mValue = PixelEnum::None;
-	};
+                case GEng::PixelFormat::RGB:
+                    return GL_RGB;
 
-	GENG_API class TextureLoader
-	{
-	public:
-		using byte = unsigned char;
+                case GEng::PixelFormat::RGBA8:
+                    return GL_RGBA;
 
-		explicit TextureLoader(const std::string_view filePath);
-		~TextureLoader();
+                case GEng::PixelFormat::RG:
+                    return GL_RG;
 
-		byte *GetData() { return m_Data; }
-		const byte *GetData() const { return m_Data; }
+                case GEng::PixelFormat::R:
+                case GEng::PixelFormat::RED_INTEGER:
+                    return GL_RED;
 
-		const Dimension2D &GetDimensions() const { return m_imageDimensions; }
+                case GEng::PixelFormat::DEPTH24_STENCIL8:
+                    return GL_DEPTH24_STENCIL8;
+            }
+        }
 
-		const PixelFormat GetFormat() const { return m_imageFormat; }
+        GLenum FormatToGL() { return FormatToGL(*this); }
 
-	private:
-		byte *m_Data = nullptr;
-		Dimension2D m_imageDimensions;
-		PixelFormat m_imageFormat;
-	};
+        PixelEnum mValue = PixelEnum::None;
+    };
 
-	GENG_API enum class MipmapFiltering : unsigned char
-	{
-		Bilinear,
-		Trilinear
-	};
+    GENG_API class TextureLoader {
+    public:
+        using byte = unsigned char;
 
-	GENG_API class Texture
-	{
-	public:
-		virtual ~Texture() = default;
+        explicit TextureLoader(const std::string_view filePath);
 
-		virtual void Bind(unsigned short unit) = 0;
-		virtual void Unbind() = 0;
+        ~TextureLoader();
 
-		virtual void *GetRendererID() const noexcept = 0;
-	};
+        byte *GetData() { return m_Data; }
+        const byte *GetData() const { return m_Data; }
 
-	GENG_API class Texture2D : public Texture
-	{
-	public:
-		using byte = unsigned char;
+        const Dimension2D &GetDimensions() const { return m_imageDimensions; }
 
-		virtual void GenerateMipMaps(const MipmapFiltering filtering) = 0;
-		virtual void DeleteMipMaps() = 0;
+        const PixelFormat GetFormat() const { return m_imageFormat; }
 
-		virtual const Dimension2D &GetDimensions() const = 0;
-		const size_t GetWidth() const { return this->GetDimensions().x; }
-		const size_t GetHeight() const { return this->GetDimensions().y; }
-		const double GetAspect() const { return (double)this->GetDimensions().x / (double)this->GetDimensions().y; }
-		const double GetInvAspect() const { return (double)this->GetDimensions().y / (double)this->GetDimensions().x; }
+    private:
+        byte *m_Data = nullptr;
+        Dimension2D m_imageDimensions;
+        PixelFormat m_imageFormat;
+    };
 
-		virtual void UpdateData(const Dimension2D offset, const Dimension2D size, const byte *data) = 0;
+    GENG_API enum class MipmapFiltering : unsigned char {
+        Bilinear,
+        Trilinear
+    };
 
-		static sRef<Texture2D> Create(const std::string_view filePath);
-		static sRef<Texture2D> Create(const TextureLoader &imageData);
-		static sRef<Texture2D> Create(const Dimension2D &dimensions, const byte *data, const PixelFormat format);
-	};
+    GENG_API class Texture {
+    public:
+        virtual ~Texture() = default;
 
+        virtual void Bind(unsigned short unit) = 0;
+
+        virtual void Unbind() = 0;
+
+        virtual void *GetRendererID() const noexcept = 0;
+    };
+
+    GENG_API class Texture2D : public Texture {
+    public:
+        using byte = unsigned char;
+
+        virtual void GenerateMipMaps(const MipmapFiltering filtering) = 0;
+
+        virtual void DeleteMipMaps() = 0;
+
+        virtual const Dimension2D &GetDimensions() const = 0;
+
+        const size_t GetWidth() const { return this->GetDimensions().x; }
+        const size_t GetHeight() const { return this->GetDimensions().y; }
+        const double GetAspect() const { return (double) this->GetDimensions().x / (double) this->GetDimensions().y; }
+
+        const double GetInvAspect() const {
+            return (double) this->GetDimensions().y / (double) this->GetDimensions().x;
+        }
+
+        virtual void UpdateData(const Dimension2D offset, const Dimension2D size, const byte *data) = 0;
+
+        static sRef<Texture2D> Create(const std::string_view filePath);
+
+        static sRef<Texture2D> Create(const TextureLoader &imageData);
+
+        static sRef<Texture2D> Create(const Dimension2D &dimensions, const byte *data, const PixelFormat format);
+    };
 }

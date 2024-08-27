@@ -40,9 +40,11 @@ project "GraphicsEngine"
 		  "%{wks.location}/src/",
 		  "/usr/include",
 		  "/usr/local/include",
-		  "/media/charlie/Data/dev/Libraries/glm",
-		  "/media/charlie/Data/dev/Libraries/ImGui",
-          "/media/charlie/Data/dev/Libraries/"
+		  "../../Libraries/glm",
+		  "../../Libraries/ImGui",
+          "../../Libraries/",
+          "/usr/include/freetype2",
+          "/usr/include/libpng16"
 		}
 	
 	filter{"system:windows"}
@@ -101,12 +103,14 @@ project "GraphicsEngine_Shared"
 		  "%{wks.location}/src/",
 		  "/usr/include",
 		  "/usr/local/include",
-		  "/media/charlie/Data/dev/Libraries/glm",
-		  "/media/charlie/Data/dev/Libraries/ImGui",
-          "/media/charlie/Data/dev/Libraries/"
+		  "../../Libraries/glm",
+		  "../../Libraries/ImGui",
+          "../../Libraries/",
+          "/usr/include/freetype2",
+          "/usr/include/libpng16"
 		}
         libdirs{
-        "/media/charlie/Data/dev/Libraries/ImGui/bin/linux/Release-x64"}
+        "../../Libraries/ImGui/bin/linux/Release-x64"}
 		links { "glfw3", "ImGui", "boost_filesystem", "GLEW.a", "GL", "m", "Xrandr", "Xi", "X11", "Xxf86vm", "pthread", "gtk-3", "z", "gdk-3", "glib-2.0" }
 	
 	
@@ -179,13 +183,15 @@ project "Example"
 		  "%{wks.location}/src/",
 		  "/usr/include",
 		  "/usr/local/include",
-		  "/media/charlie/Data/dev/Libraries/glm",
-		  "/media/charlie/Data/dev/Libraries/ImGui",
-          "/media/charlie/Data/dev/Libraries/"
+		  "../../Libraries/glm",
+		  "../../Libraries/ImGui",
+          "../../Libraries/",
+          "/usr/include/freetype2",
+          "/usr/include/libpng16"
 		}
         libdirs{
-        "/media/charlie/Data/dev/Libraries/ImGui/bin/linux/Release-x64"}
-		links { "glfw3", "ImGui", "boost_filesystem", "GLEW.a", "GL", "m", "Xrandr", "Xi", "X11", "Xxf86vm", "pthread", "gtk-3", "z", "gdk-3", "glib-2.0", "GraphicsEngine" }
+        "../../Libraries/ImGui/bin/linux/Release-x64"}
+		links { "glfw3", "ImGui", "freetype", "boost_filesystem", "GLEW.a", "GL", "m", "Xrandr", "Xi", "X11", "Xxf86vm", "pthread", "gtk-3", "z", "gdk-3", "glib-2.0", "GraphicsEngine" }
 		--linkoptions { "`pkg-config --libs gtk+-3.0`" }
 	
 	filter{"system:windows"}

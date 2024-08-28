@@ -8,7 +8,7 @@
 #include "GraphicsEngine/Scene/Camera.hpp"
 #include "GraphicsEngine/Events/WindowEvents.h"
 #include "GraphicsEngine/Application/GraphicsApp.h"
-#include "GraphicsEngine/GUI/TextString.h"
+#include "GraphicsEngine/GUI/Text.h"
 
 namespace GEng {
     class VertexArray;
@@ -48,6 +48,8 @@ namespace Example {
         sRef<GEng::VertexArray> mVAO;
         sRef<GEng::ShaderProgram> mShader;
 
-        sRef<GEng::TextString> mText;
+        GEng::FontManager mFontManager;
+        sRef<GEng::FontAtlas> mUbuntuLight;
+        sRef<GEng::Text> mText;
     };
 }

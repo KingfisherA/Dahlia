@@ -48,6 +48,6 @@ namespace Example {
         sRef<GEng::VertexArray> mVAO;
         sRef<GEng::ShaderProgram> mShader;
 
-        GEng::TextString mText;
+        sRef<GEng::TextString> mText;
     };
 }

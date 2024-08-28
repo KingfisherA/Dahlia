@@ -7,16 +7,22 @@
 #begin(vShader)
 
 layout(location = 0) in vec2 aVertex;
+layout(location = 1) in vec4 aGlyph;
+layout(location = 2) in vec2 aPosition;
 //
 uniform mat4 uPVMatrix;
-uniform vec2 uSize = vec2(1.0f, 1.0f);
+// uniform vec4 uGlyph;
+// uniform vec2 uPosition;
+uniform float uTxtScaling = 1.0f;
 //
 out vec2 texCoords;
 
 void main()
 {
-    texCoords = (aVertex + vec2(1.0f)) * 0.5f;
-    gl_Position = uPVMatrix * vec4(aVertex.x * uSize.x, aVertex.y * uSize.y, 0.0f, 1.0f);
+    texCoords = ((aVertex + vec2(1.0f)) * 0.5f);
+
+    gl_Position = uPVMatrix * vec4((vec2(texCoords.x * aGlyph.x, texCoords.y * aGlyph.y) + aPosition) * uTxtScaling, 0.0f, 1.0f);
+    texCoords = vec2(texCoords.x * aGlyph.x, texCoords.y * aGlyph.y) + aGlyph.zw;
 }
 
 #end(vShader)

@@ -63,6 +63,7 @@ namespace Example {
     }
 
     Application::~Application() {
+        mText.reset();
     }
 
     void Application::UpdateProjectionMatrix() {
@@ -109,8 +110,9 @@ namespace Example {
         mShader->UploadMatF("uTransformMatrix", glm::mat4(1.0f));
         mShader->Unbind();
 
-        mText.Init();
-        mText.UploadText("Hello world!", 80.0f);
+        mText = std::make_shared<TextString>();
+        mText->CreateFontAtlas("/usr/share/fonts/truetype/ubuntu/Ubuntu-Th.ttf", 80.0f);
+        mText->SetText("My name is charlie :}");
 
         return true;
     }
@@ -157,7 +159,7 @@ namespace Example {
         // mShader->Unbind();
 
         float aspect = (float)mViewportFramebuffer->GetWidth()/(float)mViewportFramebuffer->GetHeight();
-        mText.DrawText(glm::ortho(-aspect, aspect, 1.0f, -1.0f));
+        mText->DrawText(glm::ortho(-aspect, aspect, 1.0f, -1.0f));
 
         mViewportFramebuffer->Unbind();
     }

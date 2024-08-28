@@ -140,29 +140,54 @@ namespace GEng {
         return std::make_shared<FontAtlas>(bitmap);
     }
 
-    glm::vec2 FontManager::MeasureText(const FontAtlasBase &atlas, std::string_view text) {
-        float width = 0.0f, height = 0.0f, lineWidth = 0.0f, lineHeight = 0.0f;
+    std::vector<glm::vec2> FontManager::LayoutText(const std::string_view text, const FontAtlasBase &atlas,
+                                                   const glm::vec3 &bounds,
+                                                   const TextAlignment alignment) {
+        std::vector<glm::vec2> glyphPositions(text.length());
 
+        constexpr float VERTICAL_PADDING = 0.05f;
+        float penX = bounds.x, penY = bounds.y, largestGlyph = 0.0f;
         for (size_t i = 0; i < text.length(); i++) {
             char c = text[i];
-            if (!atlas.GetAtlasMap().contains(c))
-                continue;
-            const AtlasGlyph &glyphData = atlas.GetAtlasMap().at(c);
-
-            lineHeight = std::max(lineHeight, glyphData.mSize.y);
-
-            lineWidth += glyphData.mAdvance;
 
             if (c == '\n') {
-                width = std::max(width, lineWidth);
-                lineWidth = 0.0f;
-                height += lineHeight;
-                lineHeight = 0.0f;
+                penX = bounds.x;
+                penY += largestGlyph + VERTICAL_PADDING;
+                continue;
             }
+
+            if (penX >= bounds.x + bounds.z && bounds.z > 0.0f) {
+                penX = bounds.x;
+                penY += largestGlyph;
+            }
+
+            const AtlasGlyph &glyphData = atlas.GetAtlasMap().contains(c)
+                                              ? atlas.GetAtlasMap().at(c)
+                                              : atlas.GetAtlasMap().begin()->second;
+
+            largestGlyph = std::max(largestGlyph, glyphData.mSize.y+glyphData.mBearing.y);
+
+            glyphPositions[i] = {penX + glyphData.mBearing.x, penY - glyphData.mBearing.y};
+
+            penX += glyphData.mAdvance;
         }
 
-        width = std::max(width, lineWidth);
-        height += lineHeight;
+        return glyphPositions;
+    }
+
+    glm::vec2 FontManager::MeasureText(const FontAtlasBase &atlas, std::string_view text) {
+        std::vector<glm::vec2> glyphPositions = LayoutText(text, atlas);
+        float width = 0.0f, height = 0.0f;
+
+        for (size_t i = 0; i < glyphPositions.size(); i++) {
+            glm::vec2 &currentPosition = glyphPositions[i];
+
+            if (currentPosition.x > width)
+                width = currentPosition.x;
+
+            if (currentPosition.y > height)
+                height = currentPosition.y;
+        }
 
         return {width, height};
     }
@@ -193,21 +218,19 @@ namespace GEng {
         mTextVA.reset();
     }
 
-    void Text::LayoutText(const std::string_view text, const FontAtlas &atlas, const glm::vec2 &pos) {
+    void Text::SetText(const std::string_view text,
+                       const FontAtlas &atlas,
+                       const glm::vec3 &bounds,
+                       const FontManager::TextAlignment alignment) {
+        std::vector<glm::vec2> glyphPositions = FontManager::LayoutText(text, atlas, bounds, alignment);
         float *packedData = new float[6 * text.length()];
 
         mNoOfGlyphs = text.length();
 
-        float penX = pos.x, penY = pos.y, largestGlyph = 0.0f;
         for (size_t i = 0; i < text.length(); i++) {
             char c = text[i];
-
-            if (c == '\n') {
-                penX = pos.x;
-                penY += largestGlyph;
-                continue;
-            }
-
+            if(c == '\n') continue;
+            const glm::vec2 &pos = glyphPositions[i];
             const AtlasGlyph &glyphData = atlas.GetAtlasMap().contains(c)
                                               ? atlas.GetAtlasMap().at(c)
                                               : atlas.GetAtlasMap().begin()->second;
@@ -217,12 +240,8 @@ namespace GEng {
             packedData[i * 6 + 2] = glyphData.mPosition.x;
             packedData[i * 6 + 3] = glyphData.mPosition.y;
 
-            largestGlyph = std::max(largestGlyph, glyphData.mSize.y);
-
-            packedData[i * 6 + 4] = penX + glyphData.mBearing.x;
-            packedData[i * 6 + 5] = penY - glyphData.mBearing.y;
-
-            penX += glyphData.mAdvance;
+            packedData[i * 6 + 4] = pos.x;
+            packedData[i * 6 + 5] = pos.y;
         }
 
         mTextBuffer->Bind();
@@ -235,6 +254,7 @@ namespace GEng {
     }
 
     void Text::DrawText(const glm::mat4 &pvMatrix) const {
+        glDisable(GL_DEPTH_TEST);
         mShader->Bind();
         mShader->UploadMatF("uPVMatrix", pvMatrix);
         mShader->UploadF("uTxtScaling", mScaling);
@@ -248,5 +268,7 @@ namespace GEng {
         mFontAtlasTex->Unbind();
 
         mShader->Unbind();
+
+        glEnable(GL_DEPTH_TEST);
     }
 } // GEng

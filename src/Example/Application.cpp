@@ -85,7 +85,7 @@ namespace Example {
 
     bool Application::OnInit() {
         this->mRenderViewport = true;
-        this->mViewportName="Viewport";
+        this->mViewportName = "Viewport";
 
         std::cout << "Example Application\n";
 
@@ -98,11 +98,11 @@ namespace Example {
         UpdateProjectionMatrix();
 
         mVAO = VertexArray::Create(GEng::Geometry::CreateQuadsphere(1.0f, 40));
-        
+
 #ifdef _WIN32
         const char* shaderFilePath = R"(D:\dev\C++\GraphicsEngine\Assets\Shaders\ColourDiffuse.glsl)";
 #else
-        const char* shaderFilePath = "../../../../Assets/Shaders/ColourDiffuse.glsl";
+        const char *shaderFilePath = "../../../../Assets/Shaders/ColourDiffuse.glsl";
 #endif
         mShader = GEng::ShaderProgram::CreateFromFile(shaderFilePath);
 
@@ -111,10 +111,11 @@ namespace Example {
         mShader->Unbind();
 
         mUbuntuLight = mFontManager.CreateFontAtlas("/usr/share/fonts/truetype/ubuntu/Ubuntu-Th.ttf",
-            80.0f);
+                                                    80.0f);
 
         mText = std::make_shared<Text>();
-        constexpr const char* TEST_TXT = R"(Seen you eyes son show. Far two unaffected one alteration apartments celebrated but middletons interested.
+        constexpr const char *TEST_TXT =
+                R"(Seen you eyes son show. Far two unaffected one alteration apartments celebrated but middletons interested.
 Described deficient applauded consisted my me do. Passed edward two talent effect seemed engage six. On ye great do child sorry lived. Proceed cottage far letters ashamed get clothes day. Stairs regret at if matter to. On as needed almost at basket remain. By improved sensible servants children striking in surprise.
 
 By in no ecstatic wondered disposal my speaking. Direct wholly valley or uneasy it at really. Sir wish like said dull and need make.
@@ -131,7 +132,7 @@ On ye position greatest so desirous. So wound stood guest weeks no terms up ough
 Was certainty remaining engrossed applauded sir how discovery. Settled opinion how enjoyed greater joy adapted too shy. Now properly surprise expenses interest nor replying she she.
 Bore tall nay many many time yet less. Doubtful for answered one fat indulged margaret sir shutters together. Ladies so in wholly around whence in at. Warmth he up giving oppose if.
 Impossible is dissimilar entreaties oh on terminated. Earnest studied article country ten respect showing had. But required offering him elegance son improved informed. )";
-        mText->LayoutText(TEST_TXT, *mUbuntuLight, {-2.0f, -1.0f});
+        mText->SetText(TEST_TXT, *mUbuntuLight, {-2.0f, -1.0f, 3.0f});
 
         return true;
     }
@@ -166,7 +167,7 @@ Impossible is dissimilar entreaties oh on terminated. Earnest studied article co
         glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        glm::mat4 pvMatrix =projectionMatrix*mCam.GetViewMatrix();
+        glm::mat4 pvMatrix = projectionMatrix * mCam.GetViewMatrix();
 
         // mShader->Bind();
         // mShader->UploadMatF("uPVMatrix", pvMatrix);
@@ -177,7 +178,7 @@ Impossible is dissimilar entreaties oh on terminated. Earnest studied article co
         //
         // mShader->Unbind();
 
-        float aspect = (float)mViewportFramebuffer->GetWidth()/(float)mViewportFramebuffer->GetHeight();
+        float aspect = (float) mViewportFramebuffer->GetWidth() / (float) mViewportFramebuffer->GetHeight();
         mText->DrawText(glm::ortho(-aspect, aspect, 1.0f, -1.0f));
 
         mViewportFramebuffer->Unbind();

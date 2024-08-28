@@ -48,7 +48,7 @@ void SignedDistance()
 void Bitmap()
 {
     fragColour = vec4(1.0f);
-    fragColour.a = 1.0f - texture(uFontAtlas, texCoords).r;
+    fragColour.a = texture(uFontAtlas, texCoords).r;
 }
 
 void main()

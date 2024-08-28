@@ -130,6 +130,13 @@ namespace GEng {
             SignedDistanceField
         };
 
+        enum class TextAlignment {
+            Left = 0,
+            Centre,
+            Right,
+            Justify
+        };
+
         constexpr static const char *ASCII_GLYPH_SET =
                 " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
 
@@ -146,7 +153,14 @@ namespace GEng {
             return atlas.GetAtlasMap().at(c);
         }
 
-        static glm::vec2 MeasureText(const FontAtlasBase &atlas, std::string_view text);
+        // bounds
+        // The x and y components define the top left corner of the text run if align is set to left.
+        // The z components defines the width of the box. If it is set to zero the text won't be wrapped.
+        static std::vector<glm::vec2> LayoutText(const std::string_view text,
+                                                 const FontAtlasBase &atlas,
+                                                 const glm::vec3 &bounds = {0.0f, 0.0f, 0.0f},
+                                                 const TextAlignment alignment = TextAlignment::Left);
+        static glm::vec2 MeasureText(const FontAtlasBase &atlas, const std::string_view text);
 
     private:
         FT_Library mFontLibrary = nullptr;
@@ -158,7 +172,10 @@ namespace GEng {
         ~Text();
 
         void SetScaling(const float scaling) { mScaling = scaling; }
-        void LayoutText(const std::string_view text, const FontAtlas &atlas, const glm::vec2& pos);
+        void SetText(const std::string_view text,
+                     const FontAtlas &atlas,
+                     const glm::vec3 &bounds = {0.0f, 0.0f, 0.0f},
+                     const FontManager::TextAlignment alignment = FontManager::TextAlignment::Left);
         void DrawText(const glm::mat4 &pvMatrix) const;
 
     private:

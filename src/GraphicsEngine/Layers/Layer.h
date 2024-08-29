@@ -3,7 +3,9 @@
 #include "GraphicsEngine/GEng_API.h"
 #include "GraphicsEngine/Events/Events.h"
 #include "GraphicsEngine/Utilities/Memory.h"
-#include "GraphicsEngine/Platform/OpenGL/OpenGLCore.h"
+#include "GraphicsEngine/Platform/OpenGL/OpenGLContext.h"
+
+#include <glm/matrix.hpp>
 
 namespace GEng
 {
@@ -25,15 +27,15 @@ namespace GEng
 		virtual void OnImGuiRender() {}
 		virtual void OnEvent(Event &e) {}
 
-		void SetRenderStyle(GLenum renderMode) { mRenderStyle = renderMode; }
-		GLenum GetRenderStyle() const { return mRenderStyle; }
+		void SetRenderStyle(const GPUContext::PolygonMode renderMode) { mPolygonMode = renderMode; }
+		[[nodiscard]] GPUContext::PolygonMode GetRenderStyle() const { return mPolygonMode; }
 
 		virtual void Resize(unsigned int width, unsigned int height) {};
 
 		inline const std::string &GetName() const { return m_Name; }
 
 	protected:
-		GLenum mRenderStyle = GL_FILL;
+		GPUContext::PolygonMode mPolygonMode = GPUContext::PolygonMode::Solid;
 		std::string m_Name;
 	};
 }

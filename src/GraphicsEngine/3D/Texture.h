@@ -123,7 +123,7 @@ namespace GEng {
 
         virtual void Unbind() = 0;
 
-        virtual void *GetRendererID() const noexcept = 0;
+        virtual unsigned int GetRendererID() const noexcept = 0;
     };
 
     GENG_API class Texture2D : public Texture {

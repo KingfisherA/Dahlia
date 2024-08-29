@@ -11,7 +11,7 @@
 #include "GraphicsEngine/Events/MouseEvents.h"
 #include "GraphicsEngine/3D/VertexArray.h"
 #include "GraphicsEngine/Platform/Windows/Console.h"
-#include "GraphicsEngine/Platform/API Core.h"
+#include "GraphicsEngine/Platform/GPUContext.h"
 #include "GraphicsEngine/Utilities/Memory.h"
 #include "GraphicsEngine/GUI/Display.h"
 #include "GraphicsEngine/3D/Texture.h"
@@ -21,7 +21,7 @@
 #include "GraphicsEngine/Utilities/IO.h"
 #include "GraphicsEngine/Utilities/PathUtils.h"
 #include "GraphicsEngine/3D/Framebuffer.h"
-#include "GraphicsEngine/Maths/Geometry.hpp"
+#include "GraphicsEngine/Maths/Geometry.h"
 #include "GraphicsEngine/3D/VertexArray.h"
 #include "GraphicsEngine/3D/ShaderProgram.h"
 
@@ -47,9 +47,6 @@ namespace Example {
     // Constants
     constexpr float NEAR_PLANE = 0.1f;
     constexpr float FAR_PLANE = 100.0f;
-
-    // // Static Variable Initilisation
-    // glm::mat4 Application::projectionMatrix(1.0f);
 
 #define BIND_EVENT_FNC(x) std::bind(&Application::x, this, std::placeholders::_1)
 
@@ -89,60 +86,60 @@ namespace Example {
 
         std::cout << "Example Application\n";
 
-        glDisable(GL_CULL_FACE);
-        glEnable(GL_DEPTH_TEST);
-        glDepthFunc(GL_LESS);
-
+        GPUContext *ctx = GPUContext::Get();
+        ctx->SetDepthTest(true);
 
         mCam.MoveTo(glm::vec3(0.0f, 0.0f, 0.0f), 10.0f);
         UpdateProjectionMatrix();
 
         mVAO = VertexArray::Create(GEng::Geometry::CreateQuadsphere(1.0f, 40));
 
-#ifdef _WIN32
-        const char* shaderFilePath = R"(D:\dev\C++\GraphicsEngine\Assets\Shaders\ColourDiffuse.glsl)";
-#else
         const char *shaderFilePath = "../../../../Assets/Shaders/ColourDiffuse.glsl";
-#endif
         mShader = GEng::ShaderProgram::CreateFromFile(shaderFilePath);
-
-        mShader->Bind();
         mShader->UploadMatF("uTransformMatrix", glm::mat4(1.0f));
-        mShader->Unbind();
 
         mUbuntuLight = mFontManager.CreateFontAtlas("/usr/share/fonts/truetype/ubuntu/Ubuntu-Th.ttf",
                                                     80.0f);
 
-        mText = std::make_shared<Text>();
-        constexpr const char *TEST_TXT =
-                R"(Seen you eyes son show. Far two unaffected one alteration apartments celebrated but middletons interested.
-Described deficient applauded consisted my me do. Passed edward two talent effect seemed engage six. On ye great do child sorry lived. Proceed cottage far letters ashamed get clothes day. Stairs regret at if matter to. On as needed almost at basket remain. By improved sensible servants children striking in surprise.
-
-By in no ecstatic wondered disposal my speaking. Direct wholly valley or uneasy it at really. Sir wish like said dull and need make.
-Sportsman one bed departure rapturous situation disposing his. Off say yet ample ten ought hence. Depending in newspaper an september do existence strangers.
-Total great saw water had mirth happy new. Projecting pianoforte no of partiality is on. Nay besides joy society him totally six.
-
-Repulsive questions contented him few extensive supported. Of remarkably thoroughly he appearance in. Supposing tolerably applauded or of be.
-Suffering unfeeling so objection agreeable allowance me of. Ask within entire season sex common far who family. As be valley warmth assure on.
-Park girl they rich hour new well way you. Face ye be me been room we sons fond.
-
-Written enquire painful ye to offices forming it. Then so does over sent dull on. Likewise offended humoured mrs fat trifling answered.
-On ye position greatest so desirous. So wound stood guest weeks no terms up ought. By so these am so rapid blush songs begin. Nor but mean time one over.
-
-Was certainty remaining engrossed applauded sir how discovery. Settled opinion how enjoyed greater joy adapted too shy. Now properly surprise expenses interest nor replying she she.
-Bore tall nay many many time yet less. Doubtful for answered one fat indulged margaret sir shutters together. Ladies so in wholly around whence in at. Warmth he up giving oppose if.
-Impossible is dissimilar entreaties oh on terminated. Earnest studied article country ten respect showing had. But required offering him elegance son improved informed. )";
-        mText->SetText(TEST_TXT, *mUbuntuLight, {-1.0f, -1.0f, 2.0f});
+        mText = Text::Create();
+//         constexpr const char *TEST_TXT =
+//                 R"(Seen you eyes son show. Far two unaffected one alteration apartments celebrated but middletons interested.
+// Described deficient applauded consisted my me do. Passed edward two talent effect seemed engage six. On ye great do child sorry lived. Proceed cottage far letters ashamed get clothes day. Stairs regret at if matter to. On as needed almost at basket remain. By improved sensible servants children striking in surprise.
+//
+// By in no ecstatic wondered disposal my speaking. Direct wholly valley or uneasy it at really. Sir wish like said dull and need make.
+// Sportsman one bed departure rapturous situation disposing his. Off say yet ample ten ought hence. Depending in newspaper an september do existence strangers.
+// Total great saw water had mirth happy new. Projecting pianoforte no of partiality is on. Nay besides joy society him totally six.
+//
+// Repulsive questions contented him few extensive supported. Of remarkably thoroughly he appearance in. Supposing tolerably applauded or of be.
+// Suffering unfeeling so objection agreeable allowance me of. Ask within entire season sex common far who family. As be valley warmth assure on.
+// Park girl they rich hour new well way you. Face ye be me been room we sons fond.
+//
+// Written enquire painful ye to offices forming it. Then so does over sent dull on. Likewise offended humoured mrs fat trifling answered.
+// On ye position greatest so desirous. So wound stood guest weeks no terms up ought. By so these am so rapid blush songs begin. Nor but mean time one over.
+//
+// Was certainty remaining engrossed applauded sir how discovery. Settled opinion how enjoyed greater joy adapted too shy. Now properly surprise expenses interest nor replying she she.
+// Bore tall nay many many time yet less. Doubtful for answered one fat indulged margaret sir shutters together. Ladies so in wholly around whence in at. Warmth he up giving oppose if.
+// Impossible is dissimilar entreaties oh on terminated. Earnest studied article country ten respect showing had. But required offering him elegance son improved informed. )";
+        mText->SetScaling(m_Window->GetContentScaling().x * 0.2f);
+        mText->AddText("Example Graphics Engine Application", {{-1.0f, -0.95f, 2.0f}, TextLayoutInfo::Alignment::Left});
+        mText->LayoutText(*mUbuntuLight);
 
         return true;
+    }
+
+    void Application::OnDestroy() {
+        mVAO.reset();
+        mShader.reset();
+        mUbuntuLight.reset();
+        mText.reset();
     }
 
     bool Application::OnMouseMove(GEng::MouseMoveEvent &e) {
         GraphicsApp::OnMouseMove(e);
 
         if (mIsViewportFocused)
-            mCam.UpdateMouse(mDeltaMousePos.x,
-                             mDeltaMousePos.y,
+            mCam.UpdateMouse((float) mDeltaMousePos.x,
+                             (float) mDeltaMousePos.y,
                              m_MouseButtonDown,
                              m_KeyMods);
 
@@ -162,25 +159,19 @@ Impossible is dissimilar entreaties oh on terminated. Earnest studied article co
         mCam.UpdateCamera(m_DeltaTime, m_KeyDown);
         mViewportFramebuffer->Bind();
 
-        glPolygonMode(GL_FRONT_AND_BACK, mRenderStyle);
-
-        glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        GPUContext::Get()->SetPolygonMode(mPolygonMode);
+        mViewportFramebuffer->Clear({glm::vec3(0.2f), 1.0f});
 
         glm::mat4 pvMatrix = projectionMatrix * mCam.GetViewMatrix();
 
-        // mShader->Bind();
-        // mShader->UploadMatF("uPVMatrix", pvMatrix);
-        //
-        // mVAO->Bind();
-        // mVAO->SubmitArrays(GL_TRIANGLES);
-        // mVAO->Unbind();
-        //
-        // mShader->Unbind();
+        mShader->Bind();
+        mShader->UploadMatF("uPVMatrix", pvMatrix);
+
+        mVAO->SubmitArrays(VertexArray::DrawMode::Triangles);
+
 
         float aspect = (float) mViewportFramebuffer->GetWidth() / (float) mViewportFramebuffer->GetHeight();
-        mText->DrawText(glm::ortho(-aspect, aspect, 1.0f, -1.0f, 0.001f, 100.0f) *
-                        mCam.GetViewMatrix());
+        mText->DrawText(glm::ortho(-aspect, aspect, 1.0f, -1.0f));
 
         mViewportFramebuffer->Unbind();
     }
@@ -234,9 +225,9 @@ Impossible is dissimilar entreaties oh on terminated. Earnest studied article co
             ImGui::Combo("Render Style##combo", &selectedItem, items, 2);
 
             for (Layer *layer: m_LayerStack)
-                layer->SetRenderStyle(selectedItem == 0 ? GL_FILL : GL_LINE);
+                layer->SetRenderStyle((GEng::GPUContext::PolygonMode) selectedItem);
 
-            mRenderStyle = selectedItem == 0 ? GL_FILL : GL_LINE;
+            mPolygonMode = (GEng::GPUContext::PolygonMode) selectedItem;
 
             ImGui::Unindent();
         }

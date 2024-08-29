@@ -5,7 +5,7 @@
 #include "GraphicsEngine/GUI/Display.h"
 #include "GraphicsEngine/Layers/LayerStack.h"
 #include "GraphicsEngine/GUI/ImGuiLayer.h"
-#include "GraphicsEngine/Scene/Camera3D.hpp"
+#include "GraphicsEngine/Scene/Camera3D.h"
 #include "GraphicsEngine/Events/WindowEvents.h"
 #include "GraphicsEngine/Application/GraphicsApp.h"
 #include "GraphicsEngine/GUI/Text.h"
@@ -33,6 +33,7 @@ namespace Example {
         virtual void OnImGuiRender() override;
         virtual void OnViewportResize() override;
         virtual bool OnInit() override;
+        virtual void OnDestroy() override;
 
         virtual bool OnMouseMove(GEng::MouseMoveEvent &e) override;
         virtual bool OnMouseScroll(GEng::MouseScrollEvent &e) override;
@@ -44,7 +45,7 @@ namespace Example {
         GEng::Camera3D mCam;
         glm::mat4 projectionMatrix;
 
-        GLenum mRenderStyle = GL_FILL;
+        GEng::GPUContext::PolygonMode mPolygonMode = GEng::GPUContext::PolygonMode::Solid;
         sRef<GEng::VertexArray> mVAO;
         sRef<GEng::ShaderProgram> mShader;
 

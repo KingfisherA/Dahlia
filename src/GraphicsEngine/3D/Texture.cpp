@@ -1,6 +1,6 @@
 
 
-#include "GraphicsEngine/Platform/API Core.h"
+#include "GraphicsEngine/Platform/GPUContext.h"
 #include "GraphicsEngine/Utilities/Assert.h"
 
 #include "GraphicsEngine/3D/Texture.h"
@@ -21,7 +21,7 @@ namespace GEng
 		int width, height, channels;
 		m_Data = (byte *)stbi_load(filePath.data(), &width, &height, &channels, 0);
 
-		UNI_ASSERT(m_Data == nullptr, GEng::TextureLoader::TextureData, "Image file cannot be loaded into memory.");
+		GENG_ASSERT(m_Data == nullptr, GEng::TextureLoader::TextureData, "Image file cannot be loaded into memory.");
 
 		m_imageDimensions.x = width;
 		m_imageDimensions.y = height;
@@ -56,7 +56,7 @@ namespace GEng
 
 	sRef<Texture2D> Texture2D::Create(const std::string_view filePath)
 	{
-		switch (PROGRAM_API)
+		switch (GPUContext::Get()->GetContextAPI())
 		{
 		case API::OpenGL:
 		{
@@ -69,7 +69,7 @@ namespace GEng
 
 	sRef<Texture2D> Texture2D::Create(const TextureLoader &imageData)
 	{
-		switch (PROGRAM_API)
+		switch (GPUContext::Get()->GetContextAPI())
 		{
 		case API::OpenGL:
 		{
@@ -81,7 +81,7 @@ namespace GEng
 
 	sRef<Texture2D> Texture2D::Create(const Dimension2D &dimensions, const byte *data, const PixelFormat format)
 	{
-		switch (PROGRAM_API)
+		switch (GPUContext::Get()->GetContextAPI())
 		{
 		case API::OpenGL:
 			return make<OpenGLTexture2D>(dimensions, data, format);

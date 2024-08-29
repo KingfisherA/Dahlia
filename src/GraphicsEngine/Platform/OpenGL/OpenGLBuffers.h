@@ -2,7 +2,7 @@
 
 #include "GraphicsEngine/GEng_API.h"
 #include "GraphicsEngine/3D/Buffers.h"
-#include"GraphicsEngine/Platform/OpenGL/OpenGLCore.h"
+#include"GraphicsEngine/Platform/OpenGL/OpenGLContext.h"
 
 namespace GEng
 {

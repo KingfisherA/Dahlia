@@ -30,7 +30,7 @@ namespace GEng
     {
     public:
         GraphicsApp(const char *displayTitle, size_t width, size_t height, const FramebufferSpecification &viewportSpec);
-        virtual ~GraphicsApp() {}
+        virtual ~GraphicsApp() = default;
 
         bool Init();
         void Run();
@@ -50,6 +50,7 @@ namespace GEng
         virtual void OnRender() {}
         virtual void OnImGuiRender() {}
         virtual bool OnInit() { return true; }
+        virtual void OnDestroy() {}
 
         virtual bool OnWindowResized(WindowResizeEvent &e);
         virtual bool OnWindowClose(WindowCloseEvent &e);

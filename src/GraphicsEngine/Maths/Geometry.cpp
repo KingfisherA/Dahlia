@@ -7,9 +7,9 @@
 #include <unordered_map>
 #include <cstring>
 
-#include "GraphicsEngine/Maths/Geometry.hpp"
+#include "GraphicsEngine/Maths/Geometry.h"
 #include "GraphicsEngine/Utilities/Assert.h"
-#include "GraphicsEngine/Maths/Maths.hpp"
+#include "GraphicsEngine/Maths/Maths.h"
 
 namespace GEng {
     //
@@ -27,7 +27,7 @@ namespace GEng {
     //
     Mesh::Mesh(const size_t bufferByteSize) : byteBufferSize(bufferByteSize) {
         byteBuffer = (byte *) malloc(bufferByteSize);
-        UNI_ASSERT(byteBuffer == nullptr, GEng::Mesh::Mesh, "Could not dynamically allocate memory!");
+        GENG_ASSERT(byteBuffer == nullptr, GEng::Mesh::Mesh, "Could not dynamically allocate memory!");
     }
 
     Mesh::~Mesh() {
@@ -141,8 +141,8 @@ namespace GEng {
 
     //
     sRef<Mesh> Geometry::CreateUVSphere(float radius, unsigned int lattitudes, unsigned int longitudes) {
-        UNI_ASSERT(lattitudes < 3, Geometry::CreateSphere, "The minimum number of slices is 3");
-        UNI_ASSERT(longitudes < 3, Geometry::CreateSphere, "The minimum number of stacks is 3");
+        GENG_ASSERT(lattitudes < 3, Geometry::CreateSphere, "The minimum number of slices is 3");
+        GENG_ASSERT(longitudes < 3, Geometry::CreateSphere, "The minimum number of stacks is 3");
 
         unsigned int numberOfVerts = ((size_t) lattitudes) * (longitudes - 1) + 2;
         std::vector<Vertex> verticies;

@@ -1,5 +1,5 @@
 
-#include "GraphicsEngine/Scene/Camera3D.hpp"
+#include "GraphicsEngine/Scene/Camera3D.h"
 #include <GLFW/glfw3.h>
 
 #define GLM_RADIANS
@@ -17,7 +17,7 @@ namespace GEng
 	constexpr float POS_ACCELERATION_FACTOR = 0.08f;
 	//
 	constexpr float ANGLE_AROUND_MAX_ACCELERATION = 5.0f;
-	constexpr float ANGLE_AROUND_ACCELERATION_FACTOR = 0.8f;
+	constexpr float ANGLE_AROUND_ACCELERATION_FACTOR = 0.01f;
 	//
 	constexpr float PITCH_MAX_ACCELERATION = 10.0f;
 	constexpr float PITCH_ACCELERATION_FACTOR = 0.6f;

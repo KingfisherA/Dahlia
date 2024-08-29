@@ -1,9 +1,13 @@
 #pragma once
 
-#include<string>
-#include<unordered_map>
+#include <string>
+#include <unordered_map>
 #include <glm/matrix.hpp>
+#include <vector>
+
+#include "GraphicsEngine/3D/Texture.h"
 #include "GraphicsEngine/Utilities/Memory.h"
+
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
@@ -13,14 +17,14 @@ namespace GEng {
     class ShaderProgram;
     class Texture2D;
 
-    struct AtlasGlyph {
+    struct AtlasGlyphInfo {
         glm::vec2 mPosition;
         glm::vec2 mSize;
         glm::vec2 mBearing;
         float mAdvance;
     };
 
-    using FontAtlasMap = std::unordered_map<char, AtlasGlyph>;
+    using FontAtlasMap = std::unordered_map<char, AtlasGlyphInfo>;
 
     class FontAtlasBase {
     public:
@@ -29,7 +33,7 @@ namespace GEng {
         [[nodiscard]] virtual FontAtlasMap &GetAtlasMap() =0;
     };
 
-    struct FontAtlasBitmap : public FontAtlasBase {
+    class FontAtlasBitmap : public FontAtlasBase {
     public:
         FontAtlasBitmap(): mDimensions(0) {
         }
@@ -93,7 +97,7 @@ namespace GEng {
         Dimension2D mDimensions;
     };
 
-    struct FontAtlas : public FontAtlasBase {
+    class FontAtlas : public FontAtlasBase {
     public:
         FontAtlas() = default;
 
@@ -120,6 +124,17 @@ namespace GEng {
         sRef<Texture2D> mTexture;
     };
 
+    struct TextLayoutInfo {
+    public:
+        glm::vec3 bounds;
+        enum class Alignment {
+            Left = 0,
+            Centre,
+            Right,
+            Justify
+        } alignment;
+    };
+
     class FontManager {
     public:
         FontManager();
@@ -130,12 +145,6 @@ namespace GEng {
             SignedDistanceField
         };
 
-        enum class TextAlignment {
-            Left = 0,
-            Centre,
-            Right,
-            Justify
-        };
 
         constexpr static const char *ASCII_GLYPH_SET =
                 " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
@@ -149,7 +158,7 @@ namespace GEng {
                                         const GlyphRenderingMode mode = GlyphRenderingMode::Normal) const;
         static sRef<FontAtlas> CreateFontAtlas(const FontAtlasBitmap &bitmap);
 
-        static const AtlasGlyph &MeasureGlyph(const FontAtlasBase &atlas, const char c) {
+        static const AtlasGlyphInfo &MeasureGlyph(const FontAtlasBase &atlas, const char c) {
             return atlas.GetAtlasMap().at(c);
         }
 
@@ -158,8 +167,7 @@ namespace GEng {
         // The z components defines the width of the box. If it is set to zero the text won't be wrapped.
         static std::vector<glm::vec2> LayoutText(const std::string_view text,
                                                  const FontAtlasBase &atlas,
-                                                 const glm::vec3 &bounds = {0.0f, 0.0f, 0.0f},
-                                                 const TextAlignment alignment = TextAlignment::Left);
+                                                 const TextLayoutInfo& layoutInfo = {{0.0f, 0.0f, 0.0f}, TextLayoutInfo::Alignment::Left});
         static glm::vec2 MeasureText(const FontAtlasBase &atlas, const std::string_view text);
 
     private:
@@ -171,14 +179,17 @@ namespace GEng {
         Text();
         ~Text();
 
+        static sRef<Text> Create();
+
         void SetScaling(const float scaling) { mScaling = scaling; }
-        void SetText(const std::string_view text,
-                     const FontAtlas &atlas,
-                     const glm::vec3 &bounds = {0.0f, 0.0f, 0.0f},
-                     const FontManager::TextAlignment alignment = FontManager::TextAlignment::Left);
+        void AddText(const std::string_view text, const TextLayoutInfo& layoutInfo);
+        void ClearText();
+        void LayoutText(const FontAtlas &atlas);
         void DrawText(const glm::mat4 &pvMatrix) const;
 
     private:
+        std::vector<std::pair<std::string, TextLayoutInfo>> mTextStrings;
+
         size_t mNoOfGlyphs = 0;
         float mScaling = 0.8f;
 

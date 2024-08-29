@@ -15,7 +15,7 @@ namespace GEng::IO
 		{
 			file.close();
 			using namespace std::string_literals;
-			UNI_FATAL(GEng::IO::ReadFile, "Could not open file requested \""s + filePath.data() + "\"")
+			GENG_FATAL(GEng::IO::ReadFile, "Could not open file requested \""s + filePath.data() + "\"")
 			return "";
 		}
 		std::string outputStr((std::istreambuf_iterator<char>(file)),

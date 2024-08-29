@@ -32,17 +32,18 @@
     "src/GraphicsEngine/Layers/LayerStack.cpp"
     "src/GraphicsEngine/Layers/LayerStack.h"
     "src/GraphicsEngine/Maths/Geometry.cpp"
-    "src/GraphicsEngine/Maths/Geometry.hpp"
+    "src/GraphicsEngine/Maths/Geometry.h"
     "src/GraphicsEngine/Maths/Maths.cpp"
-    "src/GraphicsEngine/Maths/Maths.hpp"
-    "src/GraphicsEngine/Platform/API Core.h"
+    "src/GraphicsEngine/Maths/Maths.h"
       "src/GraphicsEngine/Platform/GLFW/GLFWDisplay.cpp"
       "src/GraphicsEngine/Platform/GLFW/GLFWDisplay.h"
+    "src/GraphicsEngine/Platform/GPUContext.cpp"
+    "src/GraphicsEngine/Platform/GPUContext.h"
     "src/GraphicsEngine/Platform/Intrinsics.h"
       "src/GraphicsEngine/Platform/OpenGL/OpenGLBuffers.cpp"
       "src/GraphicsEngine/Platform/OpenGL/OpenGLBuffers.h"
-      "src/GraphicsEngine/Platform/OpenGL/OpenGLCore.cpp"
-      "src/GraphicsEngine/Platform/OpenGL/OpenGLCore.h"
+      "src/GraphicsEngine/Platform/OpenGL/OpenGLContext.cpp"
+      "src/GraphicsEngine/Platform/OpenGL/OpenGLContext.h"
       "src/GraphicsEngine/Platform/OpenGL/OpenGLFramebuffer.cpp"
       "src/GraphicsEngine/Platform/OpenGL/OpenGLFramebuffer.h"
       "src/GraphicsEngine/Platform/OpenGL/OpenGLShaderProgram.cpp"
@@ -53,8 +54,10 @@
       "src/GraphicsEngine/Platform/OpenGL/OpenGLVertexArray.h"
       "src/GraphicsEngine/Platform/Windows/Console.cpp"
       "src/GraphicsEngine/Platform/Windows/Console.h"
+    "src/GraphicsEngine/Scene/Camera2D.cpp"
+    "src/GraphicsEngine/Scene/Camera2D.h"
     "src/GraphicsEngine/Scene/Camera3D.cpp"
-    "src/GraphicsEngine/Scene/Camera3D.hpp"
+    "src/GraphicsEngine/Scene/Camera3D.h"
     "src/GraphicsEngine/Utilities/Assert.h"
     "src/GraphicsEngine/Utilities/IO.cpp"
     "src/GraphicsEngine/Utilities/IO.h"
@@ -67,18 +70,18 @@
 if(CMAKE_BUILD_TYPE STREQUAL Debug)
   set_target_properties("GraphicsEngine_Shared" PROPERTIES
     OUTPUT_NAME "GraphicsEngine_Shared"
-    ARCHIVE_OUTPUT_DIRECTORY "/media/charlie/Data/dev/C++/GraphicsEngine/bin/linux/Debug-x64/GraphicsEngine_Shared"
-    LIBRARY_OUTPUT_DIRECTORY "/media/charlie/Data/dev/C++/GraphicsEngine/bin/linux/Debug-x64/GraphicsEngine_Shared"
-    RUNTIME_OUTPUT_DIRECTORY "/media/charlie/Data/dev/C++/GraphicsEngine/bin/linux/Debug-x64/GraphicsEngine_Shared"
+    ARCHIVE_OUTPUT_DIRECTORY "/media/charlie/SSD/dev/C++/GraphicsEngine/bin/linux/Debug-x64/GraphicsEngine_Shared"
+    LIBRARY_OUTPUT_DIRECTORY "/media/charlie/SSD/dev/C++/GraphicsEngine/bin/linux/Debug-x64/GraphicsEngine_Shared"
+    RUNTIME_OUTPUT_DIRECTORY "/media/charlie/SSD/dev/C++/GraphicsEngine/bin/linux/Debug-x64/GraphicsEngine_Shared"
   )
 endif()
 target_include_directories("GraphicsEngine_Shared" PRIVATE
-  $<$<CONFIG:Debug>:/media/charlie/Data/dev/C++/GraphicsEngine/src>
+  $<$<CONFIG:Debug>:/media/charlie/SSD/dev/C++/GraphicsEngine/src>
   $<$<CONFIG:Debug>:/usr/include>
   $<$<CONFIG:Debug>:/usr/local/include>
-  $<$<CONFIG:Debug>:/media/charlie/Data/dev/Libraries/glm>
-  $<$<CONFIG:Debug>:/media/charlie/Data/dev/Libraries/ImGui>
-  $<$<CONFIG:Debug>:/media/charlie/Data/dev/Libraries>
+  $<$<CONFIG:Debug>:/media/charlie/SSD/dev/Libraries/glm>
+  $<$<CONFIG:Debug>:/media/charlie/SSD/dev/Libraries/ImGui>
+  $<$<CONFIG:Debug>:/media/charlie/SSD/dev/Libraries>
   $<$<CONFIG:Debug>:/usr/include/freetype2>
   $<$<CONFIG:Debug>:/usr/include/libpng16>
 )
@@ -88,7 +91,7 @@ target_compile_definitions("GraphicsEngine_Shared" PRIVATE
   $<$<CONFIG:Debug>:CONFIG_DEBUG>
 )
 target_link_directories("GraphicsEngine_Shared" PRIVATE
-  $<$<CONFIG:Debug>:/media/charlie/Data/dev/Libraries/ImGui/bin/linux/Release-x64>
+  $<$<CONFIG:Debug>:/media/charlie/SSD/dev/Libraries/ImGui/bin/linux/Release-x64>
 )
 target_link_libraries("GraphicsEngine_Shared"
   $<$<CONFIG:Debug>:glfw3>
@@ -130,18 +133,18 @@ endif()
 if(CMAKE_BUILD_TYPE STREQUAL Release)
   set_target_properties("GraphicsEngine_Shared" PROPERTIES
     OUTPUT_NAME "GraphicsEngine_Shared"
-    ARCHIVE_OUTPUT_DIRECTORY "/media/charlie/Data/dev/C++/GraphicsEngine/bin/linux/Release-x64/GraphicsEngine_Shared"
-    LIBRARY_OUTPUT_DIRECTORY "/media/charlie/Data/dev/C++/GraphicsEngine/bin/linux/Release-x64/GraphicsEngine_Shared"
-    RUNTIME_OUTPUT_DIRECTORY "/media/charlie/Data/dev/C++/GraphicsEngine/bin/linux/Release-x64/GraphicsEngine_Shared"
+    ARCHIVE_OUTPUT_DIRECTORY "/media/charlie/SSD/dev/C++/GraphicsEngine/bin/linux/Release-x64/GraphicsEngine_Shared"
+    LIBRARY_OUTPUT_DIRECTORY "/media/charlie/SSD/dev/C++/GraphicsEngine/bin/linux/Release-x64/GraphicsEngine_Shared"
+    RUNTIME_OUTPUT_DIRECTORY "/media/charlie/SSD/dev/C++/GraphicsEngine/bin/linux/Release-x64/GraphicsEngine_Shared"
   )
 endif()
 target_include_directories("GraphicsEngine_Shared" PRIVATE
-  $<$<CONFIG:Release>:/media/charlie/Data/dev/C++/GraphicsEngine/src>
+  $<$<CONFIG:Release>:/media/charlie/SSD/dev/C++/GraphicsEngine/src>
   $<$<CONFIG:Release>:/usr/include>
   $<$<CONFIG:Release>:/usr/local/include>
-  $<$<CONFIG:Release>:/media/charlie/Data/dev/Libraries/glm>
-  $<$<CONFIG:Release>:/media/charlie/Data/dev/Libraries/ImGui>
-  $<$<CONFIG:Release>:/media/charlie/Data/dev/Libraries>
+  $<$<CONFIG:Release>:/media/charlie/SSD/dev/Libraries/glm>
+  $<$<CONFIG:Release>:/media/charlie/SSD/dev/Libraries/ImGui>
+  $<$<CONFIG:Release>:/media/charlie/SSD/dev/Libraries>
   $<$<CONFIG:Release>:/usr/include/freetype2>
   $<$<CONFIG:Release>:/usr/include/libpng16>
 )
@@ -151,7 +154,7 @@ target_compile_definitions("GraphicsEngine_Shared" PRIVATE
   $<$<CONFIG:Release>:CONFIG_RELEASE>
 )
 target_link_directories("GraphicsEngine_Shared" PRIVATE
-  $<$<CONFIG:Release>:/media/charlie/Data/dev/Libraries/ImGui/bin/linux/Release-x64>
+  $<$<CONFIG:Release>:/media/charlie/SSD/dev/Libraries/ImGui/bin/linux/Release-x64>
 )
 target_link_libraries("GraphicsEngine_Shared"
   $<$<CONFIG:Release>:glfw3>

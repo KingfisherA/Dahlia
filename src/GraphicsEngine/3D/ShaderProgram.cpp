@@ -3,7 +3,7 @@
 #include <filesystem>
 //--
 #include "GraphicsEngine/3D/ShaderProgram.h"
-#include "GraphicsEngine/Platform/API Core.h"
+#include "GraphicsEngine/Platform/GPUContext.h"
 #include "GraphicsEngine/Platform/OpenGL/OpenGLShaderProgram.h"
 #include "GraphicsEngine/Utilities/StringOperations.h"
 #include "GraphicsEngine/Utilities/IO.h"
@@ -101,19 +101,19 @@ namespace GEng
 				size_t parBeginIndex = currentLine.find('(', insertIndex + 6);
 				if (parBeginIndex == currentLine.npos)
 				{
-					UNI_WARN(GEng::EvaluatePreprocessorDirectives, "Please begin #include directive file path with < or \"");
+					GENG_WARN(GEng::EvaluatePreprocessorDirectives, "Please begin #include directive file path with < or \"");
 					return;
 				}
 				size_t parEndIndex = currentLine.find(')', insertIndex + 6);
 				if (parEndIndex == currentLine.npos)
 				{
-					UNI_WARN(GEng::ShaderProgram::Preprocessor::EvaluatePreprocessorDirectives, "Please begin #include directive file path with < or \"");
+					GENG_WARN(GEng::ShaderProgram::Preprocessor::EvaluatePreprocessorDirectives, "Please begin #include directive file path with < or \"");
 					return;
 				}
 				std::string insertKey = currentLine.substr(parBeginIndex + 1, parEndIndex - parBeginIndex - 1);
 				if (insertionKeys == nullptr)
 				{
-					UNI_WARN(GEng::ShaderProgram::Preprocessor::EvaluatePreprocessorDirectives, "Insertion keys map was nullptr, thus #pragma insert ");
+					GENG_WARN(GEng::ShaderProgram::Preprocessor::EvaluatePreprocessorDirectives, "Insertion keys map was nullptr, thus #pragma insert ");
 					// sourceCode += currentLine.Substring(0, pIndex) + currentLine.Substring(parEndIndex, currentLine.GetLength() - parEndIndex) + newLineChar;
 					currentLine.erase(pIndex, (parEndIndex + 1) - pIndex);
 					sourceCode += currentLine + '\n';
@@ -123,7 +123,7 @@ namespace GEng
 				auto insertKVPair = insertionKeys->find(insertKey);
 				if (insertKVPair == insertionKeys->end())
 				{
-					UNI_WARN(GEng::ShaderProgram::Preprocessor::EvaluatePreprocessorDirectives, ("#pragma insert(" + insertKey + ") could not be evaluated, as key map contains no member '" + insertKey + '\'').c_str());
+					GENG_WARN(GEng::ShaderProgram::Preprocessor::EvaluatePreprocessorDirectives, ("#pragma insert(" + insertKey + ") could not be evaluated, as key map contains no member '" + insertKey + '\'').c_str());
 					// sourceCode += currentLine.Substring(0, pIndex) + currentLine.Substring(parEndIndex, currentLine.GetLength() - parEndIndex) + newLineChar;
 					currentLine.erase(pIndex, (parEndIndex + 1) - pIndex);
 					sourceCode += currentLine + '\n';
@@ -140,7 +140,7 @@ namespace GEng
 			beginIndex = beginIndex == currentLine.npos ? currentLine.find('\"', includeIndex + 8) : beginIndex;
 			if (beginIndex == currentLine.npos)
 			{
-				UNI_FATAL(GEng::ShaderProgram::Preprocessor::EvaluatePreprocessorDirectives, "Please begin #include directive file path with < or \"");
+				GENG_FATAL(GEng::ShaderProgram::Preprocessor::EvaluatePreprocessorDirectives, "Please begin #include directive file path with < or \"");
 				return;
 			}
 
@@ -148,7 +148,7 @@ namespace GEng
 			endIndex = endIndex == currentLine.npos ? currentLine.find('\"', beginIndex + 1) : endIndex;
 			if (endIndex == currentLine.npos)
 			{
-				UNI_FATAL(GEng::ShaderProgram::Preprocessor::EvaluatePreprocessorDirectives, "Please end #include directive file path with > or \"");
+				GENG_FATAL(GEng::ShaderProgram::Preprocessor::EvaluatePreprocessorDirectives, "Please end #include directive file path with > or \"");
 				return;
 			}
 
@@ -168,12 +168,12 @@ namespace GEng
 			std::string filePath = std::operator+(std::string(IO::Dir::GetDirectoryFromPath(shaderFilePath)), includePath);
 			if (filePath == lastInclude)
 			{
-				UNI_FATAL(EvaluatePreprocessorDirectives, "Infinite inclusion loop. File " + filePath + " includes itself.");
+				GENG_FATAL(EvaluatePreprocessorDirectives, "Infinite inclusion loop. File " + filePath + " includes itself.");
 				return;
 			}
 			if (filePath.size() == 0)
 			{
-				UNI_FATAL(GEng::ShaderProgram::Preprocessor::EvaluatePreprocessorDirectives, "No file was given when evaluating #include directive");
+				GENG_FATAL(GEng::ShaderProgram::Preprocessor::EvaluatePreprocessorDirectives, "No file was given when evaluating #include directive");
 				return;
 			}
 
@@ -216,7 +216,7 @@ namespace GEng
 
 	sRef<ShaderProgram> ShaderProgram::Create(const std::string_view combinedSourceCode)
 	{
-		switch (PROGRAM_API)
+		switch (GPUContext::Get()->GetContextAPI())
 		{
 		case API::OpenGL:
 		{
@@ -229,7 +229,7 @@ namespace GEng
 
 	sRef<ShaderProgram> ShaderProgram::Create(const std::string_view vertexSource, const std::string_view fragmentSource)
 	{
-		switch (PROGRAM_API)
+		switch (GPUContext::Get()->GetContextAPI())
 		{
 		case API::OpenGL:
 		{
@@ -242,7 +242,7 @@ namespace GEng
 
 	sRef<ShaderProgram> ShaderProgram::CreateFromFile(const std::string_view combinedShaderFile)
 	{
-		switch (PROGRAM_API)
+		switch (GPUContext::Get()->GetContextAPI())
 		{
 		case API::OpenGL:
 		{
@@ -255,7 +255,7 @@ namespace GEng
 
 	sRef<ShaderProgram> ShaderProgram::CreateFromFile(const std::string_view vertexFile, const std::string_view fragmentFile)
 	{
-		switch (PROGRAM_API)
+		switch (GPUContext::Get()->GetContextAPI())
 		{
 		case API::OpenGL:
 		{

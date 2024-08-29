@@ -34,7 +34,7 @@ namespace GEng
 
 		virtual void UpdateData(const Dimension2D offset, const Dimension2D size, const byte *data) override;
 
-		virtual void *GetRendererID() const noexcept override { return (void *)m_texID; }
+		virtual unsigned int GetRendererID() const noexcept override { return m_texID; }
 
 	private:
 		Dimension2D m_imageDimensions;

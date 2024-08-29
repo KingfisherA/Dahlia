@@ -19,20 +19,11 @@ namespace GEng
 		bool Renderbuffer = false;
 	};
 
-	GENG_API struct FramebufferAttachmentSpecification
-	{
-		FramebufferAttachmentSpecification() = default;
-		FramebufferAttachmentSpecification(const std::initializer_list<FramebufferAttachment> &attachments)
-			: Attachments(attachments) {}
-
-		std::vector<FramebufferAttachment> Attachments;
-	};
-
 	GENG_API struct  FramebufferSpecification
 	{
 	public:
 		size_t Width = 0, Height = 0, Samples = 1;
-		FramebufferAttachmentSpecification Attachments;
+		std::vector<FramebufferAttachment> Attachments;
 	};
 
 	GENG_API class Framebuffer
@@ -50,6 +41,8 @@ namespace GEng
 
 		virtual const FramebufferSpecification &GetSpecification() const = 0;
 		virtual FramebufferSpecification &GetSpecification() = 0;
+
+		virtual void Clear(const glm::vec4& clearColour)=0;
 
 		inline const size_t GetWidth() const { return GetSpecification().Width; }
 		inline const size_t GetHeight() const { return GetSpecification().Height; }

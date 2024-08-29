@@ -23,6 +23,7 @@ namespace GEng
 		virtual void Refresh() override;
 		virtual size_t GetWidth() const override { return m_Data.width; }
 		virtual size_t GetHeight() const override { return m_Data.height; }
+		virtual glm::vec2 GetContentScaling() const;
 
 		virtual inline void BindEventCallback(const EventCallbackFnc &callback) override { m_Data.EventCallback = callback; }
 
@@ -32,7 +33,7 @@ namespace GEng
 		virtual void *GetAPIDisplay() const override { return (void *)m_WindowID; };
 
 	private:
-		void Initilise(const DisplayProps &properties,
+		void Init(const DisplayProps &properties,
 					   const size_t majorVersion = OPENGL_MAJOR_VERSION,
 					   const size_t minorVersion = OPENGL_MINOR_VERSION);
 		static void PrintErrorCallback(int errorCode, const char *message);

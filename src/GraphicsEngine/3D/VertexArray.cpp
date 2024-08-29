@@ -1,7 +1,7 @@
 
 #include "GraphicsEngine/3D/VertexArray.h"
 #include "GraphicsEngine/Platform/OpenGL/OpenGLVertexArray.h"
-#include "GraphicsEngine/Platform/API Core.h"
+#include "GraphicsEngine/Platform/GPUContext.h"
 //
 //
 
@@ -9,7 +9,7 @@ namespace GEng
 {
 	sRef<VertexArray> VertexArray::Create()
 	{
-		switch (PROGRAM_API)
+		switch (GPUContext::Get()->GetContextAPI())
 		{
 		case API::OpenGL:
 			return make<OpenGLVertexArray>();
@@ -18,7 +18,7 @@ namespace GEng
 
 	sRef<VertexArray> VertexArray::Create(const sRef<Mesh> &meshData)
 	{
-		switch (PROGRAM_API)
+		switch (GPUContext::Get()->GetContextAPI())
 		{
 		case API::OpenGL:
 		{

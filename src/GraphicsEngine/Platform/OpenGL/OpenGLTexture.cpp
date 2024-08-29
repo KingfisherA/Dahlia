@@ -1,5 +1,7 @@
-#include "GraphicsEngine/Platform/OpenGL/OpenGLCore.h"
+#include "GraphicsEngine/Platform/OpenGL/OpenGLContext.h"
 #include "GraphicsEngine/Platform/OpenGL/OpenGLTexture.h"
+
+#include "OpenGLShaderProgram.h"
 
 //
 //
@@ -33,6 +35,7 @@ namespace GEng {
 
         glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
         glGenTextures(1, &m_texID);
+
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, m_texID);
         glTexImage2D(GL_TEXTURE_2D, 0, texFormat.FormatToGL(), dimensions.x, dimensions.y,
@@ -40,6 +43,7 @@ namespace GEng {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glBindTexture(GL_TEXTURE_2D, 0);
+        GPUContext::Get<OpenGLContext>()->RegisterBind(GL_TEXTURE0, 0);
     }
 
     OpenGLTexture2D::~OpenGLTexture2D() {
@@ -48,19 +52,21 @@ namespace GEng {
     }
 
     void OpenGLTexture2D::Bind(unsigned short unit) {
-        m_texUnit = unit;
-
-        glActiveTexture(GL_TEXTURE0 + unit);
-        glBindTexture(GL_TEXTURE_2D, m_texID);
+        if (!GPUContext::Get<OpenGLContext>()->BindToContext(GL_TEXTURE0 + unit, m_texID)) {
+            glActiveTexture(GL_TEXTURE0 + unit);
+            glBindTexture(GL_TEXTURE_2D, m_texID);
+            m_texUnit = unit;
+        }
     }
 
     void OpenGLTexture2D::Unbind() {
         glActiveTexture(GL_TEXTURE0 + m_texUnit);
         glBindTexture(GL_TEXTURE_2D, 0);
+        GPUContext::Get<OpenGLContext>()->RegisterBind(GL_TEXTURE0 + m_texUnit, 0);
     }
 
     void OpenGLTexture2D::GenerateMipMaps(const MipmapFiltering filtering) {
-        Bind(0);
+        OpenGLTexture2D::Bind(0);
         if (!m_mipMapsGenerated)
             glGenerateMipmap(GL_TEXTURE_2D);
         glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -74,22 +80,19 @@ namespace GEng {
                                         return GL_LINEAR_MIPMAP_LINEAR;
                                 }
                             }());
-        Unbind();
 
         m_mipMapsGenerated = true;
     }
 
     void OpenGLTexture2D::DeleteMipMaps() {
-        Bind(0);
+        OpenGLTexture2D::Bind(0);
         glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        Unbind();
     }
 
     void OpenGLTexture2D::UpdateData(const Dimension2D offset, const Dimension2D size, const byte *data) {
-        Bind(0);
+        OpenGLTexture2D::Bind(0);
         glTexSubImage2D(GL_TEXTURE_2D, 0, offset.x, offset.y, size.x, size.y, m_pixelFormat.FormatToGL(),
                         GL_UNSIGNED_BYTE, (const void *) data);
-        Unbind();
     }
 }

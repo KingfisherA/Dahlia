@@ -1,4 +1,4 @@
-#include "GraphicsEngine/Maths/Maths.hpp"
+#include "GraphicsEngine/Maths/Maths.h"
 
 #define GLM_RADIANS
 #include <glm/glm.hpp>

@@ -3,8 +3,9 @@
 #include "GraphicsEngine/Utilities/Assert.h"
 #include "GraphicsEngine/Utilities/StringOperations.h"
 #include "GraphicsEngine/Utilities/IO.h"
-#include "GraphicsEngine/Platform/OpenGL/OpenGLCore.h"
+#include "GraphicsEngine/Platform/OpenGL/OpenGLContext.h"
 #include <format>
+#include <glm/gtc/type_ptr.hpp>
 //
 //
 
@@ -41,7 +42,7 @@ namespace GEng
 				logString = "Shader compilation failed: " + logString;
 #endif // CONFIG_DEBUG
 
-				UNI_FATAL(OpenGLShaderProgram::CompileSource, logString);
+				GENG_FATAL(OpenGLShaderProgram::CompileSource, logString);
 
 				return false;
 			}
@@ -141,7 +142,7 @@ namespace GEng
 			infoLog = "Shader compilation failed: " + infoLog;
 #endif // CONFIG_DEBUG
 
-			UNI_FATAL(OpenGLShaderProgram::Link, infoLog);
+			GENG_FATAL(OpenGLShaderProgram::Link, infoLog);
 		}
 
 		return true;
@@ -154,7 +155,8 @@ namespace GEng
 
 	void OpenGLShaderProgram::Bind()
 	{
-		glUseProgram(m_ProgramID);
+		if(!GPUContext::Get<OpenGLContext>()->BindToContext(GL_PROGRAM_BINDING_ARB, m_ProgramID))
+			glUseProgram(m_ProgramID);
 	}
 
 	void OpenGLShaderProgram::Unbind()
@@ -164,51 +166,61 @@ namespace GEng
 
 	void OpenGLShaderProgram::UploadF(const std::string_view uniformName, const float val)
 	{
+		OpenGLShaderProgram::Bind();
 		glUniform1f(QueryLocation(uniformName), val);
 	}
 
 	void OpenGLShaderProgram::UploadVecF(const std::string_view uniformName, const glm::vec2 &val)
 	{
+		OpenGLShaderProgram::Bind();
 		glUniform2f(QueryLocation(uniformName), val.x, val.y);
 	}
 
 	void OpenGLShaderProgram::UploadVecF(const std::string_view uniformName, const glm::vec3 &val)
 	{
+		OpenGLShaderProgram::Bind();
 		glUniform3f(QueryLocation(uniformName), val.x, val.y, val.z);
 	}
 
 	void OpenGLShaderProgram::UploadVecF(const std::string_view uniformName, const glm::vec4 &val)
 	{
+		OpenGLShaderProgram::Bind();
 		glUniform4f(QueryLocation(uniformName), val.x, val.y, val.z, val.w);
 	}
 
 	void OpenGLShaderProgram::UploadMatF(const std::string_view uniformName, const glm::mat4 &val)
 	{
+		OpenGLShaderProgram::Bind();
 		glUniformMatrix4fv(QueryLocation(uniformName), 1, GL_FALSE, glm::value_ptr(val));
 	}
 
 	void OpenGLShaderProgram::UploadMatF(const std::string_view uniformName, const glm::mat3 &val)
 	{
+		OpenGLShaderProgram::Bind();
 		glUniformMatrix3fv(QueryLocation(uniformName), 1, GL_FALSE, glm::value_ptr(val));
 	}
 
 	void OpenGLShaderProgram::UploadI(const std::string_view uniformName, const int val)
 	{
+		OpenGLShaderProgram::Bind();
 		glUniform1i(QueryLocation(uniformName), val);
 	}
 
 	void OpenGLShaderProgram::UploadVecI(const std::string_view uniformName, const glm::ivec2 &val)
 	{
+		OpenGLShaderProgram::Bind();
 		glUniform2i(QueryLocation(uniformName), val.x, val.y);
 	}
 
 	void OpenGLShaderProgram::UploadVecI(const std::string_view uniformName, const glm::ivec3 &val)
 	{
+		OpenGLShaderProgram::Bind();
 		glUniform3i(QueryLocation(uniformName), val.x, val.y, val.z);
 	}
 
 	void OpenGLShaderProgram::UploadVecI(const std::string_view uniformName, const glm::ivec4 &val)
 	{
+		OpenGLShaderProgram::Bind();
 		glUniform4i(QueryLocation(uniformName), val.x, val.y, val.z, val.w);
 	}
 

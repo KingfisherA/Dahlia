@@ -88,23 +88,26 @@
     <ClInclude Include="src\GraphicsEngine\GUI\ImSpinner.h">
       <Filter>GUI</Filter>
     </ClInclude>
+    <ClInclude Include="src\GraphicsEngine\GUI\Text.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
     <ClInclude Include="src\GraphicsEngine\Layers\Layer.h">
       <Filter>Layers</Filter>
     </ClInclude>
     <ClInclude Include="src\GraphicsEngine\Layers\LayerStack.h">
       <Filter>Layers</Filter>
     </ClInclude>
-    <ClInclude Include="src\GraphicsEngine\Maths\Geometry.hpp">
+    <ClInclude Include="src\GraphicsEngine\Maths\Geometry.h">
       <Filter>Maths</Filter>
     </ClInclude>
-    <ClInclude Include="src\GraphicsEngine\Maths\Maths.hpp">
+    <ClInclude Include="src\GraphicsEngine\Maths\Maths.h">
       <Filter>Maths</Filter>
-    </ClInclude>
-    <ClInclude Include="src\GraphicsEngine\Platform\API Core.h">
-      <Filter>Platform</Filter>
     </ClInclude>
     <ClInclude Include="src\GraphicsEngine\Platform\GLFW\GLFWDisplay.h">
       <Filter>Platform\GLFW</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GraphicsEngine\Platform\GPUContext.h">
+      <Filter>Platform</Filter>
     </ClInclude>
     <ClInclude Include="src\GraphicsEngine\Platform\Intrinsics.h">
       <Filter>Platform</Filter>
@@ -112,7 +115,7 @@
     <ClInclude Include="src\GraphicsEngine\Platform\OpenGL\OpenGLBuffers.h">
       <Filter>Platform\OpenGL</Filter>
     </ClInclude>
-    <ClInclude Include="src\GraphicsEngine\Platform\OpenGL\OpenGLCore.h">
+    <ClInclude Include="src\GraphicsEngine\Platform\OpenGL\OpenGLContext.h">
       <Filter>Platform\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="src\GraphicsEngine\Platform\OpenGL\OpenGLFramebuffer.h">
@@ -130,7 +133,10 @@
     <ClInclude Include="src\GraphicsEngine\Platform\Windows\Console.h">
       <Filter>Platform\Windows</Filter>
     </ClInclude>
-    <ClInclude Include="src\GraphicsEngine\Scene\Camera.hpp">
+    <ClInclude Include="src\GraphicsEngine\Scene\Camera2D.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GraphicsEngine\Scene\Camera3D.h">
       <Filter>Scene</Filter>
     </ClInclude>
     <ClInclude Include="src\GraphicsEngine\Utilities\Assert.h">
@@ -183,6 +189,9 @@
     <ClCompile Include="src\GraphicsEngine\GUI\ImGuiLayer.cpp">
       <Filter>GUI</Filter>
     </ClCompile>
+    <ClCompile Include="src\GraphicsEngine\GUI\Text.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
     <ClCompile Include="src\GraphicsEngine\Layers\Layer.cpp">
       <Filter>Layers</Filter>
     </ClCompile>
@@ -198,10 +207,13 @@
     <ClCompile Include="src\GraphicsEngine\Platform\GLFW\GLFWDisplay.cpp">
       <Filter>Platform\GLFW</Filter>
     </ClCompile>
+    <ClCompile Include="src\GraphicsEngine\Platform\GPUContext.cpp">
+      <Filter>Platform</Filter>
+    </ClCompile>
     <ClCompile Include="src\GraphicsEngine\Platform\OpenGL\OpenGLBuffers.cpp">
       <Filter>Platform\OpenGL</Filter>
     </ClCompile>
-    <ClCompile Include="src\GraphicsEngine\Platform\OpenGL\OpenGLCore.cpp">
+    <ClCompile Include="src\GraphicsEngine\Platform\OpenGL\OpenGLContext.cpp">
       <Filter>Platform\OpenGL</Filter>
     </ClCompile>
     <ClCompile Include="src\GraphicsEngine\Platform\OpenGL\OpenGLFramebuffer.cpp">
@@ -219,7 +231,10 @@
     <ClCompile Include="src\GraphicsEngine\Platform\Windows\Console.cpp">
       <Filter>Platform\Windows</Filter>
     </ClCompile>
-    <ClCompile Include="src\GraphicsEngine\Scene\Camera.cpp">
+    <ClCompile Include="src\GraphicsEngine\Scene\Camera2D.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GraphicsEngine\Scene\Camera3D.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
     <ClCompile Include="src\GraphicsEngine\Utilities\IO.cpp">

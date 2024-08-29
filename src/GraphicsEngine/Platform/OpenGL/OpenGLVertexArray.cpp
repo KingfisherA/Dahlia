@@ -1,51 +1,64 @@
-
 #include "GraphicsEngine/Platform/OpenGL/OpenGLVertexArray.h"
 #include "GraphicsEngine/Utilities/Assert.h"
 //
 //
 
-namespace GEng
-{
-	OpenGLVertexArray::OpenGLVertexArray() : m_Buffers(), m_IndexBuffer(nullptr)
-	{
-		glGenVertexArrays(1, &m_VAOId);
-	}
+namespace GEng {
+    OpenGLVertexArray::OpenGLVertexArray() : m_Buffers(), m_IndexBuffer(nullptr) {
+        glGenVertexArrays(1, &m_VAOId);
+    }
 
-	OpenGLVertexArray::~OpenGLVertexArray()
-	{
-		glDeleteVertexArrays(1, &m_VAOId);
-		m_Buffers.clear();
-	}
+    OpenGLVertexArray::~OpenGLVertexArray() {
+        glDeleteVertexArrays(1, &m_VAOId);
+        m_Buffers.clear();
+    }
 
-	void OpenGLVertexArray::Bind()
-	{
-		glBindVertexArray(m_VAOId);
-		if (m_IndexBuffer != nullptr)
-			m_IndexBuffer->Bind();
-	}
+    void OpenGLVertexArray::Bind() {
+        if (!GPUContext::Get<OpenGLContext>()->BindToContext(GL_VERTEX_ARRAY_BINDING, m_VAOId))
+            glBindVertexArray(m_VAOId);
+        if (m_IndexBuffer != nullptr)
+            m_IndexBuffer->Bind();
+    }
 
-	void OpenGLVertexArray::Unbind()
-	{
-		if (m_IndexBuffer != nullptr)
-			m_IndexBuffer->Unbind();
-		glBindVertexArray(0);
-	}
+    void OpenGLVertexArray::Unbind() {
+        if (m_IndexBuffer != nullptr)
+            m_IndexBuffer->Unbind();
+        glBindVertexArray(0);
+        GPUContext::Get<OpenGLContext>()->RegisterBind(GL_VERTEX_ARRAY_BINDING, 0);
+    }
 
-	void OpenGLVertexArray::SubmitArrays(const GLenum drawMode, size_t instances)
-	{
-		if (IsIndexed())
-			if (instances > 1)
-				glDrawElementsInstanced(drawMode, GetArrayElementLength(), GL_UNSIGNED_INT, nullptr, instances);
-			else
-				glDrawElements(drawMode, GetArrayElementLength(), GL_UNSIGNED_INT, nullptr);
-		else if (instances > 1)
-			glDrawArraysInstanced(drawMode, 0, GetArrayElementLength(), instances);
-		else
-			glDrawArrays(drawMode, 0, GetArrayElementLength());
-	}
+    void OpenGLVertexArray::SubmitArrays(const DrawMode drawMode, size_t instances) {
+        OpenGLVertexArray::SubmitArrays(
+            [drawMode]()-> GLenum {
+                switch (drawMode) {
+                    default:
+                    case DrawMode::Triangles:
+                        return GL_TRIANGLES;
+                    case DrawMode::Lines:
+                        return GL_LINES;
+                    case DrawMode::Points:
+                        return GL_POINTS;
+                    case DrawMode::TriangleFan:
+                        return GL_TRIANGLE_FAN;
+                }
+            }()
+            , instances);
+    }
 
-	Index OpenGLVertexArray::AddVertexBuffer(const sRef<VertexBuffer> &buffer, const VertexSpecification spec)
-	{
+    void OpenGLVertexArray::SubmitArrays(const GLenum drawMode, size_t instances) {
+        OpenGLVertexArray::Bind();
+        if (IsIndexed())
+            if (instances > 1)
+                glDrawElementsInstanced(drawMode, GetArrayElementLength(), GL_UNSIGNED_INT, nullptr, instances);
+            else
+                glDrawElements(drawMode, GetArrayElementLength(), GL_UNSIGNED_INT, nullptr);
+        else if (instances > 1)
+            glDrawArraysInstanced(drawMode, 0, GetArrayElementLength(), instances);
+        else
+            glDrawArrays(drawMode, 0, GetArrayElementLength());
+    }
+
+    Index OpenGLVertexArray::AddVertexBuffer(const sRef<VertexBuffer> &buffer, const VertexSpecification spec) {
 #ifdef SM_DEBUG
 		if (std::dynamic_pointer_cast<OpenGLVertexBuffer>(buffer) == nullptr)
 		{
@@ -53,30 +66,33 @@ namespace GEng
 			return IndexUndefined;
 		}
 #endif
-		sRef<OpenGLVertexBuffer> glBuffer = std::static_pointer_cast<OpenGLVertexBuffer>(buffer);
+        sRef<OpenGLVertexBuffer> glBuffer = std::static_pointer_cast<OpenGLVertexBuffer>(buffer);
 
-		unsigned int attribArray = m_Buffers.size();
+        unsigned int attribArray = m_Buffers.size();
 
-		m_Buffers.insert({attribArray, glBuffer});
+        m_Buffers.insert({attribArray, glBuffer});
 
-		if (m_elementLength == 0)
-			m_elementLength = glBuffer->GetBufferSize() / spec.vertexSize;
+        if (m_elementLength == 0)
+            m_elementLength = glBuffer->GetBufferSize() / spec.vertexSize;
 
-		glBindVertexArray(m_VAOId);
-		glBindBuffer(GL_ARRAY_BUFFER, glBuffer->GetGLId());
+        auto *ctx = GPUContext::Get<OpenGLContext>();
+        glBindVertexArray(m_VAOId);
+        glBindBuffer(GL_ARRAY_BUFFER, glBuffer->GetGLId());
+        ctx->RegisterBind(GL_VERTEX_ARRAY_BINDING, m_VAOId);
+        ctx->RegisterBind(GL_VERTEX_BINDING_BUFFER, glBuffer->GetGLId());
 
-		glVertexAttribPointer(attribArray, (int)spec.vertexSize, GL_FLOAT, GL_FALSE, spec.vertexStride * sizeof(float), (void *)(spec.vertexOffset * sizeof(float)));
-		glVertexAttribDivisor(attribArray, spec.divisor);
-		glEnableVertexAttribArray(attribArray);
+        glVertexAttribPointer(attribArray, (int) spec.vertexSize, GL_FLOAT, GL_FALSE, spec.vertexStride * sizeof(float),
+                              (void *) (spec.vertexOffset * sizeof(float)));
+        glVertexAttribDivisor(attribArray, spec.divisor);
+        glEnableVertexAttribArray(attribArray);
 
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		glBindVertexArray(0);
+        // glBindBuffer(GL_ARRAY_BUFFER, 0);
+        // glBindVertexArray(0);
 
-		return attribArray;
-	}
+        return attribArray;
+    }
 
-	void OpenGLVertexArray::AddIndexBuffer(const sRef<IndexBuffer> &buffer)
-	{
+    void OpenGLVertexArray::AddIndexBuffer(const sRef<IndexBuffer> &buffer) {
 #ifdef SM_DEBUG
 		if (buffer == nullptr)
 		{
@@ -90,22 +106,19 @@ namespace GEng
 		}
 #endif
 
-		this->m_IndexBuffer = std::static_pointer_cast<OpenGLIndexBuffer>(buffer);
-		m_elementLength = buffer->GetBufferSize();
-	}
+        this->m_IndexBuffer = std::static_pointer_cast<OpenGLIndexBuffer>(buffer);
+        m_elementLength = buffer->GetBufferSize();
+    }
 
-	Index OpenGLVertexArray::QueryBufferIndex(const sRef<VertexBuffer> &buffer)
-	{
-		for (auto &kvPair : m_Buffers)
-		{
-			if (kvPair.second == buffer)
-				return (size_t)kvPair.first;
-		}
-		return IndexUndefined;
-	}
+    Index OpenGLVertexArray::QueryBufferIndex(const sRef<VertexBuffer> &buffer) {
+        for (auto &kvPair: m_Buffers) {
+            if (kvPair.second == buffer)
+                return (size_t) kvPair.first;
+        }
+        return IndexUndefined;
+    }
 
-	sRef<VertexBuffer> OpenGLVertexArray::GetVBuffer(Index index)
-	{
+    sRef<VertexBuffer> OpenGLVertexArray::GetVBuffer(Index index) {
 #ifdef SM_DEBUG
 		// if (index >= m_Buffers.size())
 		if (m_Buffers.find(index) == m_Buffers.end())
@@ -115,11 +128,10 @@ namespace GEng
 		}
 #endif
 
-		return m_Buffers.at(index);
-	}
+        return m_Buffers.at(index);
+    }
 
-	sRef<IndexBuffer> OpenGLVertexArray::GetIBuffer()
-	{
+    sRef<IndexBuffer> OpenGLVertexArray::GetIBuffer() {
 #ifdef SM_DEBUG
 		if (m_IndexBuffer == nullptr)
 		{
@@ -127,11 +139,10 @@ namespace GEng
 			return nullptr;
 		}
 #endif
-		return m_IndexBuffer;
-	}
+        return m_IndexBuffer;
+    }
 
-	bool OpenGLVertexArray::IsIndexed() const
-	{
-		return m_IndexBuffer != nullptr;
-	}
+    bool OpenGLVertexArray::IsIndexed() const {
+        return m_IndexBuffer != nullptr;
+    }
 }

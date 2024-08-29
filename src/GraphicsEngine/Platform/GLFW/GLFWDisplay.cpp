@@ -14,7 +14,7 @@ static bool isGLFWInitilised = false;
 //
 GEng::GLFWDisplay::GLFWDisplay(const DisplayProps &properties)
 {
-	this->Initilise(properties);
+	this->Init(properties);
 }
 //
 GEng::GLFWDisplay::~GLFWDisplay()
@@ -27,8 +27,15 @@ void GEng::GLFWDisplay::Refresh()
 	glfwSwapBuffers(m_WindowID);
 	glfwPollEvents();
 }
+
+glm::vec2 GEng::GLFWDisplay::GetContentScaling() const {
+	glm::vec2 scaling;
+	glfwGetWindowContentScale(m_WindowID, &scaling.x, &scaling.y);
+	return scaling;
+}
+
 //
-void GEng::GLFWDisplay::Initilise(const DisplayProps &properties, const size_t majorVersion, const size_t minorVersion)
+void GEng::GLFWDisplay::Init(const DisplayProps &properties, const size_t majorVersion, const size_t minorVersion)
 {
 	if (!isGLFWInitilised)
 	{
@@ -51,6 +58,10 @@ void GEng::GLFWDisplay::Initilise(const DisplayProps &properties, const size_t m
 	m_WindowID = glfwCreateWindow(properties.width, properties.height, properties.title.c_str(), nullptr, nullptr);
 	glfwSetWindowUserPointer(m_WindowID, &this->m_Data);
 	glfwMakeContextCurrent(m_WindowID);
+
+	float dpiFactor = GetContentScaling().x;
+	glfwSetWindowSize(m_WindowID, (int)((float)properties.width*dpiFactor), (int)((float)properties.height*dpiFactor));
+
 	glfwShowWindow(m_WindowID);
 
 	// Set GLFW callbacks
@@ -145,6 +156,7 @@ void GEng::GLFWDisplay::Initilise(const DisplayProps &properties, const size_t m
 
 			MouseMoveEvent event({ xPos, yPos });
 			data.EventCallback(event); });
+
 }
 //
 void GEng::GLFWDisplay::PrintErrorCallback(int errorCode, const char *message)

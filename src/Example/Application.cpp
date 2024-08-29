@@ -132,7 +132,7 @@ On ye position greatest so desirous. So wound stood guest weeks no terms up ough
 Was certainty remaining engrossed applauded sir how discovery. Settled opinion how enjoyed greater joy adapted too shy. Now properly surprise expenses interest nor replying she she.
 Bore tall nay many many time yet less. Doubtful for answered one fat indulged margaret sir shutters together. Ladies so in wholly around whence in at. Warmth he up giving oppose if.
 Impossible is dissimilar entreaties oh on terminated. Earnest studied article country ten respect showing had. But required offering him elegance son improved informed. )";
-        mText->SetText(TEST_TXT, *mUbuntuLight, {-2.0f, -1.0f, 3.0f});
+        mText->SetText(TEST_TXT, *mUbuntuLight, {-1.0f, -1.0f, 2.0f});
 
         return true;
     }
@@ -179,7 +179,8 @@ Impossible is dissimilar entreaties oh on terminated. Earnest studied article co
         // mShader->Unbind();
 
         float aspect = (float) mViewportFramebuffer->GetWidth() / (float) mViewportFramebuffer->GetHeight();
-        mText->DrawText(glm::ortho(-aspect, aspect, 1.0f, -1.0f));
+        mText->DrawText(glm::ortho(-aspect, aspect, 1.0f, -1.0f, 0.001f, 100.0f) *
+                        mCam.GetViewMatrix());
 
         mViewportFramebuffer->Unbind();
     }

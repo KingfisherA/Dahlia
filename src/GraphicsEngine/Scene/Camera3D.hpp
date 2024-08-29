@@ -5,10 +5,10 @@
 
 namespace GEng
 {
-	GENG_API class Camera
+	GENG_API class Camera3D
 	{
 	public:
-		Camera();
+		Camera3D();
 		//
 		void UpdateMouse(float mouseDX, float mouseDY, int buttonClicked, int modKeys = 0);
 		//

@@ -1,5 +1,5 @@
 
-#include "GraphicsEngine/Scene/Camera.hpp"
+#include "GraphicsEngine/Scene/Camera3D.hpp"
 #include <GLFW/glfw3.h>
 
 #define GLM_RADIANS
@@ -25,12 +25,12 @@ namespace GEng
 	constexpr float ZOOM_MAX_ACCELERATION = 500.0f;
 	constexpr float ZOOM_ACCELERATION_FACTOR = 2.0f;
 	//
-	Camera::Camera() : viewMatrix(1.0f), centrePosition(0.0f), targetPosition(0.0f), posVelocity(0.0f)
+	Camera3D::Camera3D() : viewMatrix(1.0f), centrePosition(0.0f), targetPosition(0.0f), posVelocity(0.0f)
 	{
 		RecalculateActualPos();
 	}
 	//
-	void Camera::UpdateMouse(float mouseDX, float mouseDY, int buttonClicked, int modKeys)
+	void Camera3D::UpdateMouse(float mouseDX, float mouseDY, int buttonClicked, int modKeys)
 	{
 		if (isFollowingPath)
 			StopPath();
@@ -55,7 +55,7 @@ namespace GEng
 			yawVelocity += mouseDX * yawAcceleration;
 		}
 	}
-	void Camera::UpdateKeyboard(int key)
+	void Camera3D::UpdateKeyboard(int key)
 	{
 		if (key != GLFW_KEY_W &&
 			key != GLFW_KEY_S &&
@@ -96,7 +96,7 @@ namespace GEng
 
 		posAcceleration = glm::min(posAcceleration, POS_MAX_ACCELERATION);
 	}
-	void Camera::UpdateZoom(double mouseWheelD)
+	void Camera3D::UpdateZoom(double mouseWheelD)
 	{
 		if (isFollowingPath)
 			StopPath();
@@ -104,14 +104,14 @@ namespace GEng
 		zoomAcceleration = glm::clamp(zoomAcceleration, -ZOOM_MAX_ACCELERATION, ZOOM_MAX_ACCELERATION);
 		zoomVelocity -= mouseWheelD * zoomAcceleration;
 	}
-	void Camera::MoveTo(const glm::vec3 &newPosition, const float targetZoomIn)
+	void Camera3D::MoveTo(const glm::vec3 &newPosition, const float targetZoomIn)
 	{
 		targetZoom = targetZoomIn;
 		targetPosition = newPosition;
 		isFollowingPath = true;
 		posVelocity = glm::vec3(0.11f, 0.0f, 0.0f);
 	}
-	void Camera::StopPath()
+	void Camera3D::StopPath()
 	{
 		isFollowingPath = false;
 
@@ -127,7 +127,7 @@ namespace GEng
 		zoomAcceleration = 0.0f;
 		zoomVelocity = 0.0f;
 	}
-	void Camera::UpdateCamera(double deltaTime, int key)
+	void Camera3D::UpdateCamera(double deltaTime, int key)
 	{
 		UpdateKeyboard(key);
 		if (isFollowingPath)
@@ -171,7 +171,7 @@ namespace GEng
 		this->RecalculateViewMatrix();
 	}
 	//
-	void Camera::RecalculateActualPos()
+	void Camera3D::RecalculateActualPos()
 	{
 		float horiDistanceFromCentre = zoom * cos(glm::radians(pitch));
 		float vertiDistanceFromCentre = zoom * sin(glm::radians(pitch));
@@ -181,7 +181,7 @@ namespace GEng
 		actualPosition.y += vertiDistanceFromCentre;
 		actualPosition.z -= horiDistanceFromCentre * cos(glm::radians(180.0f - yaw));
 	}
-	void Camera::RecalculateViewMatrix()
+	void Camera3D::RecalculateViewMatrix()
 	{
 		rotationsMatrix = glm::rotate(glm::radians(pitch), glm::vec3(1, 0, 0)) * glm::rotate(glm::radians(yaw), glm::vec3(0, 1, 0)) * glm::rotate(glm::radians(roll), glm::vec3(0, 0, 1));
 		viewMatrix = rotationsMatrix * glm::translate(-actualPosition);

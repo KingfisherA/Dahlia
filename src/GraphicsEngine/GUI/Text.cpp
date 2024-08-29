@@ -58,7 +58,7 @@ namespace GEng {
 
         size_t texWidth = 1024;
         size_t texHeight = texWidth;
-        size_t penX = 0, penY = 0;
+        size_t penX = 0, penY = 100;
 
         sRef<FontAtlasBitmap> atlasBmp = std::make_shared<FontAtlasBitmap>();
         atlasBmp->GetBitmap() = (unsigned char *) malloc(texWidth * texHeight * sizeof(unsigned char));
@@ -92,9 +92,6 @@ namespace GEng {
             glm::ivec2 glyphSize = {bmp->width, bmp->rows};
             glm::ivec2 glyphBearing = {slot->bitmap_left, slot->bitmap_top};
             size_t glyphAdvance = slot->advance.x >> 6;
-
-            if (penY == 0)
-                penY = glyphBearing.y;
 
             if (penX + glyphAdvance >= texWidth) {
                 penX = 0;
@@ -156,10 +153,11 @@ namespace GEng {
                 continue;
             }
 
-            if (penX >= bounds.x + bounds.z && bounds.z > 0.0f) {
+            if (penX >= bounds.x + bounds.z && bounds.z > 0.0f && c == ' ') {
                 penX = bounds.x;
                 penY += largestGlyph;
             }
+
 
             const AtlasGlyph &glyphData = atlas.GetAtlasMap().contains(c)
                                               ? atlas.GetAtlasMap().at(c)
@@ -197,7 +195,7 @@ namespace GEng {
     Text::Text() {
         if (mShader == nullptr) {
             mShader = ShaderProgram::CreateFromFile(
-                "/media/charlie/SSD/dev/C++/GraphicsEngine/Assets/Shaders/Text.glsl");
+                "../../../../Assets/Shaders/Text.glsl");
             mShader->Bind();
             mShader->UploadI("uFontAtlas", 0);
             mShader->Unbind();

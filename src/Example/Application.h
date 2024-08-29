@@ -5,7 +5,7 @@
 #include "GraphicsEngine/GUI/Display.h"
 #include "GraphicsEngine/Layers/LayerStack.h"
 #include "GraphicsEngine/GUI/ImGuiLayer.h"
-#include "GraphicsEngine/Scene/Camera.hpp"
+#include "GraphicsEngine/Scene/Camera3D.hpp"
 #include "GraphicsEngine/Events/WindowEvents.h"
 #include "GraphicsEngine/Application/GraphicsApp.h"
 #include "GraphicsEngine/GUI/Text.h"
@@ -25,8 +25,8 @@ namespace Example {
 
         inline glm::mat4 &GetProjectionMatrix() { return projectionMatrix; }
 
-        const GEng::Camera &GetCamera() const { return mCam; }
-        GEng::Camera &GetCamera() { return mCam; }
+        const GEng::Camera3D &GetCamera() const { return mCam; }
+        GEng::Camera3D &GetCamera() { return mCam; }
 
     protected:
         virtual void OnRender() override;
@@ -41,7 +41,7 @@ namespace Example {
         void RenderCameraPanel();
         void RenderSceneInformation();
 
-        GEng::Camera mCam;
+        GEng::Camera3D mCam;
         glm::mat4 projectionMatrix;
 
         GLenum mRenderStyle = GL_FILL;

@@ -8,7 +8,7 @@
 namespace GEng
 {
 	class Framebuffer;
-	class Camera;
+	class Camera3D;
 
 	GENG_API class Layer
 	{
@@ -18,7 +18,7 @@ namespace GEng
 
 		virtual void OnAttach() {}
 		virtual void OnDetach() {}
-		virtual void OnUpdate(const sRef<GEng::Framebuffer> &screenBuffer, const Camera &cam,
+		virtual void OnUpdate(const sRef<GEng::Framebuffer> &screenBuffer, const Camera3D &cam,
 							  const glm::mat4 &projectionMatrix, const glm::vec2 &nearFarPlanes)
 		{
 		}

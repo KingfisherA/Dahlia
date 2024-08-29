@@ -21,7 +21,7 @@ void main()
 {
     texCoords = ((aVertex + vec2(1.0f)) * 0.5f);
 
-    // gl_Position = uPVMatrix * vec4(aVertex, 0.0f, 1.0f);
+    //gl_Position = uPVMatrix * vec4(aVertex, 0.0f, 1.0f);
     gl_Position = uPVMatrix * vec4((vec2(texCoords.x * aGlyph.x, texCoords.y * aGlyph.y) + aPosition) * uTxtScaling, 0.0f, 1.0f);
     texCoords = vec2(texCoords.x * aGlyph.x, texCoords.y * aGlyph.y) + aGlyph.zw;
 }

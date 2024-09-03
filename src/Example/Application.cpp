@@ -98,7 +98,12 @@ namespace Example {
         mShader = GEng::ShaderProgram::CreateFromFile(shaderFilePath);
         mShader->UploadMatF("uTransformMatrix", glm::mat4(1.0f));
 
-        mUbuntuLight = mFontManager.CreateFontAtlas("/usr/share/fonts/truetype/ubuntu/Ubuntu-Th.ttf",
+#ifdef _WIN32
+        const char* fontPath = "C:/Windows/Fonts/Ubuntu-L.ttf";
+#else
+        const char* fontPath = "/usr/share/fonts/truetype/ubuntu/UbuntuSans[wdth,wght].ttf";
+#endif
+        mUbuntuLight = mFontManager.CreateFontAtlas(fontPath,
                                                     80.0f);
 
         mText = Text::Create();

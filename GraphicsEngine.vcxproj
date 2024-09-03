@@ -57,7 +57,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>OS_WIN;GENG_STATIC;GENG_BUILD;GLEW_STATIC;CONFIG_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;..\..\Libraries\glfw-3.3.2\include;..\..\Libraries\glew-2.1.0\include;..\..\Libraries\glm;..\..\Libraries\boost_1_83_0;..\..\Libraries\ImGui;..\..\Libraries;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;..\..\Libraries\glfw-3.3.2\include;..\..\Libraries\glew-2.1.0\include;..\..\Libraries\glm;..\..\Libraries\boost_1_83_0;..\..\Libraries\ImGui;..\..\Libraries\freetype-2.13.3\include;..\..\Libraries;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <AdditionalOptions>/MDd %(AdditionalOptions)</AdditionalOptions>
@@ -74,7 +74,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>OS_WIN;GENG_STATIC;GENG_BUILD;GLEW_STATIC;CONFIG_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;..\..\Libraries\glfw-3.3.2\include;..\..\Libraries\glew-2.1.0\include;..\..\Libraries\glm;..\..\Libraries\boost_1_83_0;..\..\Libraries\ImGui;..\..\Libraries;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;..\..\Libraries\glfw-3.3.2\include;..\..\Libraries\glew-2.1.0\include;..\..\Libraries\glm;..\..\Libraries\boost_1_83_0;..\..\Libraries\ImGui;..\..\Libraries\freetype-2.13.3\include;..\..\Libraries;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>None</DebugInformationFormat>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>

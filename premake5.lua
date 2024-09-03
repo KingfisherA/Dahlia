@@ -52,12 +52,13 @@ project "GraphicsEngine"
 		includedirs
 		{
 		  "%{wks.location}/src/",
-		  "D:/dev/Libraries/glfw-3.3.2/include",
-		  "D:/dev/Libraries/glew-2.1.0/include",
-		  "D:/dev/Libraries/glm",
-		  "D:/dev/Libraries/boost_1_83_0",
-		  "D:/dev/Libraries/ImGui",
-		  "D:/dev/Libraries/"
+		  "../../Libraries/glfw-3.3.2/include",
+		  "../../Libraries/glew-2.1.0/include",
+		  "../../Libraries/glm",
+		  "../../Libraries/boost_1_83_0",
+		  "../../Libraries/ImGui",
+		  "../../Libraries/freetype-2.13.3/include",
+		  "../../Libraries/"
 		}
 
     filter {"configurations:Debug", "system:windows"}
@@ -120,22 +121,24 @@ project "GraphicsEngine_Shared"
 		{
 		  "%{wks.location}/src/Example",
 		  "%{wks.location}/src/",
-		  "D:/dev/Libraries/glfw-3.3.2/include",
-		  "D:/dev/Libraries/glew-2.1.0/include",
-		  "D:/dev/Libraries/glm",
-		  "D:/dev/Libraries/boost_1_83_0",
-		  "D:/dev/Libraries/ImGui",
-		  "D:/dev/Libraries/"
+		  "../../Libraries/glfw-3.3.2/include",
+		  "../../Libraries/glew-2.1.0/include",
+		  "../../Libraries/glm",
+		  "../../Libraries/boost_1_83_0",
+		  "../../Libraries/ImGui",
+		  "../../Libraries/freetype-2.13.3/include",
+		  "../../Libraries/"
 		}
 		libdirs
         {
-		    "D:/dev/Libraries/boost_1_83_0/stage/lib/",
-		    "D:/dev/Libraries/ImGui/bin/windows/Release-x64/",
-		    "D:/dev/Libraries/glfw-3.3.2/lib/x64",
-		    "D:/dev/Libraries/glew-2.1.0/lib/Release/x64",
-			"C:/Program Files (x86)/Windows Kits/10/Lib/10.0.22000.0/um/x64"
+		    "../../Libraries/boost_1_83_0/stage/lib/",
+		    "../../Libraries/ImGui/bin/windows/Release-x64/",
+		    "../../Libraries/glfw-3.3.2/lib/x64",
+		    "../../Libraries/glew-2.1.0/lib/Release/x64",
+			"C:/Program Files (x86)/Windows Kits/10/Lib/10.0.22000.0/um/x64",
+			"../../Libraries/freetype-2.13.3/objs",
         }
-		links { "OpenGL32.lib", "glew32s", "glfw3", "ImGui"}
+		links { "OpenGL32.lib", "glew32s", "glfw3", "freetype.lib", "ImGui"}
 		linkoptions { '/NODEFAULTLIB:"LIBCMTD" /NODEFAULTLIB:"LIBCMT"' }
 	
     filter {"configurations:Debug", "system:windows"}
@@ -200,19 +203,21 @@ project "Example"
 		{
 		  "%{wks.location}/src/Example",
 		  "%{wks.location}/src/",
-		  "D:/dev/Libraries/glfw-3.3.2/include",
-		  "D:/dev/Libraries/glew-2.1.0/include",
-		  "D:/dev/Libraries/glm",
-		  "D:/dev/Libraries/boost_1_83_0",
-		  "D:/dev/Libraries/ImGui",
-		  "D:/dev/Libraries/"
+		  "../../Libraries/glfw-3.3.2/include",
+		  "../../Libraries/glew-2.1.0/include",
+		  "../../Libraries/glm",
+		  "../../Libraries/boost_1_83_0",
+		  "../../Libraries/ImGui",
+		  "../../Libraries/freetype-2.13.3/include",
+		  "../../Libraries/"
 		}
 		libdirs{
-		"D:/dev/Libraries/boost_1_83_0/stage/lib/",
-		"D:/dev/Libraries/ImGui/bin/windows/Release-x64/",
-		"D:/dev/Libraries/glfw-3.3.2/lib/x64",
-		"D:/dev/Libraries/glew-2.1.0/lib/Release/x64"}
-		links { "opengl32", "glew32s", "glfw3", "ImGui", "GraphicsEngine"}
+		"../../Libraries/boost_1_83_0/stage/lib/",
+		"../../Libraries/ImGui/bin/windows/Release-x64/",
+		"../../Libraries/glfw-3.3.2/lib/x64",
+		"../../Libraries/glew-2.1.0/lib/Release/x64",
+		"../../Libraries/freetype-2.13.3/objs"}
+		links { "opengl32", "glew32s", "glfw3", "ImGui", "freetype.lib", "GraphicsEngine"}
 		linkoptions { '/NODEFAULTLIB:"LIBCMTD" /NODEFAULTLIB:"LIBCMT"' }
 
     filter {"configurations:Debug", "system:windows"}

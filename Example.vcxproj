@@ -59,7 +59,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>OS_WIN;GENG_STATIC;GLEW_STATIC;CONFIG_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src\Example;src;..\..\Libraries\glfw-3.3.2\include;..\..\Libraries\glew-2.1.0\include;..\..\Libraries\glm;..\..\Libraries\boost_1_83_0;..\..\Libraries\ImGui;..\..\Libraries;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src\Example;src;..\..\Libraries\glfw-3.3.2\include;..\..\Libraries\glew-2.1.0\include;..\..\Libraries\glm;..\..\Libraries\boost_1_83_0;..\..\Libraries\ImGui;..\..\Libraries\freetype-2.13.3\include;..\..\Libraries;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <AdditionalOptions>/MDd %(AdditionalOptions)</AdditionalOptions>
@@ -69,8 +69,8 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>opengl32.lib;glew32s.lib;glfw3.lib;ImGui.lib;libboost_filesystem-vc143-mt-gd-x64-1_83.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\..\Libraries\boost_1_83_0\stage\lib;..\..\Libraries\ImGui\bin\windows\Release-x64;..\..\Libraries\glfw-3.3.2\lib\x64;..\..\Libraries\glew-2.1.0\lib\Release\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glew32s.lib;glfw3.lib;ImGui.lib;freetype.lib;libboost_filesystem-vc143-mt-gd-x64-1_83.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\Libraries\boost_1_83_0\stage\lib;..\..\Libraries\ImGui\bin\windows\Release-x64;..\..\Libraries\glfw-3.3.2\lib\x64;..\..\Libraries\glew-2.1.0\lib\Release\x64;..\..\Libraries\freetype-2.13.3\objs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>/NODEFAULTLIB:"LIBCMTD" /NODEFAULTLIB:"LIBCMT" %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
@@ -79,7 +79,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>OS_WIN;GENG_STATIC;GLEW_STATIC;CONFIG_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src\Example;src;..\..\Libraries\glfw-3.3.2\include;..\..\Libraries\glew-2.1.0\include;..\..\Libraries\glm;..\..\Libraries\boost_1_83_0;..\..\Libraries\ImGui;..\..\Libraries;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src\Example;src;..\..\Libraries\glfw-3.3.2\include;..\..\Libraries\glew-2.1.0\include;..\..\Libraries\glm;..\..\Libraries\boost_1_83_0;..\..\Libraries\ImGui;..\..\Libraries\freetype-2.13.3\include;..\..\Libraries;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>None</DebugInformationFormat>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -95,8 +95,8 @@
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>opengl32.lib;glew32s.lib;glfw3.lib;ImGui.lib;libboost_filesystem-vc143-mt-x64-1_83.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\..\Libraries\boost_1_83_0\stage\lib;..\..\Libraries\ImGui\bin\windows\Release-x64;..\..\Libraries\glfw-3.3.2\lib\x64;..\..\Libraries\glew-2.1.0\lib\Release\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glew32s.lib;glfw3.lib;ImGui.lib;freetype.lib;libboost_filesystem-vc143-mt-x64-1_83.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\Libraries\boost_1_83_0\stage\lib;..\..\Libraries\ImGui\bin\windows\Release-x64;..\..\Libraries\glfw-3.3.2\lib\x64;..\..\Libraries\glew-2.1.0\lib\Release\x64;..\..\Libraries\freetype-2.13.3\objs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>/NODEFAULTLIB:"LIBCMTD" /NODEFAULTLIB:"LIBCMT" %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>

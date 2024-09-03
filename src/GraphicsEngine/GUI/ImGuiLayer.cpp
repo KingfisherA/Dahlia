@@ -40,7 +40,13 @@ namespace GEng {
         io.ConfigWindowsMoveFromTitleBarOnly = true;
 
         //..\..\..\assets\fonts\ubuntu\Ubuntu - R.ttf
-        const char *fontPath = "/usr/share/fonts/truetype/ubuntu/UbuntuSans[wdth,wght].ttf";
+
+#ifdef _WIN32
+        const char* fontPath = "C:/Windows/Fonts/Ubuntu-L.ttf";
+#else
+        const char* fontPath = "/usr/share/fonts/truetype/ubuntu/UbuntuSans[wdth,wght].ttf";
+#endif
+
         io.FontDefault = io.Fonts->AddFontFromFileTTF(fontPath, 20.0f * mDisplay->GetContentScaling().x);
         io.Fonts->AddFontFromFileTTF(fontPath, 48.0f * mDisplay->GetContentScaling().x);
         // Setup Dear ImGui style

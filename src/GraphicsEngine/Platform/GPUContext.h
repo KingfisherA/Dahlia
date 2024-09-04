@@ -9,7 +9,8 @@
 
 namespace GEng {
     GENG_API enum class API {
-        OpenGL = 0
+        OpenGL = 0,
+        Vulkan
     };
 
     GENG_API class GPUContext {
@@ -27,10 +28,11 @@ namespace GEng {
             Additive
         };
 
-        static GPUContext *Create(const API api);
+        static GPUContext *Create(const API api, uint32_t major, uint32_t minor);
 
         template<typename T = GPUContext>
         static T *Get() { return reinterpret_cast<T *>(sCurrentContext); }
+        static API GetAPI() { return sCurrentContext->GetContextAPI(); }
 
         virtual API GetContextAPI() const = 0;
         virtual void Reset() =0;
@@ -46,9 +48,11 @@ namespace GEng {
         virtual void SetPolygonMode(const PolygonMode mode) =0;
         virtual void SetBlending(bool activate, const Blending mode = Blending::Alpha) =0;
 
-        virtual void SetViewport(const glm::ivec4& bounds)=0;
+        virtual void SetViewport(const glm::ivec4 &bounds) =0;
 
         virtual void ActivateDefaultFramebuffer() =0;
+
+        virtual void DestroyContext() =0;
 
     private:
         static GPUContext *sCurrentContext;

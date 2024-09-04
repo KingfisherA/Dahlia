@@ -17,10 +17,10 @@ namespace GEng
 	{
 	public:
 		ImGuiLayer(const Display *mainDisplay);
-		~ImGuiLayer();
+		~ImGuiLayer()=default;
 
-		virtual void OnAttach() override;
-		virtual void OnDetach() override;
+		virtual void OnInit() override;
+		virtual void OnDestroy() override;
 		virtual void OnImGuiRender() override;
 
 		virtual void OnEvent(Event &e) override;

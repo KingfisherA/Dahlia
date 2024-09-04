@@ -1,6 +1,8 @@
 ﻿add_executable("Example"
   "src/Example/Application.cpp"
   "src/Example/Application.h"
+  "src/Example/VulkanApp.cpp"
+  "src/Example/VulkanApp.h"
 )
 if(CMAKE_BUILD_TYPE STREQUAL Debug)
   add_dependencies("Example"
@@ -34,6 +36,7 @@ target_link_directories("Example" PRIVATE
 )
 target_link_libraries("Example"
   $<$<CONFIG:Debug>:GraphicsEngine>
+  $<$<CONFIG:Debug>:vulkan>
   $<$<CONFIG:Debug>:glfw3>
   $<$<CONFIG:Debug>:ImGui>
   $<$<CONFIG:Debug>:freetype>
@@ -101,6 +104,7 @@ target_link_directories("Example" PRIVATE
 )
 target_link_libraries("Example"
   $<$<CONFIG:Release>:GraphicsEngine>
+  $<$<CONFIG:Release>:vulkan>
   $<$<CONFIG:Release>:glfw3>
   $<$<CONFIG:Release>:ImGui>
   $<$<CONFIG:Release>:freetype>

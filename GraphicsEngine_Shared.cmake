@@ -35,8 +35,8 @@
     "src/GraphicsEngine/Maths/Geometry.h"
     "src/GraphicsEngine/Maths/Maths.cpp"
     "src/GraphicsEngine/Maths/Maths.h"
-      "src/GraphicsEngine/Platform/GLFW/GLFWDisplay.cpp"
-      "src/GraphicsEngine/Platform/GLFW/GLFWDisplay.h"
+      "src/GraphicsEngine/Platform/GLFW/GLFWDisplayBase.cpp"
+      "src/GraphicsEngine/Platform/GLFW/GLFWDisplayBase.h"
     "src/GraphicsEngine/Platform/GPUContext.cpp"
     "src/GraphicsEngine/Platform/GPUContext.h"
     "src/GraphicsEngine/Platform/Intrinsics.h"
@@ -44,6 +44,8 @@
       "src/GraphicsEngine/Platform/OpenGL/OpenGLBuffers.h"
       "src/GraphicsEngine/Platform/OpenGL/OpenGLContext.cpp"
       "src/GraphicsEngine/Platform/OpenGL/OpenGLContext.h"
+      "src/GraphicsEngine/Platform/OpenGL/OpenGLDisplay.cpp"
+      "src/GraphicsEngine/Platform/OpenGL/OpenGLDisplay.h"
       "src/GraphicsEngine/Platform/OpenGL/OpenGLFramebuffer.cpp"
       "src/GraphicsEngine/Platform/OpenGL/OpenGLFramebuffer.h"
       "src/GraphicsEngine/Platform/OpenGL/OpenGLShaderProgram.cpp"
@@ -52,6 +54,10 @@
       "src/GraphicsEngine/Platform/OpenGL/OpenGLTexture.h"
       "src/GraphicsEngine/Platform/OpenGL/OpenGLVertexArray.cpp"
       "src/GraphicsEngine/Platform/OpenGL/OpenGLVertexArray.h"
+      "src/GraphicsEngine/Platform/Vulkan/VulkanDisplay.cpp"
+      "src/GraphicsEngine/Platform/Vulkan/VulkanDisplay.h"
+      "src/GraphicsEngine/Platform/Vulkan/VulkanGPUContext.cpp"
+      "src/GraphicsEngine/Platform/Vulkan/VulkanGPUContext.h"
       "src/GraphicsEngine/Platform/Windows/Console.cpp"
       "src/GraphicsEngine/Platform/Windows/Console.h"
     "src/GraphicsEngine/Scene/Camera2D.cpp"
@@ -66,6 +72,10 @@
     "src/GraphicsEngine/Utilities/StringOperations.cpp"
     "src/GraphicsEngine/Utilities/StringOperations.h"
     "src/GraphicsEngine/Utilities/Threading.h"
+        src/GraphicsEngine/Platform/Vulkan/VulkanSwapChain.cpp
+        src/GraphicsEngine/Platform/Vulkan/VulkanSwapChain.h
+        src/GraphicsEngine/Platform/Vulkan/VulkanCommandBuffers.cpp
+        src/GraphicsEngine/Platform/Vulkan/VulkanCommandBuffers.h
 )
 if(CMAKE_BUILD_TYPE STREQUAL Debug)
   set_target_properties("GraphicsEngine_Shared" PROPERTIES

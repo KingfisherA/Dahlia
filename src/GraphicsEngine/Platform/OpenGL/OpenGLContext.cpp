@@ -6,10 +6,15 @@
 namespace GEng {
     static std::unordered_set<GLuint> gPreviousErrorId;
 
-    OpenGLContext::OpenGLContext(OpenGLErrorCallback errorCallback) {
+    OpenGLContext::OpenGLContext(uint32_t major, uint32_t minor) :  mMajorVersion(major), mMinorVersion(minor) {
+        if (glfwInit() != GLFW_TRUE)
+            throw std::runtime_error("Failed to initialize GLFW");
+    }
+
+    void OpenGLContext::InitOpenGLFunctionBindings() {
         GLenum glewError = glewInit();
         if (glewError != GLEW_OK) {
-            errorCallback(glewError, (const char *) glewGetErrorString(glewError));
+            GENG_FATAL(GEng::OpenGLContext, (const char *) glewGetErrorString(glewError));
             return;
         }
 
@@ -40,7 +45,6 @@ namespace GEng {
 
         GENG_LOG(Green, OpenGL GLEW API, "GLEW Intilised OK!");
     }
-
 
     void OpenGLContext::ClearBindings() {
         bindings.clear();
@@ -168,5 +172,9 @@ namespace GEng {
     void OpenGLContext::ActivateDefaultFramebuffer() {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         OpenGLContext::RegisterBind(GL_FRAMEBUFFER_BINDING, 0);
+    }
+    void OpenGLContext::DestroyContext() {
+        glfwTerminate();
+        delete this;
     }
 }

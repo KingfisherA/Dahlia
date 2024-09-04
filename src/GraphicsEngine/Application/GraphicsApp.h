@@ -50,7 +50,7 @@ namespace GEng
         virtual void OnRender() {}
         virtual void OnImGuiRender() {}
         virtual bool OnInit() { return true; }
-        virtual void OnDestroy() {}
+        virtual void OnDestroy();
 
         virtual bool OnWindowResized(WindowResizeEvent &e);
         virtual bool OnWindowClose(WindowCloseEvent &e);

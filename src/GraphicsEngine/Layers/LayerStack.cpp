@@ -20,18 +20,18 @@ namespace GEng
 	{
 		m_Layers.emplace(m_Layers.begin() + m_LayerInsertIndex, layer);
 		m_LayerInsertIndex++;
-		layer->OnAttach();
+		layer->OnInit();
 	}
 
 	void LayerStack::PushOverlay(Layer *overlay)
 	{
 		m_Layers.emplace_back(overlay);
-		overlay->OnAttach();
+		overlay->OnInit();
 	}
 
 	void LayerStack::PopLayer(Layer *layer)
 	{
-		layer->OnDetach();
+		layer->OnDestroy();
 		auto it = std::find(m_Layers.begin(), m_Layers.end(), layer);
 
 		if (it != m_Layers.end())
@@ -43,7 +43,7 @@ namespace GEng
 
 	void LayerStack::PopOverlay(Layer *overlay)
 	{
-		overlay->OnDetach();
+		overlay->OnDestroy();
 		auto it = std::find(m_Layers.begin(), m_Layers.end(), overlay);
 
 		if (it != m_Layers.end())

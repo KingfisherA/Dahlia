@@ -18,8 +18,8 @@ namespace GEng
 		Layer(const std::string_view name = "Layer");
 		virtual ~Layer();
 
-		virtual void OnAttach() {}
-		virtual void OnDetach() {}
+		virtual void OnInit() {}
+		virtual void OnDestroy() {}
 		virtual void OnUpdate(const sRef<GEng::Framebuffer> &screenBuffer, const Camera3D &cam,
 							  const glm::mat4 &projectionMatrix, const glm::vec2 &nearFarPlanes)
 		{

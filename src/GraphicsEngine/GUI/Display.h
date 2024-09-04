@@ -2,6 +2,7 @@
 
 #include "GraphicsEngine/GEng_API.h"
 #include "GraphicsEngine/Events/Events.h"
+#include "GraphicsEngine/Platform/GPUContext.h"
 
 #include <glm/vec2.hpp>
 
@@ -15,8 +16,7 @@ namespace GEng {
     public:
         using EventCallbackFnc = std::function<void(Event &)>;
 
-        virtual ~Display() {
-        }
+        virtual ~Display() = default;
 
         virtual void Refresh() = 0;
         virtual size_t GetWidth() const = 0;
@@ -34,6 +34,6 @@ namespace GEng {
 
         virtual void *GetAPIDisplay() const = 0;
 
-        static Display *Create(const DisplayProps &properties);
+        static Display *Create(GPUContext *ctx, const DisplayProps &properties);
     };
 }

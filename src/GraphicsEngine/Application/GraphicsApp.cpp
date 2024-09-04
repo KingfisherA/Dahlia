@@ -28,10 +28,10 @@ namespace GEng {
         if (mInitParams == nullptr)
             return false;
 
-        m_Window.reset(Display::Create({mInitParams->displayTitle, mInitParams->width, mInitParams->height}));
-        m_Window->BindEventCallback(BIND_EVENT_FNC(OnEvent));
+        GPUContext *ctx = GPUContext::Create(API::OpenGL, 4, 6);
 
-        GPUContext *ctx = GPUContext::Create(API::OpenGL);
+        m_Window.reset(Display::Create(ctx, {mInitParams->displayTitle, mInitParams->width, mInitParams->height}));
+        m_Window->BindEventCallback(BIND_EVENT_FNC(OnEvent));
 
         m_VersionStr = ctx->GetVersionStr();
         m_VersionStr.insert(0, "OpenGL ");
@@ -52,7 +52,6 @@ namespace GEng {
 
     void GraphicsApp::Run() {
         while (m_IsRunning) {
-
             {
                 double newTime = m_Window->GetTime();
                 m_DeltaTime = newTime - m_Time;
@@ -90,6 +89,14 @@ namespace GEng {
         }
 
         this->OnDestroy();
+    }
+
+    void GraphicsApp::OnDestroy() {
+        for (Layer *layer: m_LayerStack) {
+            layer->OnDestroy();
+        }
+
+        GPUContext::Get()->DestroyContext();
     }
 
     void GraphicsApp::RenderViewport() {

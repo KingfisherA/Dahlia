@@ -23,10 +23,7 @@ namespace GEng {
     ImGuiLayer::ImGuiLayer(const Display *mainDisplay) : Layer("ImGui Layer"), mDisplay(mainDisplay) {
     }
 
-    ImGuiLayer::~ImGuiLayer() {
-    }
-
-    void ImGuiLayer::OnAttach() {
+    void ImGuiLayer::OnInit() {
         // Setup Dear ImGui context
         IMGUI_CHECKVERSION();
         ImGui::CreateContext();
@@ -68,7 +65,7 @@ namespace GEng {
         ImGui_ImplOpenGL3_Init("#version 410");
     }
 
-    void ImGuiLayer::OnDetach() {
+    void ImGuiLayer::OnDestroy() {
         ImGui_ImplOpenGL3_Shutdown();
         ImGui_ImplGlfw_Shutdown();
         ImGui::DestroyContext();

@@ -1,25 +1,25 @@
 #pragma once
 
-#include <unordered_map>
-
-#include"GraphicsEngine/GEng_API.h"
-#include "GraphicsEngine/Platform/GPUContext.h"
-
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-#include<unordered_map>
+#include <unordered_map>
+
+#include "GraphicsEngine/GEng_API.h"
+#include "GraphicsEngine/Platform/GPUContext.h"
 
 namespace GEng {
     using GLid = unsigned int;
 
     GENG_API class OpenGLContext : public GPUContext {
     public:
-        typedef void (*OpenGLErrorCallback)(int errorCode, const char *message);
-
-        OpenGLContext(OpenGLErrorCallback errorCallback);
+        OpenGLContext(uint32_t major, uint32_t minor);
+        void InitOpenGLFunctionBindings();
 
         virtual API GetContextAPI() const override { return API::OpenGL; }
+
+        uint32_t GetMajorVersion() const { return mMajorVersion; }
+        uint32_t GetMinorVersion() const { return mMinorVersion; }
 
         void ClearBindings();
         void ResetBindings();
@@ -47,7 +47,11 @@ namespace GEng {
 
         void ActivateDefaultFramebuffer() override;
 
+        void DestroyContext() override;
+
     private:
         std::unordered_map<GLenum, GLuint> bindings;
+
+        uint32_t mMajorVersion, mMinorVersion;
     };
 }

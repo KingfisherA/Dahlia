@@ -17,7 +17,7 @@ namespace GEng
 		unsigned int vertexOffset = 0;
 		// In instances. Specify the number of instances
 		//  that will pass between updates of the generic attribute at slot index.
-		unsigned int divisor = 0;
+		unsigned int instanceDivisor = 0;
 	};
 
 
@@ -25,15 +25,16 @@ namespace GEng
 	using Index = unsigned int;
 	constexpr Index IndexUndefined = (Index)-1;
 
+	GENG_API enum class Primitive {
+		Triangles = 0,
+		Lines,
+		Points,
+		TriangleFan
+	};
+
 	GENG_API class VertexArray
 	{
 	public:
-		GENG_API enum class DrawMode {
-			Triangles = 0,
-			Lines,
-			Points,
-			TriangleFan
-		};
 
 		virtual ~VertexArray() {}
 
@@ -43,7 +44,7 @@ namespace GEng
 		virtual void Bind() = 0;
 		virtual void Unbind() = 0;
 
-		virtual void SubmitArrays(const DrawMode drawMode = DrawMode::Triangles, size_t instances = 1) = 0;
+		virtual void SubmitArrays(const Primitive drawMode = Primitive::Triangles, size_t instances = 1) = 0;
 
 		virtual Index AddVertexBuffer(const sRef<VertexBuffer> &buffer, const VertexSpecification spec = {3, 0, 0}) = 0;
 		virtual void AddIndexBuffer(const sRef<IndexBuffer> &buffer) = 0;

@@ -56,6 +56,7 @@ namespace GEng {
         [[nodiscard]] const QueueFamilyIndices &GetQueueFamilyIndices() const { return mQueueFamilyIndices; }
         [[nodiscard]] VkQueue GetGraphicsQueue() const { return mGraphicsQueue; }
         [[nodiscard]] VkQueue GetPresentQueue() const { return mPresentQueue; }
+        [[nodiscard]] VulkanCommandPool* GetCommandPool() const { return mCommandPool; }
         //
         //
         uint32_t FindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
@@ -100,6 +101,6 @@ namespace GEng {
         VkQueue mGraphicsQueue = nullptr, mPresentQueue = nullptr;
         QueueFamilyIndices mQueueFamilyIndices;
 
-        VulkanCommandPool* mCommandPool = nullptr;
+        VulkanCommandPool *mCommandPool = nullptr;
     };
 } // GEng

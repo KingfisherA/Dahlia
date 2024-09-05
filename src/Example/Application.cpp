@@ -177,7 +177,7 @@ namespace Example {
         mShader->Bind();
         mShader->UploadMatF("uPVMatrix", pvMatrix);
 
-        mVAO->SubmitArrays(VertexArray::DrawMode::Triangles);
+        mVAO->SubmitArrays(Primitive::Triangles);
 
 
         float aspect = (float) mViewportFramebuffer->GetWidth() / (float) mViewportFramebuffer->GetHeight();

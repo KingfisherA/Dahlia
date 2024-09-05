@@ -282,7 +282,7 @@ namespace GEng {
 
         mFontAtlasTex->Bind(0);
 
-        mTextVA->SubmitArrays(VertexArray::DrawMode::Triangles, mNoOfGlyphs);
+        mTextVA->SubmitArrays(Primitive::Triangles, mNoOfGlyphs);
 
         glEnable(GL_DEPTH_TEST);
     }

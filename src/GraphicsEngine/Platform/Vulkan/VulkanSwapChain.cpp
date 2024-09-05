@@ -10,8 +10,9 @@ namespace GEng {
     VulkanSwapChain::VulkanSwapChain(VulkanGPUContext *ctx, VulkanDisplay *display): mDisplay(display) {
         mDetails = QuerySwapChainSupport(ctx->GetPhysicalDevice(), display->GetSurface());
 
-        CreateRenderPass();
         CreateSwapChain();
+        CreateRenderPass();
+        CreateFramebuffers();
     }
     //
     VulkanSwapChain::~VulkanSwapChain() {
@@ -44,6 +45,7 @@ namespace GEng {
     void VulkanSwapChain::RecreateSwapChain() {
         DestroySwapChain();
         CreateSwapChain();
+        CreateFramebuffers();
     }
     //
     VkFormat VulkanSwapChain::FindSupportedFormat(const std::vector<VkFormat> &candidates, VkImageTiling tiling,
@@ -163,7 +165,8 @@ namespace GEng {
         subpass.pDepthStencilAttachment = &depthAttachmentRef;
         subpass.pResolveAttachments = nullptr; // &colourAttachmentResolveRef;
 
-        std::array<VkAttachmentDescription, 2> attachments = {colorAttachment, depthAttachment};//, colorAttachmentResolve};
+        std::array<VkAttachmentDescription, 2> attachments = {colorAttachment, depthAttachment};
+        //, colorAttachmentResolve};
         VkRenderPassCreateInfo renderPassInfo{};
         renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
         renderPassInfo.attachmentCount = attachments.size();
@@ -277,13 +280,15 @@ namespace GEng {
 #pragma endregion
 
         CreateDepthTexture();
-
-#pragma region Create Framebuffers
-
+    }
+    //
+    void VulkanSwapChain::CreateFramebuffers() {
+        VulkanGPUContext *vkCtx = GPUContext::Get<VulkanGPUContext>();
         mSwapChainFramebuffers.resize(mSwapChainImageViews.size());
         for (size_t i = 0; i < mSwapChainImageViews.size(); i++) {
-            std::array<VkImageView, 1> attachments = {
-                mSwapChainImageViews[i]
+            std::array<VkImageView, 2> attachments = {
+                mSwapChainImageViews[i],
+                mDepthImageView
             };
 
             VkFramebufferCreateInfo framebufferInfo{};
@@ -298,8 +303,6 @@ namespace GEng {
             if (vkCreateFramebuffer(vkCtx->GetDevice(), &framebufferInfo, nullptr, &mSwapChainFramebuffers[i]))
                 throw std::runtime_error("Failed to create framebuffers \n");
         }
-
-#pragma endregion
     }
     //
     void VulkanSwapChain::CreateDepthTexture() {
@@ -354,6 +357,8 @@ namespace GEng {
         VulkanGPUContext *vkCtx = GPUContext::Get<VulkanGPUContext>();
         VkDevice device = vkCtx->GetDevice();
 
+        vkDeviceWaitIdle(device);
+
         // vkDestroyImageView(mDevice, mMultisampledImageView, nullptr);
         // vkDestroyImage(mDevice, mMultisampledImage, nullptr);
         // vkFreeMemory(mDevice, mMultisampledImageMem, nullptr);
@@ -361,6 +366,8 @@ namespace GEng {
         vkDestroyImageView(device, mDepthImageView, nullptr);
         vkDestroyImage(device, mDepthImage, nullptr);
         vkFreeMemory(device, mDepthImageMem, nullptr);
+
+        vkDestroyRenderPass(device, mRenderPass, nullptr);
 
         for (VkFramebuffer framebuffer: mSwapChainFramebuffers) {
             vkDestroyFramebuffer(device, framebuffer, nullptr);

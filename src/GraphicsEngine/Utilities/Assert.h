@@ -27,6 +27,7 @@
     if (condition)                                                                         \
     {                                                                                      \
         std::cerr << "Assertion Failed! [" << #object << "] " << message << '\n'; \
+        throw std::runtime_error("");\
     }
 #define GENG_FATAL(object, message) std::cerr << '[' << #object << "] " << message << '\n';
 #define GENG_WARN(object, message) std::cerr << '[' << #object << "] " << message << '\n';

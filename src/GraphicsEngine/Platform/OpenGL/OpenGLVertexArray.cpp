@@ -27,18 +27,18 @@ namespace GEng {
         GPUContext::Get<OpenGLContext>()->RegisterBind(GL_VERTEX_ARRAY_BINDING, 0);
     }
 
-    void OpenGLVertexArray::SubmitArrays(const DrawMode drawMode, size_t instances) {
+    void OpenGLVertexArray::SubmitArrays(const Primitive drawMode, size_t instances) {
         OpenGLVertexArray::SubmitArrays(
             [drawMode]()-> GLenum {
                 switch (drawMode) {
                     default:
-                    case DrawMode::Triangles:
+                    case Primitive::Triangles:
                         return GL_TRIANGLES;
-                    case DrawMode::Lines:
+                    case Primitive::Lines:
                         return GL_LINES;
-                    case DrawMode::Points:
+                    case Primitive::Points:
                         return GL_POINTS;
-                    case DrawMode::TriangleFan:
+                    case Primitive::TriangleFan:
                         return GL_TRIANGLE_FAN;
                 }
             }()
@@ -83,7 +83,7 @@ namespace GEng {
 
         glVertexAttribPointer(attribArray, (int) spec.vertexSize, GL_FLOAT, GL_FALSE, spec.vertexStride * sizeof(float),
                               (void *) (spec.vertexOffset * sizeof(float)));
-        glVertexAttribDivisor(attribArray, spec.divisor);
+        glVertexAttribDivisor(attribArray, spec.instanceDivisor);
         glEnableVertexAttribArray(attribArray);
 
         // glBindBuffer(GL_ARRAY_BUFFER, 0);

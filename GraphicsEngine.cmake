@@ -76,6 +76,10 @@
         src/GraphicsEngine/Platform/Vulkan/VulkanSwapChain.h
         src/GraphicsEngine/Platform/Vulkan/VulkanCommandBuffers.cpp
         src/GraphicsEngine/Platform/Vulkan/VulkanCommandBuffers.h
+        src/GraphicsEngine/Platform/Vulkan/VulkanBuffer.cpp
+        src/GraphicsEngine/Platform/Vulkan/VulkanBuffer.h
+        src/GraphicsEngine/Platform/Vulkan/VulkanGraphicsPipeline.cpp
+        src/GraphicsEngine/Platform/Vulkan/VulkanGraphicsPipeline.h
 )
 if(CMAKE_BUILD_TYPE STREQUAL Debug)
   set_target_properties("GraphicsEngine" PROPERTIES

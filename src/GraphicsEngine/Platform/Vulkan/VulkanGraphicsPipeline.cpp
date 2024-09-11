@@ -1,4 +1,5 @@
 #include "GraphicsEngine/Platform/Vulkan/VulkanGraphicsPipeline.h"
+#include "GraphicsEngine/Platform/Vulkan/VulkanShader.h"
 
 #include "VulkanGPUContext.h"
 
@@ -8,6 +9,7 @@ namespace GEng {
     VulkanGraphicsPipeline::VulkanGraphicsPipeline() {
         Reset();
     }
+
     //
     VulkanGraphicsPipeline::~VulkanGraphicsPipeline() {
         VulkanGPUContext *vkCtx = GPUContext::Get<VulkanGPUContext>();
@@ -18,20 +20,12 @@ namespace GEng {
             vkDestroyPipeline(vkCtx->GetDevice(), mGraphicsPipeline, nullptr);
         }
     }
+
     //
     void VulkanGraphicsPipeline::Reset() {
-        mVertexStage.reset();
-        mFragmentStage.reset();
-        mGeometryStage.reset();
-
-        std::array<VkDynamicState, 2> dynamicStates = {
-            VK_DYNAMIC_STATE_VIEWPORT,
-            VK_DYNAMIC_STATE_SCISSOR
-        };
-
         mDynamicStates.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
-        mDynamicStates.dynamicStateCount = dynamicStates.size();
-        mDynamicStates.pDynamicStates = dynamicStates.data();
+        mDynamicStates.dynamicStateCount = DEFAULT_DYNAMIC_STATES.size();
+        mDynamicStates.pDynamicStates = DEFAULT_DYNAMIC_STATES.data();
 
         mInputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
         mInputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
@@ -48,18 +42,21 @@ namespace GEng {
         mRasterizer.depthBiasConstantFactor = 0.0f; // Optional
         mRasterizer.depthBiasClamp = 0.0f; // Optional
         mRasterizer.depthBiasSlopeFactor = 0.0f; // Optional
+
+        EnableMultisampling(1, false);
     }
+
     //
     void VulkanGraphicsPipeline::DefineVertexSpecification(const ShaderAttribute *specs, size_t numOfSpec,
                                                            bool enableInstance) {
         mVertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
 
-        std::vector<VkVertexInputAttributeDescription> attributeDescriptions(numOfSpec);
+        mAttributeDescriptions.resize(numOfSpec);
 
         uint32_t stride = 0;
         for (size_t i = 0; i < numOfSpec; i++) {
             const ShaderAttribute &spec = specs[i];
-            VkVertexInputAttributeDescription &description = attributeDescriptions[i];
+            VkVertexInputAttributeDescription &description = mAttributeDescriptions[i];
             description.binding = spec.binding;
             description.location = spec.location;
             description.format = [spec]() {
@@ -81,49 +78,56 @@ namespace GEng {
             stride += specs->vertexSize * sizeof(float);
         }
 
-        VkVertexInputBindingDescription bindingDescription{};
-        bindingDescription.binding = 0;
-        bindingDescription.stride = stride;
-        bindingDescription.inputRate = enableInstance
-                                           ? VK_VERTEX_INPUT_RATE_INSTANCE
-                                           : VK_VERTEX_INPUT_RATE_VERTEX;
+
+        mBindingDescription.binding = 0;
+        mBindingDescription.stride = stride;
+        mBindingDescription.inputRate = enableInstance
+                                            ? VK_VERTEX_INPUT_RATE_INSTANCE
+                                            : VK_VERTEX_INPUT_RATE_VERTEX;
 
 
         mVertexInputInfo.vertexBindingDescriptionCount = 1;
-        mVertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(attributeDescriptions.size());
-        mVertexInputInfo.pVertexBindingDescriptions = &bindingDescription;
-        mVertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions.data();
+        mVertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(mAttributeDescriptions.size());
+        mVertexInputInfo.pVertexBindingDescriptions = &mBindingDescription;
+        mVertexInputInfo.pVertexAttributeDescriptions = mAttributeDescriptions.data();
     }
+
     //
-    void VulkanGraphicsPipeline::AddVertexShader(VkShaderModule shader) {
+    void VulkanGraphicsPipeline::AddVertexShader(VulkanShader *shader) {
+        mVertexStage.reset();
         mVertexStage.emplace();
         VkPipelineShaderStageCreateInfo &shaderStageInfo = mVertexStage.value();
         shaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
         shaderStageInfo.stage = VK_SHADER_STAGE_VERTEX_BIT;
-        shaderStageInfo.module = shader;
+        shaderStageInfo.module = shader->GetModule();
         shaderStageInfo.pName = "main";
         shaderStageInfo.pSpecializationInfo = nullptr;
     }
+
     //
-    void VulkanGraphicsPipeline::AddFragmentShader(VkShaderModule shader) {
+    void VulkanGraphicsPipeline::AddFragmentShader(VulkanShader *shader) {
+        mFragmentStage.reset();
         mFragmentStage.emplace();
         VkPipelineShaderStageCreateInfo &shaderStageInfo = mFragmentStage.value();
         shaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
         shaderStageInfo.stage = VK_SHADER_STAGE_FRAGMENT_BIT;
-        shaderStageInfo.module = shader;
+        shaderStageInfo.module = shader->GetModule();
         shaderStageInfo.pName = "main";
         shaderStageInfo.pSpecializationInfo = nullptr;
     }
+
     //
-    void VulkanGraphicsPipeline::AddGeometryShader(VkShaderModule shader) {
+    void VulkanGraphicsPipeline::AddGeometryShader(VulkanShader *shader) {
+        mGeometryStage.reset();
         mGeometryStage.emplace();
         VkPipelineShaderStageCreateInfo &shaderStageInfo = mGeometryStage.value();
         shaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
         shaderStageInfo.stage = VK_SHADER_STAGE_GEOMETRY_BIT;
-        shaderStageInfo.module = shader;
+        shaderStageInfo.module = shader->GetModule();
         shaderStageInfo.pName = "main";
         shaderStageInfo.pSpecializationInfo = nullptr;
     }
+
     //
     void VulkanGraphicsPipeline::SetPrimitive(Primitive primitive) {
         mInputAssembly.topology = [primitive]() {
@@ -140,17 +144,20 @@ namespace GEng {
             }
         }();
     }
+
     //
     void VulkanGraphicsPipeline::SetViewport(uint32_t width, uint32_t height) {
         mViewportWidth = width;
         mViewportHeight = height;
     }
+
     void VulkanGraphicsPipeline::SetDepthTesting(bool enabled) {
         if (!enabled) {
             mDepthStencil.reset();
             return;
         }
 
+        mDepthStencil.reset();
         mDepthStencil.emplace();
         VkPipelineDepthStencilStateCreateInfo &depthStencil = mDepthStencil.value();
         depthStencil.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
@@ -164,6 +171,7 @@ namespace GEng {
         depthStencil.front = {}; // Optional
         depthStencil.back = {}; // Optional
     }
+
     void VulkanGraphicsPipeline::SetPolygonDrawMode(GPUContext::PolygonMode mode) {
         mRasterizer.polygonMode = [mode]() {
             switch (mode) {
@@ -176,6 +184,7 @@ namespace GEng {
             }
         }();
     }
+
     //
     void VulkanGraphicsPipeline::SetCulling(bool enabled) {
         if (enabled)
@@ -183,6 +192,7 @@ namespace GEng {
         else
             mRasterizer.cullMode = VK_CULL_MODE_NONE;
     }
+
     //
     void VulkanGraphicsPipeline::SetFrontFace(FrontFace frontFace) {
         mRasterizer.frontFace = [frontFace]() {
@@ -194,12 +204,16 @@ namespace GEng {
             }
         }();
     }
+
     //
     void VulkanGraphicsPipeline::SetBlending(bool enabled, GPUContext::Blending blending) {
         if (!enabled) return;
         if (blending != GPUContext::Blending::Alpha) return;
 
-        VkPipelineColorBlendAttachmentState colorBlendAttachment{};
+        mColorBlendAttachment.reset();
+        mColorBlendAttachment.emplace();
+
+        auto &colorBlendAttachment = mColorBlendAttachment.value();
         colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT |
                                               VK_COLOR_COMPONENT_B_BIT
                                               | VK_COLOR_COMPONENT_A_BIT;
@@ -211,7 +225,9 @@ namespace GEng {
         colorBlendAttachment.dstAlphaBlendFactor = VK_BLEND_FACTOR_ZERO;
         colorBlendAttachment.alphaBlendOp = VK_BLEND_OP_ADD;
 
+        mColourBlendState.reset();
         mColourBlendState.emplace();
+
         VkPipelineColorBlendStateCreateInfo &colorBlending = mColourBlendState.value();
         colorBlending.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
         colorBlending.logicOpEnable = VK_FALSE;
@@ -223,13 +239,20 @@ namespace GEng {
         colorBlending.blendConstants[2] = 0.0f; // Optional
         colorBlending.blendConstants[3] = 0.0f; // Optional
     }
+
     //
     void VulkanGraphicsPipeline::BindPushConstants(VkDeviceSize pushConstantSize, VkShaderStageFlags stageFlags) {
+        mPushConstants.reset();
+        mPushConstants.emplace();
+        VkPushConstantRange &pushConstants = mPushConstants.value();
+        pushConstants.offset = 0;
+        pushConstants.size = pushConstantSize;
+        pushConstants.stageFlags = stageFlags;
     }
+
     //
     void VulkanGraphicsPipeline::EnableMultisampling(size_t numSamples, bool enableSampleShading) {
-        mMultisampling.emplace();
-        VkPipelineMultisampleStateCreateInfo &multisampling = mMultisampling.value();
+        VkPipelineMultisampleStateCreateInfo &multisampling = mMultisampling;
         multisampling.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
         multisampling.sampleShadingEnable = enableSampleShading ? VK_TRUE : VK_FALSE;
         multisampling.rasterizationSamples = [numSamples]() {
@@ -254,9 +277,23 @@ namespace GEng {
         multisampling.alphaToCoverageEnable = VK_FALSE; // Optional
         multisampling.alphaToOneEnable = VK_FALSE; // Optional
     }
+
     //
     void VulkanGraphicsPipeline::UpdatePipeline(VkRenderPass renderPass) {
         VulkanGPUContext *vkCtx = GPUContext::Get<VulkanGPUContext>();
+
+        VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
+        pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+        pipelineLayoutInfo.setLayoutCount = 0;
+        pipelineLayoutInfo.pSetLayouts = nullptr; // &mDescriptorSetLayout;
+
+        if (mPushConstants.has_value()) {
+            pipelineLayoutInfo.pushConstantRangeCount = 1;
+            pipelineLayoutInfo.pPushConstantRanges = &mPushConstants.value();
+        }
+
+        if (vkCreatePipelineLayout(vkCtx->GetDevice(), &pipelineLayoutInfo, nullptr, &mLayout) != VK_SUCCESS)
+            throw std::runtime_error("Failed to create pipeline layout \n");
 
         std::array<VkPipelineShaderStageCreateInfo, 3> shaderStages;
         uint32_t i = 0;
@@ -287,21 +324,6 @@ namespace GEng {
         viewportState.scissorCount = 1;
         viewportState.pScissors = &scissor;
 
-        VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
-        pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-        pipelineLayoutInfo.setLayoutCount = 1;
-        //pipelineLayoutInfo.pSetLayouts = &mDescriptorSetLayout;
-
-        // VkPushConstantRange pushConstants;
-        // pushConstants.offset = 0;
-        // pushConstants.size = sizeof(PushConstants);
-        // pushConstants.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-        // pipelineLayoutInfo.pushConstantRangeCount = 1;
-        // pipelineLayoutInfo.pPushConstantRanges = &pushConstants;
-
-        if (vkCreatePipelineLayout(vkCtx->GetDevice(), &pipelineLayoutInfo, nullptr, &mLayout) != VK_SUCCESS)
-            throw std::runtime_error("Failed to create pipeline layout \n");
-
         VkGraphicsPipelineCreateInfo pipelineInfo{};
         pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
         pipelineInfo.stageCount = i;
@@ -310,7 +332,7 @@ namespace GEng {
         pipelineInfo.pInputAssemblyState = &mInputAssembly;
         pipelineInfo.pViewportState = &viewportState;
         pipelineInfo.pRasterizationState = &mRasterizer;
-        pipelineInfo.pMultisampleState = mMultisampling.has_value() ? &mMultisampling.value() : nullptr;
+        pipelineInfo.pMultisampleState = &mMultisampling;
         pipelineInfo.pDepthStencilState = mDepthStencil.has_value() ? &mDepthStencil.value() : nullptr;
         pipelineInfo.pColorBlendState = mColourBlendState.has_value() ? &mColourBlendState.value() : nullptr;
         pipelineInfo.pDynamicState = &mDynamicStates;
@@ -321,10 +343,12 @@ namespace GEng {
         pipelineInfo.basePipelineHandle = VK_NULL_HANDLE; // Optional
         pipelineInfo.basePipelineIndex = -1; // Optional
 
-        if (vkCreateGraphicsPipelines(vkCtx->GetDevice(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &mGraphicsPipeline) !=
+        if (vkCreateGraphicsPipelines(vkCtx->GetDevice(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr,
+                                      &mGraphicsPipeline) !=
             VK_SUCCESS)
             throw std::runtime_error("Failed to create graphics pipeline\n");
     }
+
     //
     //
 } // GEng

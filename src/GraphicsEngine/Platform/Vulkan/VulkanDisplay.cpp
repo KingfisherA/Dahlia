@@ -11,6 +11,12 @@
 namespace GEng {
     //
     //
+    // int width = 0, height = 0;
+    // glfwGetFramebufferSize(mWindow, &width, &height);
+    // while (width == 0 || height == 0) {
+    //     glfwGetFramebufferSize(mWindow, &width, &height);
+    //     glfwWaitEvents();
+    // }
     VulkanDisplay::VulkanDisplay(GPUContext *ctx, const DisplayProps &props) {
         if (ctx->GetContextAPI() != API::Vulkan)
             throw std::runtime_error("Cannot create a Vulkan display in a non-Vulkan GPU Context");
@@ -27,16 +33,10 @@ namespace GEng {
         CreateSyncPrimitives();
         CreateCommandBuffers();
 
-        //To-Do
-        //  glfwSetWindowSizeCallback(mWindow, [](GLFWwindow *window, int width, int height) {
-        //     GLFWData &data = *(GLFWData *) glfwGetWindowUserPointer(window);
-        //     data.mWidth = width;
-        //     data.mHeight = height;
-        //
-        //     WindowResizeEvent resizeEvt(width, height);
-        //     data.mEventCallback(resizeEvt);
-        // });
+
+        glfwSetWindowSizeCallback(mWindow, VulkanDisplay::OnWindowResize);
     }
+
     //
     VulkanDisplay::~VulkanDisplay() {
         if (GPUContext::Get()->GetContextAPI() != API::Vulkan)
@@ -52,6 +52,7 @@ namespace GEng {
         delete mSwapChain;
         vkDestroySurfaceKHR(vkCtx->GetInstance(), mSurface, nullptr);
     }
+
     //
     void VulkanDisplay::RenderFrame() {
         VulkanGPUContext *vkCtx = GPUContext::Get<VulkanGPUContext>();
@@ -63,11 +64,12 @@ namespace GEng {
                                                 mImageAvailableSemaphores[mCurrentFrame],
                                                 VK_NULL_HANDLE, &imageIndex);
 
-        if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR) {
+        if (result == VK_ERROR_OUT_OF_DATE_KHR) {
             mSwapChain->RecreateSwapChain();
             return;
-        } else if (result != VK_SUCCESS)
-            throw std::runtime_error("failed to present swap chain image!");
+        }
+        //else if (result != VK_SUCCESS)
+        //    throw std::runtime_error("failed to present swap chain image!");
 
 
         vkResetFences(vkCtx->GetDevice(), 1, &mInFlightFences[mCurrentFrame]);
@@ -110,13 +112,14 @@ namespace GEng {
         result = vkQueuePresentKHR(vkCtx->GetPresentQueue(), &presentInfo);
 
         if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || mFramebufferResized) {
-            mFramebufferResized = false;
+            this->mFramebufferResized = false;
             mSwapChain->RecreateSwapChain();
         } else if (result != VK_SUCCESS)
             throw std::runtime_error("failed to present swap chain image!");
 
         mCurrentFrame = (mCurrentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
     }
+
     //
     void VulkanDisplay::CreateSyncPrimitives() {
         VulkanGPUContext *vkCtx = GPUContext::Get<VulkanGPUContext>();
@@ -140,8 +143,9 @@ namespace GEng {
                 vkCreateFence(vkCtx->GetDevice(), &fenceInfo, nullptr, &mInFlightFences[i]) != VK_SUCCESS)
                 throw std::runtime_error("Failed to create synchronisation primitives \n");
     }
+
     //
-    bool VulkanDisplay::CreateCommandBuffers() {
+    void VulkanDisplay::CreateCommandBuffers() {
         VulkanGPUContext *vkCtx = GPUContext::Get<VulkanGPUContext>();
 
         mCommandBuffers.resize(MAX_FRAMES_IN_FLIGHT);
@@ -150,11 +154,12 @@ namespace GEng {
         allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
         allocInfo.commandPool = vkCtx->GetCommandPool()->GetCommandPool();
         allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-        allocInfo.commandBufferCount = (uint32_t) mCommandBuffers.size();
+        allocInfo.commandBufferCount = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
 
         if (vkAllocateCommandBuffers(vkCtx->GetDevice(), &allocInfo, mCommandBuffers.data()) != VK_SUCCESS)
             throw std::runtime_error("Failed to create command buffer \n");
     }
+
     //
     void VulkanDisplay::RecordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex) {
         VkCommandBufferBeginInfo beginInfo{};
@@ -183,7 +188,7 @@ namespace GEng {
         vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
         if (mDrawingCommands.mPipeline != nullptr)
             vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
-                              mDrawingCommands.mPipeline);
+                              mDrawingCommands.mPipeline->GetGraphicsPipeline());
 
         VkViewport viewport{};
         viewport.x = 0.0f;
@@ -230,18 +235,33 @@ namespace GEng {
         //                         0, 1, &mDescriptorSets[mCurrentFrame],
         //                         0, nullptr);
 
+        vkCmdPushConstants(commandBuffer, mDrawingCommands.mPipeline->GetPipelineLayout(),
+                           mDrawingCommands.mPushConstantShaderStages, 0, mDrawingCommands.mPushConstantDataSize,
+                           mDrawingCommands.mPushConstantData);
 
-        if (mDrawingCommands.mIndexBuffer != nullptr)
+        if (mDrawingCommands.mIndexBuffer != nullptr) {
+            //
             vkCmdDrawIndexed(commandBuffer, mDrawingCommands.mIndexBuffer->GetElementCount(),
                              mDrawingCommands.mInstanceCount, 0, 0, 0);
-        else
+        } else
             vkCmdDraw(commandBuffer, mDrawingCommands.mElementCount, mDrawingCommands.mInstanceCount, 1, 0);
 
         vkCmdEndRenderPass(commandBuffer);
 
         if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS)
             throw std::runtime_error("Failed to end recording to command buffer!");
+
+        //mDrawingCommands.Reset();
     }
+
+    void VulkanDisplay::OnWindowResize(GLFWwindow *window, int width, int height) {
+        VulkanDisplay *display = reinterpret_cast<VulkanDisplay *>(glfwGetWindowUserPointer(window));
+
+        display->mFramebufferResized = true;
+
+        GLFWDisplayBase::OnWindowResize(window, width, height);
+    }
+
     //
     //
 } // GEng

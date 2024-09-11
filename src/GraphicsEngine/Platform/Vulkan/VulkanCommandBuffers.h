@@ -1,8 +1,10 @@
 #pragma once
+#include <cstring>
 #include <vector>
 #include <vulkan/vulkan.h>
 
 #include "VulkanBuffer.h"
+#include "VulkanGraphicsPipeline.h"
 
 namespace GEng {
     class VulkanDisplay;
@@ -32,6 +34,7 @@ namespace GEng {
         void Begin();
         void End();
         void Submit(VkQueue queue);
+
         void EndAndSubmit(VkQueue queue) {
             End();
             Submit(queue);
@@ -48,23 +51,36 @@ namespace GEng {
     public:
         VulkanDrawingCommands() = default;
         VulkanDrawingCommands(const VulkanDrawingCommands &other) = default;
+
+        ~VulkanDrawingCommands() {
+            free(mPushConstantData);
+        }
+
         //
-        void BindGraphicsPipeline(VkPipeline pipeline) { mPipeline = pipeline; }
+        void BindGraphicsPipeline(VulkanGraphicsPipeline *pipeline) { mPipeline = pipeline; }
         //
-        void BindVertexBuffers(VulkanVertexBuffer *buffer) { mVertexBuffers.push_back(buffer); }
+        void AddVertexBuffer(VulkanVertexBuffer *buffer) { mVertexBuffers.push_back(buffer); }
         void ClearVertexBuffers() { mVertexBuffers.clear(); }
         //
         void BindIndexBuffer(VulkanIndexBuffer *buffer) { mIndexBuffer = buffer; }
         //
-        void UploadPushConstants() {
+        void UploadPushConstants(const void *data, size_t size, VkShaderStageFlags shaderStages) {
+            free(mPushConstantData);
+            mPushConstantData = malloc(size);
+            memcpy(mPushConstantData, data, size);
+            mPushConstantDataSize = size;
+            mPushConstantShaderStages = shaderStages;
         }
+
         void BindDescriptorSets() {
         }
+
         //
-        void Draw(size_t instanceCount = 1, size_t elementCount = 0) {
+        void Draw(size_t elementCount = 0, size_t instanceCount = 1) {
             mElementCount = elementCount;
             mInstanceCount = instanceCount;
         }
+
         //
     private:
         friend class VulkanDisplay;
@@ -72,9 +88,13 @@ namespace GEng {
         VkCommandBuffer mCommandBuffer = nullptr;
         VkCommandPool mCommandPool = nullptr;
 
-        VkPipeline mPipeline = nullptr;
-        std::vector<VulkanVertexBuffer*> mVertexBuffers;
-        VulkanIndexBuffer* mIndexBuffer = nullptr;
+        VulkanGraphicsPipeline *mPipeline = nullptr;
+        std::vector<VulkanVertexBuffer *> mVertexBuffers;
+        VulkanIndexBuffer *mIndexBuffer = nullptr;
+
+        VkShaderStageFlags mPushConstantShaderStages;
+        size_t mPushConstantDataSize = 0;
+        void *mPushConstantData = nullptr;
 
         size_t mElementCount = 0, mInstanceCount = 1;
     };

@@ -57,6 +57,7 @@ namespace GEng {
         submitInfo.pCommandBuffers = &mCommandBuffer;
 
         vkQueueSubmit(queue, 1, &submitInfo, VK_NULL_HANDLE);
+        vkQueueWaitIdle(queue);
     }
     //
     VulkanOneTimeCommandBuffer::~VulkanOneTimeCommandBuffer() {

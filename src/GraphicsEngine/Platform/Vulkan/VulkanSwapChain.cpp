@@ -7,17 +7,20 @@
 
 namespace GEng {
     //
+    //
     VulkanSwapChain::VulkanSwapChain(VulkanGPUContext *ctx, VulkanDisplay *display): mDisplay(display) {
-        mDetails = QuerySwapChainSupport(ctx->GetPhysicalDevice(), display->GetSurface());
-
         CreateSwapChain();
         CreateRenderPass();
         CreateFramebuffers();
     }
+
     //
     VulkanSwapChain::~VulkanSwapChain() {
+        VulkanGPUContext *vkCtx = GPUContext::Get<VulkanGPUContext>();
+        vkDestroyRenderPass(vkCtx->GetDevice(), mRenderPass, nullptr);
         DestroySwapChain();
     }
+
     //
     SwapChainDetails VulkanSwapChain::QuerySwapChainSupport(VkPhysicalDevice device, VkSurfaceKHR surface) {
         SwapChainDetails details;
@@ -41,12 +44,14 @@ namespace GEng {
 
         return details;
     }
+
     //
     void VulkanSwapChain::RecreateSwapChain() {
         DestroySwapChain();
         CreateSwapChain();
         CreateFramebuffers();
     }
+
     //
     VkFormat VulkanSwapChain::FindSupportedFormat(const std::vector<VkFormat> &candidates, VkImageTiling tiling,
                                                   VkFormatFeatureFlags features) {
@@ -64,6 +69,7 @@ namespace GEng {
 
         throw std::runtime_error("Failed to find any supported formats");
     }
+
     //
     VkFormat VulkanSwapChain::FindDepthFormat() {
         return FindSupportedFormat(
@@ -72,6 +78,7 @@ namespace GEng {
             VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT
         );
     }
+
     //
     VkSurfaceFormatKHR
     VulkanSwapChain::ChooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR> &availableFormats) {
@@ -84,6 +91,7 @@ namespace GEng {
 
         return availableFormats[0];
     }
+
     //
     VkPresentModeKHR
     VulkanSwapChain::ChooseSwapPresentMode(const std::vector<VkPresentModeKHR> &availablePresentModes) {
@@ -94,6 +102,7 @@ namespace GEng {
 
         return VK_PRESENT_MODE_FIFO_KHR;
     }
+
     //
     VkExtent2D VulkanSwapChain::ChooseSwapExtent(const VkSurfaceCapabilitiesKHR &capabilities) const {
         if (capabilities.currentExtent.width != std::numeric_limits<uint32_t>::max()) {
@@ -112,23 +121,24 @@ namespace GEng {
             return actualExtent;
         }
     }
+
     //
     void VulkanSwapChain::CreateRenderPass() {
         VulkanGPUContext *vkCtx = GPUContext::Get<VulkanGPUContext>();
 
         VkAttachmentDescription colorAttachment{};
         colorAttachment.format = mSwapChainImageFormat;
-        colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
+        colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT; //Needs to be changed for MSAA
         colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
         colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
         colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
         colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
         colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-        colorAttachment.finalLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+        colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR; //VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 
         VkAttachmentDescription depthAttachment{};
         depthAttachment.format = FindDepthFormat();
-        depthAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
+        depthAttachment.samples = VK_SAMPLE_COUNT_1_BIT; // Needs to be changed for MSAA
         depthAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
         depthAttachment.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
         depthAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
@@ -190,9 +200,12 @@ namespace GEng {
         if (vkCreateRenderPass(vkCtx->GetDevice(), &renderPassInfo, nullptr, &mRenderPass) != VK_SUCCESS)
             throw std::runtime_error("Failed to create render pass \n");
     }
+
     //
     void VulkanSwapChain::CreateSwapChain() {
         VulkanGPUContext *vkCtx = GPUContext::Get<VulkanGPUContext>();
+
+        mDetails = QuerySwapChainSupport(vkCtx->GetPhysicalDevice(), mDisplay->GetSurface());
 
 #pragma region Swap Chain Creation
 
@@ -281,6 +294,7 @@ namespace GEng {
 
         CreateDepthTexture();
     }
+
     //
     void VulkanSwapChain::CreateFramebuffers() {
         VulkanGPUContext *vkCtx = GPUContext::Get<VulkanGPUContext>();
@@ -304,6 +318,7 @@ namespace GEng {
                 throw std::runtime_error("Failed to create framebuffers \n");
         }
     }
+
     //
     void VulkanSwapChain::CreateDepthTexture() {
         VulkanGPUContext *vkCtx = GPUContext::Get<VulkanGPUContext>();
@@ -352,6 +367,7 @@ namespace GEng {
         vkCtx->TransitionImageLayout(mDepthImage, depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT, VK_IMAGE_LAYOUT_UNDEFINED,
                                      VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL, 1);
     }
+
     //
     void VulkanSwapChain::DestroySwapChain() {
         VulkanGPUContext *vkCtx = GPUContext::Get<VulkanGPUContext>();
@@ -367,8 +383,6 @@ namespace GEng {
         vkDestroyImage(device, mDepthImage, nullptr);
         vkFreeMemory(device, mDepthImageMem, nullptr);
 
-        vkDestroyRenderPass(device, mRenderPass, nullptr);
-
         for (VkFramebuffer framebuffer: mSwapChainFramebuffers) {
             vkDestroyFramebuffer(device, framebuffer, nullptr);
         }
@@ -379,4 +393,7 @@ namespace GEng {
 
         vkDestroySwapchainKHR(device, mSwapChain, nullptr);
     }
+
+    //
+    //
 } // GEng

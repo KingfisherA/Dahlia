@@ -104,13 +104,13 @@ namespace GEng {
         size_t GetElementCount() const { return mElementCount; }
         VkIndexType GetIndexType() const {
             switch (mDataType) {
+                case DataType::UInt32:
+                    return VK_INDEX_TYPE_UINT32;
+
                 default:
                 case DataType::UInt16:
                     return VK_INDEX_TYPE_UINT16;
 
-
-                case DataType::UInt32:
-                    return VK_INDEX_TYPE_UINT32;
             }
         }
 

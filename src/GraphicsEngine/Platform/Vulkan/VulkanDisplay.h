@@ -3,6 +3,7 @@
 #include<vulkan/vulkan.h>
 
 #include "VulkanCommandBuffers.h"
+#include "VulkanSwapChain.h"
 #include "GraphicsEngine/Platform/GLFW/GLFWDisplayBase.h"
 
 namespace GEng {
@@ -22,6 +23,14 @@ namespace GEng {
         //
         //
         [[nodiscard]] VkSurfaceKHR GetSurface() const { return mSurface; }
+        [[nodiscard]] VulkanSwapChain *GetSwapChain() const { return mSwapChain; }
+        [[nodiscard]] VkRenderPass GetRenderPass() const {
+            if (mSwapChain != nullptr)
+                return mSwapChain->GetRenderPass();
+
+            return nullptr;
+        }
+
         //
         //
     private:
@@ -30,8 +39,10 @@ namespace GEng {
 
         void CreateSyncPrimitives();
 
-        bool CreateCommandBuffers();
+        void CreateCommandBuffers();
         void RecordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
+
+        static void OnWindowResize(GLFWwindow *window, int width, int height);
 
         //Frame synchronisation primitives
         std::vector<VkSemaphore> mImageAvailableSemaphores;

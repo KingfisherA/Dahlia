@@ -25,16 +25,13 @@
 #include "GraphicsEngine/3D/VertexArray.h"
 #include "GraphicsEngine/3D/ShaderProgram.h"
 
-#include "VulkanApp.h"
-
 // #define IMSPINNER_DEMO
 // #include "GUI/ImSpinner.h"
 
 #pragma region Entry Point
 
 int main(int argc, char **argv) {
-    //Example::Application app;
-    Example::VulkanApp app;
+    Example::Application app;
     if (!app.Init()) {
         std::cout << "Failed to initialise application \n";
         return 1;

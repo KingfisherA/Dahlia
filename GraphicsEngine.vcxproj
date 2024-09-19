@@ -114,11 +114,12 @@
     <ClInclude Include="src\GraphicsEngine\Layers\LayerStack.h" />
     <ClInclude Include="src\GraphicsEngine\Maths\Geometry.h" />
     <ClInclude Include="src\GraphicsEngine\Maths\Maths.h" />
-    <ClInclude Include="src\GraphicsEngine\Platform\GLFW\GLFWDisplay.h" />
+    <ClInclude Include="src\GraphicsEngine\Platform\GLFW\GLFWDisplayBase.h" />
     <ClInclude Include="src\GraphicsEngine\Platform\GPUContext.h" />
     <ClInclude Include="src\GraphicsEngine\Platform\Intrinsics.h" />
     <ClInclude Include="src\GraphicsEngine\Platform\OpenGL\OpenGLBuffers.h" />
     <ClInclude Include="src\GraphicsEngine\Platform\OpenGL\OpenGLContext.h" />
+    <ClInclude Include="src\GraphicsEngine\Platform\OpenGL\OpenGLDisplay.h" />
     <ClInclude Include="src\GraphicsEngine\Platform\OpenGL\OpenGLFramebuffer.h" />
     <ClInclude Include="src\GraphicsEngine\Platform\OpenGL\OpenGLShaderProgram.h" />
     <ClInclude Include="src\GraphicsEngine\Platform\OpenGL\OpenGLTexture.h" />
@@ -149,10 +150,11 @@
     <ClCompile Include="src\GraphicsEngine\Layers\LayerStack.cpp" />
     <ClCompile Include="src\GraphicsEngine\Maths\Geometry.cpp" />
     <ClCompile Include="src\GraphicsEngine\Maths\Maths.cpp" />
-    <ClCompile Include="src\GraphicsEngine\Platform\GLFW\GLFWDisplay.cpp" />
+    <ClCompile Include="src\GraphicsEngine\Platform\GLFW\GLFWDisplayBase.cpp" />
     <ClCompile Include="src\GraphicsEngine\Platform\GPUContext.cpp" />
     <ClCompile Include="src\GraphicsEngine\Platform\OpenGL\OpenGLBuffers.cpp" />
     <ClCompile Include="src\GraphicsEngine\Platform\OpenGL\OpenGLContext.cpp" />
+    <ClCompile Include="src\GraphicsEngine\Platform\OpenGL\OpenGLDisplay.cpp" />
     <ClCompile Include="src\GraphicsEngine\Platform\OpenGL\OpenGLFramebuffer.cpp" />
     <ClCompile Include="src\GraphicsEngine\Platform\OpenGL\OpenGLShaderProgram.cpp" />
     <ClCompile Include="src\GraphicsEngine\Platform\OpenGL\OpenGLTexture.cpp" />

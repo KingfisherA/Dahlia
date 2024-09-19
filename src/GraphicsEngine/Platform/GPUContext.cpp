@@ -3,7 +3,6 @@
 //
 #include "GraphicsEngine/Platform/GPUContext.h"
 #include "GraphicsEngine/Platform/OpenGL/OpenGLContext.h"
-#include "Vulkan/VulkanGPUContext.h"
 
 namespace GEng {
     GPUContext *GPUContext::sCurrentContext = nullptr;
@@ -13,10 +12,6 @@ namespace GEng {
             throw std::runtime_error("Cannot create two instances of a GPU context");
 
         switch (api) {
-            case API::Vulkan: {
-                sCurrentContext = reinterpret_cast<GPUContext *>(new VulkanGPUContext());
-                return sCurrentContext;
-            }
 
             default:
             case API::OpenGL: {

@@ -9,8 +9,7 @@
 
 namespace GEng {
     GENG_API enum class API {
-        OpenGL = 0,
-        Vulkan
+        OpenGL = 0
     };
 
     GENG_API class GPUContext {

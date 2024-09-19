@@ -194,7 +194,7 @@ project "Example"
 		}
         libdirs{
         "../../Libraries/ImGui/bin/linux/Release-x64"}
-		links { "vulkan", "glfw3", "ImGui", "freetype", "boost_filesystem", "GLEW.a", "GL", "m", "Xrandr", "Xi", "X11", "Xxf86vm", "pthread", "gtk-3", "z", "gdk-3", "glib-2.0", "GraphicsEngine" }
+		links { "glfw3", "ImGui", "freetype", "boost_filesystem", "GLEW.a", "GL", "m", "Xrandr", "Xi", "X11", "Xxf86vm", "pthread", "gtk-3", "z", "gdk-3", "glib-2.0", "GraphicsEngine" }
 		--linkoptions { "`pkg-config --libs gtk+-3.0`" }
 	
 	filter{"system:windows"}

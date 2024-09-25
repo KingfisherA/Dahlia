@@ -127,12 +127,30 @@ namespace GEng {
     struct TextLayoutInfo {
     public:
         glm::vec3 bounds;
+
         enum class Alignment {
             Left = 0,
             Centre,
             Right,
             Justify
         } alignment;
+    };
+
+    struct GlyphPositionInfo {
+    public:
+        explicit GlyphPositionInfo(size_t noOfGlyphs): glyphPositions(noOfGlyphs), txtDimensions(0.0f) {
+        }
+
+        GlyphPositionInfo(const GlyphPositionInfo &info): glyphPositions(info.glyphPositions),
+                                                          txtDimensions(info.txtDimensions) {
+        }
+
+        GlyphPositionInfo(GlyphPositionInfo &&info) noexcept: glyphPositions(std::move(info.glyphPositions)),
+                                                              txtDimensions(info.txtDimensions) {
+        }
+
+        std::vector<glm::vec2> glyphPositions;
+        glm::vec2 txtDimensions;
     };
 
     class FontManager {
@@ -165,9 +183,11 @@ namespace GEng {
         // bounds
         // The x and y components define the top left corner of the text run if align is set to left.
         // The z components defines the width of the box. If it is set to zero the text won't be wrapped.
-        static std::vector<glm::vec2> LayoutText(const std::string_view text,
-                                                 const FontAtlasBase &atlas,
-                                                 const TextLayoutInfo& layoutInfo = {{0.0f, 0.0f, 0.0f}, TextLayoutInfo::Alignment::Left});
+        static GlyphPositionInfo LayoutText(const std::string_view text,
+                                            const FontAtlasBase &atlas,
+                                            const TextLayoutInfo &layoutInfo = {
+                                                {0.0f, 0.0f, 0.0f}, TextLayoutInfo::Alignment::Left
+                                            });
         static glm::vec2 MeasureText(const FontAtlasBase &atlas, const std::string_view text);
 
     private:
@@ -181,14 +201,16 @@ namespace GEng {
 
         static sRef<Text> Create();
 
+        float GetScaling() const { return mScaling; }
         void SetScaling(const float scaling) { mScaling = scaling; }
-        void AddText(const std::string_view text, const TextLayoutInfo& layoutInfo);
+
+        void AddText(const std::string_view text, const TextLayoutInfo &layoutInfo);
         void ClearText();
         void LayoutText(const FontAtlas &atlas);
         void DrawText(const glm::mat4 &pvMatrix) const;
 
     private:
-        std::vector<std::pair<std::string, TextLayoutInfo>> mTextStrings;
+        std::vector<std::pair<std::string, TextLayoutInfo> > mTextStrings;
 
         size_t mNoOfGlyphs = 0;
         float mScaling = 0.8f;

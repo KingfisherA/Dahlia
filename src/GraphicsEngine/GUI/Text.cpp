@@ -138,12 +138,14 @@ namespace GEng {
         return std::make_shared<FontAtlas>(bitmap);
     }
 
-    std::vector<glm::vec2> FontManager::LayoutText(const std::string_view text, const FontAtlasBase &atlas,
-                                                   const TextLayoutInfo &layoutInfo) {
-        std::vector<glm::vec2> glyphPositions(text.length());
+    GlyphPositionInfo FontManager::LayoutText(const std::string_view text, const FontAtlasBase &atlas,
+                                              const TextLayoutInfo &layoutInfo) {
+        GlyphPositionInfo glyphPosInfo(text.length());
+        std::vector<glm::vec2> &glyphPositions = glyphPosInfo.glyphPositions;
 
         constexpr float VERTICAL_PADDING = 0.05f;
         float penX = layoutInfo.bounds.x, penY = layoutInfo.bounds.y, largestGlyph = 0.0f;
+        float &width = glyphPosInfo.txtDimensions.x, &height = glyphPosInfo.txtDimensions.y;
         for (size_t i = 0; i < text.length(); i++) {
             char c = text[i];
 
@@ -154,8 +156,10 @@ namespace GEng {
             }
 
             if (penX >= layoutInfo.bounds.x + layoutInfo.bounds.z && layoutInfo.bounds.z > 0.0f && c == ' ') {
+                width = std::max(width, penX - layoutInfo.bounds.x);
                 penX = layoutInfo.bounds.x;
                 penY += largestGlyph;
+                largestGlyph = 0.0f;
             }
 
 
@@ -163,39 +167,87 @@ namespace GEng {
                                                   ? atlas.GetAtlasMap().at(c)
                                                   : atlas.GetAtlasMap().begin()->second;
 
-            largestGlyph = std::max(largestGlyph, glyphData.mSize.y + glyphData.mBearing.y);
+            //Do we need to have y bearing included in the penY here?
+            largestGlyph = std::max(largestGlyph, glyphData.mSize.y);
 
             glyphPositions[i] = {penX + glyphData.mBearing.x, penY - glyphData.mBearing.y};
 
             penX += glyphData.mAdvance;
         }
 
-        return glyphPositions;
+        width = std::max(width, penX - layoutInfo.bounds.x);
+        height = std::max(height, penY - layoutInfo.bounds.y + largestGlyph);
+
+        return glyphPosInfo;
     }
 
     glm::vec2 FontManager::MeasureText(const FontAtlasBase &atlas, std::string_view text) {
-        std::vector<glm::vec2> glyphPositions = LayoutText(text, atlas);
-        float width = 0.0f, height = 0.0f;
-
-        for (size_t i = 0; i < glyphPositions.size(); i++) {
-            glm::vec2 &currentPosition = glyphPositions[i];
-
-            if (currentPosition.x > width)
-                width = currentPosition.x;
-
-            if (currentPosition.y > height)
-                height = currentPosition.y;
-        }
-
-        return {width, height};
+        return LayoutText(text, atlas).txtDimensions;
     }
 
     sRef<ShaderProgram> Text::mShader = nullptr;
 
+    constexpr const char *TEXT_SHADER_SOURCE = R"(#version 460
+
+#pragma remove
+#include "GLSL Language Specification.h.glsl"
+#pragma endremove
+
+#begin(vShader)
+
+layout(location = 0) in vec2 aVertex;
+layout(location = 1) in vec4 aGlyph;
+layout(location = 2) in vec2 aPosition;
+//
+uniform mat4 uPVMatrix;
+uniform float uTxtScaling = 1.0f;
+//
+out vec2 texCoords;
+
+void main()
+{
+    texCoords = ((aVertex + vec2(1.0f)) * 0.5f);
+
+    // gl_Position = uPVMatrix * vec4(aVertex, 0.0f, 1.0f);
+    gl_Position = uPVMatrix * vec4((vec2(texCoords.x * aGlyph.x, texCoords.y * aGlyph.y) + aPosition) * uTxtScaling, -1.0f, 1.0f);
+    texCoords = vec2(texCoords.x * aGlyph.x, texCoords.y * aGlyph.y) + aGlyph.zw;
+}
+
+#end(vShader)
+#begin(fShader)
+
+in vec2 texCoords;
+//
+uniform sampler2D uFontAtlas;
+//
+out vec4 fragColour;
+
+const float glyphWidth = 0.5f;
+const float glyphEdge = 0.1f;
+
+void SignedDistance()
+{
+    float glyphDistance = texture(uFontAtlas, texCoords).r;
+    fragColour = vec4(1.0f);
+    fragColour.a = smoothstep(glyphWidth, glyphWidth + glyphEdge, glyphDistance);
+}
+
+void Bitmap()
+{
+    fragColour = vec4(1.0f);
+    fragColour.a = texture(uFontAtlas, texCoords).r;
+}
+
+void main()
+{
+    Bitmap();
+}
+
+#end(fShader))";
+
     Text::Text() {
         if (mShader == nullptr) {
-            mShader = ShaderProgram::CreateFromFile(
-                "../../../../Assets/Shaders/Text.glsl");
+            mShader = ShaderProgram::Create(TEXT_SHADER_SOURCE);
             mShader->UploadI("uFontAtlas", 0);
         }
 
@@ -234,7 +286,8 @@ namespace GEng {
 
         size_t packedDataMaxSize = 0;
         for (const auto &textString: mTextStrings) {
-            glyphPositions.emplace_back(FontManager::LayoutText(textString.first, atlas, textString.second));
+            glyphPositions.emplace_back(
+                FontManager::LayoutText(textString.first, atlas, textString.second).glyphPositions);
 
             packedDataMaxSize += glyphPositions.back().size() * 6;
         }

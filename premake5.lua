@@ -217,7 +217,7 @@ project "Example"
 		"../../Libraries/glfw-3.3.2/lib/x64",
 		"../../Libraries/glew-2.1.0/lib/Release/x64",
 		"../../Libraries/freetype-2.13.3/objs"}
-		links { "opengl32", "glew32s", "glfw3", "ImGui", "freetype.lib", "GraphicsEngine"}
+		links { "opengl32", "glew32s", "glfw3", "ImGui", "freetype", "GraphicsEngine"}
 		linkoptions { '/NODEFAULTLIB:"LIBCMTD" /NODEFAULTLIB:"LIBCMT"' }
 
     filter {"configurations:Debug", "system:windows"}

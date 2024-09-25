@@ -125,8 +125,8 @@ namespace Example {
         // Was certainty remaining engrossed applauded sir how discovery. Settled opinion how enjoyed greater joy adapted too shy. Now properly surprise expenses interest nor replying she she.
         // Bore tall nay many many time yet less. Doubtful for answered one fat indulged margaret sir shutters together. Ladies so in wholly around whence in at. Warmth he up giving oppose if.
         // Impossible is dissimilar entreaties oh on terminated. Earnest studied article country ten respect showing had. But required offering him elegance son improved informed. )";
-        mText->SetScaling(m_Window->GetContentScaling().x * 0.2f);
-        mText->AddText("Example Graphics Engine Application", {{-1.0f, -0.95f, 2.0f}, TextLayoutInfo::Alignment::Left});
+        mText->SetScaling(m_Window->GetContentScaling().x * 1.0f);
+        mText->AddText("Example Graphics Engine Application", {{-1.0f, -0.8f, 2.0f}, TextLayoutInfo::Alignment::Left});
         mText->LayoutText(*mUbuntuLight);
 
         return true;
@@ -175,7 +175,6 @@ namespace Example {
         mShader->UploadMatF("uPVMatrix", pvMatrix);
 
         mVAO->SubmitArrays(Primitive::Triangles);
-
 
         float aspect = (float) mViewportFramebuffer->GetWidth() / (float) mViewportFramebuffer->GetHeight();
         mText->DrawText(glm::ortho(-aspect, aspect, 1.0f, -1.0f));

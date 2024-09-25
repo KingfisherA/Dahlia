@@ -39,6 +39,6 @@ namespace GEng {
         constexpr float zNear = 0.1f;
         constexpr float zFar = 100.0f;
         float aspect = screenDimensions.x / screenDimensions.y;
-        mProjectionMatrix = glm::ortho(-aspect, aspect, 1.0f, -1.0f, 0.0001f, 1000.0f);
+        mProjectionMatrix = glm::ortho(-aspect, aspect, 1.0f, -1.0f, zNear, zFar);
     }
 }

@@ -47,6 +47,5 @@ namespace GEng
 		GLid m_VBOID = 0;
 		size_t m_BufferIntSize = 0;
 		BufferUsage m_Usage;
-		bool m_DataStored = false;
 	};
 }

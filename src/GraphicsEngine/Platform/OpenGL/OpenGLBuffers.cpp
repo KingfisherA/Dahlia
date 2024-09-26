@@ -89,16 +89,8 @@ namespace GEng {
         m_BufferIntSize = intCount;
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_VBOID);
-
-        if (!m_DataStored) {
-            m_DataStored = true;
-
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER, intCount * sizeof(unsigned int), (const void *) data,
-                         UsageToGLenum(m_Usage));
-        } else {
-            glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, intCount * sizeof(unsigned int), data);
-        }
-
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, intCount * sizeof(unsigned int), (const void *) data,
+                     UsageToGLenum(m_Usage));
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
         GPUContext::Get<OpenGLContext>()->RegisterBind(GL_ELEMENT_ARRAY_BUFFER_BINDING, 0);
     }

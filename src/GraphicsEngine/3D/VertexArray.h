@@ -1,10 +1,9 @@
 #pragma once
 
+#include "GraphicsEngine/Maths/Geometry.h"
 #include "GraphicsEngine/GEng_API.h"
 #include "GraphicsEngine/3D/Buffers.h"
 #include "GraphicsEngine/Utilities/Memory.h"
-#include "GraphicsEngine/Maths/Geometry.h"
-//#include <GL/glew.h>
 
 namespace GEng {
     GENG_API struct VertexSpecification {
@@ -31,11 +30,10 @@ namespace GEng {
 
     GENG_API class VertexArray {
     public:
-        virtual ~VertexArray() {
-        }
+        virtual ~VertexArray() = default;
 
         static sRef<VertexArray> Create();
-        static sRef<VertexArray> Create(const sRef<Mesh> &meshData);
+        static sRef<VertexArray> Create(const Mesh_F32 &meshData);
 
         virtual void Bind() = 0;
         virtual void Unbind() = 0;
@@ -45,7 +43,7 @@ namespace GEng {
         virtual Index AddVertexBuffer(const sRef<VertexBuffer> &buffer, const VertexSpecification spec = {3, 0, 0}) = 0;
         virtual void AddIndexBuffer(const sRef<IndexBuffer> &buffer) = 0;
 
-        virtual void StoreMesh(const sRef<Mesh> &meshData);
+        virtual void StoreMesh(const Mesh_F32 &meshData);
 
         virtual Index QueryBufferIndex(const sRef<VertexBuffer> &buffer) = 0;
 

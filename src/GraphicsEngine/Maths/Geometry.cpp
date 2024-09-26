@@ -1,15 +1,17 @@
+#include "GraphicsEngine/Maths/Geometry.h"
+#include "GraphicsEngine/Utilities/Assert.h"
+#include "GraphicsEngine/Maths/Maths.h"
+
+#include <numbers>
 #include <vector>
 #include <map>
 #include <set>
-#include <numbers>
 #include <memory>
 #include <string>
 #include <unordered_map>
 #include <cstring>
+#include <valarray>
 
-#include "GraphicsEngine/Maths/Geometry.h"
-#include "GraphicsEngine/Utilities/Assert.h"
-#include "GraphicsEngine/Maths/Maths.h"
 
 namespace GEng {
     //
@@ -23,252 +25,159 @@ namespace GEng {
     };
 
     //
-#pragma region Mesh
-    //
-    Mesh::Mesh(const size_t bufferByteSize) : byteBufferSize(bufferByteSize) {
-        byteBuffer = (byte *) malloc(bufferByteSize);
-        GENG_ASSERT(byteBuffer == nullptr, GEng::Mesh::Mesh, "Could not dynamically allocate memory!");
-    }
-
-    Mesh::~Mesh() {
-        free(byteBuffer);
-        byteBuffer = nullptr;
-    }
-
-    sRef<Mesh> Mesh::RemoveIndexing(const sRef<Mesh> mesh) {
-        if (!mesh->IsIndexed())
-            return mesh;
-
-        size_t count = 0;
-        if (mesh->GetVertexArray() != nullptr)
-            count += mesh->GetIndexIntCount() * (size_t) mesh->vertexElementSize * sizeof(float);
-        if (mesh->GetNormalsArray() != nullptr)
-            count += mesh->GetIndexIntCount() * (size_t) mesh->vertexElementSize * sizeof(float);
-        if (mesh->GetTexCoordsArray() != nullptr)
-            count += mesh->GetIndexIntCount() * 2 * sizeof(float);
-        sRef<Mesh> meshCopy = std::make_shared<Mesh>(count);
-        meshCopy->vertexElementSize = mesh->vertexElementSize;
-
-        float *vertices = nullptr;
-        if (mesh->GetVertexArray() != nullptr)
-            vertices = meshCopy->GetVertexArray(mesh->GetIndexIntCount() * (size_t) mesh->vertexElementSize);
-
-        float *normals = nullptr;
-        if (mesh->GetNormalsArray() != nullptr)
-            normals = meshCopy->GetVertexArray(mesh->GetIndexIntCount() * (size_t) mesh->vertexElementSize);
-
-        float *texCoords = nullptr;
-        if (mesh->GetTexCoordsArray() != nullptr)
-            texCoords = meshCopy->GetVertexArray(mesh->GetIndexIntCount() * 2);
-
-        size_t j = 0;
-        for (size_t i = 0; i < mesh->GetIndexIntCount(); i++) {
-            unsigned int index = mesh->GetIndiciesArray()[i];
-            if (vertices) {
-                for (uint8_t k = 0; k < mesh->vertexElementSize; k++) {
-                    vertices[j++] = mesh->GetVertexArray()[index * (size_t) mesh->vertexElementSize + k];
-                }
-            }
-            if (normals) {
-                for (uint8_t k = 0; k < mesh->vertexElementSize; k++) {
-                    normals[j++] = mesh->GetNormalsArray()[index * (size_t) mesh->vertexElementSize + k];
-                }
-            }
-            if (texCoords) {
-                texCoords[j++] = mesh->GetTexCoordsArray()[index * 2 + 0];
-                texCoords[j++] = mesh->GetTexCoordsArray()[index * 2 + 1];
-            }
-        }
-
-        return meshCopy;
-    }
-
-    //
-    float *Mesh::GetVertexArray(const size_t floatCount) {
-        if (floatCount == 0 || vArray != nullptr)
-            return vArray;
-
-        vArray = (float *) (byteBuffer + currentOffset);
-        vArrayCount = floatCount;
-        currentOffset += floatCount * sizeof(float);
-        return vArray;
-    }
-
-    float *Mesh::GetNormalsArray(const size_t floatCount) {
-        if (floatCount == 0 || nArray != nullptr)
-            return nArray;
-
-        nArray = (float *) (byteBuffer + currentOffset);
-        nArrayCount = floatCount;
-        currentOffset += floatCount * sizeof(float);
-        return nArray;
-    }
-
-    float *Mesh::GetTexCoordsArray(const size_t floatCount) {
-        if (floatCount == 0 || texArray != nullptr)
-            return texArray;
-
-        texArray = (float *) (byteBuffer + currentOffset);
-        texArrayCount = floatCount;
-        currentOffset += floatCount * sizeof(float);
-        return texArray;
-    }
-
-    unsigned int *Mesh::GetIndiciesArray(const size_t intCount) {
-        if (intCount == 0 || iArray != nullptr)
-            return iArray;
-
-        iArray = (unsigned int *) (byteBuffer + currentOffset);
-        iArrayCount = intCount;
-        currentOffset += intCount * sizeof(unsigned int);
-        return iArray;
-    }
-
-    //
-#pragma endregion
-    //
     //
 #pragma region Geometry
     //
-    glm::vec3 Geometry::CalculateNormal(const glm::vec3 &v0, const glm::vec3 &v1, const glm::vec3 &v2) {
-        //	glm::vec3 A = v1 - v0;
-        //	glm::vec3 B = v2 - v0;
-        //	glm::vec3 N = glm::cross(A, B);
-        //	float sinAlpha = glm::length(N) / (glm::length(A) * glm::length(B));
-        //	return glm::normalize(N) * sinAlpha;
+    glm::vec3 Geometry::CalculateNormalCounterclockwise(const glm::vec3 &v0, const glm::vec3 &v1, const glm::vec3 &v2) {
         return glm::normalize(glm::cross(v1 - v0, v2 - v0));
+    }
+    //
+    glm::vec3 Geometry::CalculateNormalClockwise(const glm::vec3 &v0, const glm::vec3 &v1, const glm::vec3 &v2) {
+        return glm::normalize(glm::cross(v1 - v0, v1 - v2));
+    }
+    //
+    void Geometry::CalculateNormals(const std::vector<float> &vertices, const std::vector<uint32_t> &triangles,
+                                    std::vector<float> &normals) {
+        normals.resize(vertices.size());
+
+        for (size_t i = 0; i < triangles.size() / 3; i++) {
+            TriangleI tri = {triangles[i * 3 + 0], triangles[i * 3 + 1], triangles[i * 3 + 2]};
+
+            glm::vec3 normal = CalculateNormalClockwise(
+                {vertices[tri.x * 3 + 0], vertices[tri.x * 3 + 1], vertices[tri.x * 3 + 2]},
+                {vertices[tri.y * 3 + 0], vertices[tri.y * 3 + 1], vertices[tri.y * 3 + 2]},
+                {vertices[tri.z * 3 + 0], vertices[tri.z * 3 + 1], vertices[tri.z * 3 + 2]});
+
+            normals[tri.x * 3 + 0] = normal.x;
+            normals[tri.x * 3 + 1] = normal.y;
+            normals[tri.x * 3 + 2] = normal.z;
+        }
     }
 
     //
-    sRef<Mesh> Geometry::CreateUVSphere(float radius, unsigned int lattitudes, unsigned int longitudes) {
+    Mesh_F32 Geometry::CreateUVSphere(float radius, uint32_t lattitudes, uint32_t longitudes) {
         GENG_ASSERT(lattitudes < 3, Geometry::CreateSphere, "The minimum number of slices is 3");
         GENG_ASSERT(longitudes < 3, Geometry::CreateSphere, "The minimum number of stacks is 3");
 
-        unsigned int numberOfVerts = ((size_t) lattitudes) * (longitudes - 1) + 2;
-        std::vector<Vertex> verticies;
-        verticies.reserve(numberOfVerts);
-        std::vector<glm::vec2> texCoord;
-        texCoord.reserve(numberOfVerts);
-        std::vector<TriangleI> triangles;
-        triangles.reserve(((size_t) longitudes - 2) * lattitudes * 2 + 2 * lattitudes);
+        size_t numberOfVerts = ((size_t) lattitudes) * (longitudes - 1) + 2;
+        size_t numberOfTriangles = ((size_t) longitudes - 2) * lattitudes * 2 + 2 * lattitudes;
 
-        unsigned int i = 0; {
-            unsigned int j = 0;
-            glm::vec3 currentVertex;
+        Mesh_F32 sphereMesh(3, numberOfVerts * 3, numberOfVerts * 3,
+                            numberOfVerts * 2, numberOfTriangles * 3);
 
-            // Write data for top most vertex
-            verticies.emplace_back(0.0f, 1.0f, 0.0f);
-            texCoord.emplace_back(0.5f, 0.0f);
+        std::vector<float> &vertices = sphereMesh.GetVertexArray();
+        std::vector<float> &normals = sphereMesh.GetNormalsArray();
+        std::vector<float> &texCoord = sphereMesh.GetTexCoordsArray();
+        std::vector<uint32_t> &triangles = sphereMesh.GetIndicesArray();
 
-            for (i = 1; i < longitudes; i++) {
-                // Compute the V texture coordinate
-                float V = float(i) / float(longitudes);
-                // Compute the stack's angle
-                float Phi = V * GEng::Maths::PI;
+        size_t i = 0, j = 0, idx = 0;
 
-                for (j = 0; j < lattitudes; j++) {
-                    // Compute the U texture coordinate
-                    float U = float(j) / float(lattitudes);
-                    // Compute the slice's angle
-                    float Theta = U * GEng::Maths::Tau;
+        // Write data for top most vertex
+        vertices[0] = 0.0f;
+        vertices[1] = 1.0f;
+        vertices[2] = 0.0f;
 
-                    currentVertex.x = cos(Theta) * sin(Phi);
-                    currentVertex.y = cos(Phi);
-                    currentVertex.z = sin(Theta) * sin(Phi);
+        texCoord[0] = 0.5f;
+        texCoord[1] = 0.0f;
 
-                    verticies.push_back(currentVertex);
+        for (i = 1; i < longitudes; i++) {
+            // Compute the V texture coordinate
+            float V = float(i) / float(longitudes);
+            // Compute the stack's angle
+            float Phi = V * Maths::PI;
 
-                    texCoord.emplace_back(
-                        ((atan2(currentVertex.x, currentVertex.z) + Maths::PI) / Maths::PI) * 0.5f,
-                        ((acos(currentVertex.y) + Maths::PI) / Maths::PI) - 1.0f);
-                }
+            for (j = 0; j < lattitudes; j++) {
+                // Compute the U texture coordinate
+                float U = float(j) / float(lattitudes);
+                // Compute the slice's angle
+                float Theta = U * GEng::Maths::Tau;
+
+                idx = i * 3 + j * lattitudes * 3;
+
+                glm::vec3 currentVertex = {cos(Theta) * sin(Phi), cos(Phi), sin(Theta) * sin(Phi)};
+
+                vertices[idx + 0] = currentVertex.x;
+                vertices[idx + 1] = currentVertex.y;
+                vertices[idx + 2] = currentVertex.z;
+
+                texCoord[idx + 0] = ((atan2(currentVertex.x, currentVertex.z) + (float) Maths::PI) / (float) Maths::PI)
+                                    * 0.5f;
+                texCoord[idx + 1] = ((acos(currentVertex.y) + (float) Maths::PI) / (float) Maths::PI) - 1.0f;
             }
+        }
 
-            // Write data for bottom most vertex
-            verticies.emplace_back(0.0f, -1.0f, 0.0f);
-            texCoord.emplace_back(0.5f, 1.0f);
-        } {
-            const unsigned int topTriangleCount = lattitudes;
-            const unsigned int mainFaceCount = (longitudes - 2) * lattitudes;
+        // Write data for bottom most vertex
+        idx = i * 3 + j * lattitudes * 3;
+        vertices[idx + 0] = 0.0f;
+        vertices[idx + 1] = -1.0f;
+        vertices[idx + 2] = 0.0f;
+        texCoord[idx + 0] = 0.5f;
+        texCoord[idx + 1] = 1.0f;
 
-            for (i = 0; i < topTriangleCount; i++) {
-                triangles.emplace_back(
-                    i == topTriangleCount - 1 ? 1 : i + 2,
-                    i + 1,
-                    0);
-            }
+        const size_t topTriangleCount = lattitudes;
+        const size_t mainFaceCount = (longitudes - 2) * lattitudes;
 
-            // Face count instead of triangle count as two triangles are written per iteration
-            for (i = topTriangleCount; i < mainFaceCount + topTriangleCount; i++) {
-                if ((i + 1) % (lattitudes) == 0) {
-                    // First triangle's indices
-                    triangles.emplace_back(
-                        i - lattitudes + 2,
-                        i + 1,
-                        i - lattitudes + 1);
-                    // Second triangle's indices
-                    triangles.emplace_back(
-                        i - lattitudes + 2,
-                        i - lattitudes + 1,
-                        i - lattitudes - (lattitudes - 1) + 1);
+        idx = 0;
 
-                    continue;
-                }
+        for (i = 0; i < topTriangleCount; i++) {
+            triangles[idx++] = i == topTriangleCount - 1 ? 1 : i + 2;
+            triangles[idx++] = i + 1;
+            triangles[idx++] = 0;
+        }
 
+        // Face count instead of triangle count as two triangles are written per iteration
+        for (i = topTriangleCount; i < mainFaceCount + topTriangleCount; i++) {
+            if ((i + 1) % (lattitudes) == 0) {
                 // First triangle's indices
-                triangles.emplace_back(
-                    i + 2,
-                    i + 1,
-                    i - lattitudes + 1);
+                triangles[idx++] = i - lattitudes + 2;
+                triangles[idx++] = i + 1;
+                triangles[idx++] = i - lattitudes + 1;
                 // Second triangle's indices
-                triangles.emplace_back(
-                    i - lattitudes + 1,
-                    i - lattitudes + 2,
-                    i + 2);
+                triangles[idx++] = i - lattitudes + 2;
+                triangles[idx++] = i - lattitudes + 1;
+                triangles[idx++] = i - lattitudes - (lattitudes - 1) + 1;
+
+                continue;
             }
 
-            for (i = 0; i < topTriangleCount; i++) {
-                unsigned int triIndex = i + verticies.size() - 1 - lattitudes;
-                triangles.emplace_back(
-                    i == topTriangleCount - 1 ? triIndex - (lattitudes - 1) : triIndex + 1,
-                    verticies.size() - 1,
-                    triIndex);
-            }
-
-            std::vector<unsigned int> wrappedCoords =
-                    move(DetectSphereWrappedUVCoords(triangles, texCoord, longitudes));
-            FixSphereWrappedUV(wrappedCoords, verticies, triangles, texCoord);
+            // First triangle's indices
+            triangles[idx++] = i + 2;
+            triangles[idx++] = i + 1;
+            triangles[idx++] = i - lattitudes + 1;
+            // Second triangle's indices
+            triangles[idx++] = i - lattitudes + 1;
+            triangles[idx++] = i - lattitudes + 2;
+            triangles[idx++] = i + 2;
         }
 
-        sRef<Mesh> sphereMesh = make<Mesh>(
-            verticies.size() * sizeof(glm::vec3) * 2 + //*2 for normals
-            texCoord.size() * sizeof(glm::vec2) +
-            triangles.size() * sizeof(TriangleI));
+        for (i = 0; i < topTriangleCount; i++) {
+            size_t triIndex = i + vertices.size() - 1 - lattitudes;
 
-        float *verticiesSpan = sphereMesh->GetVertexArray(verticies.size() * 3);
-        float *normalsSpan = sphereMesh->GetNormalsArray(verticies.size() * 3);
-        float *texCoordsSpan = sphereMesh->GetTexCoordsArray(texCoord.size() * 2);
-        unsigned int *indiciesSpan = sphereMesh->GetIndiciesArray(triangles.size() * 3);
-
-        std::memcpy(normalsSpan, &verticies[0], verticies.size() * sizeof(glm::vec3));
-
-        for (glm::vec3 &vertex: verticies) {
-            vertex *= radius;
+            triangles[idx++] = i == topTriangleCount - 1 ? triIndex - (lattitudes - 1) : triIndex + 1;
+            triangles[idx++] = vertices.size() - 1;
+            triangles[idx++] = triIndex;
         }
 
-        std::memcpy(verticiesSpan, &verticies[0], verticies.size() * sizeof(glm::vec3));
-        std::memcpy(texCoordsSpan, &texCoord[0], texCoord.size() * sizeof(glm::vec2));
-        std::memcpy(indiciesSpan, &triangles[0], triangles.size() * sizeof(TriangleI));
+        std::vector<uint32_t> wrappedCoords = DetectSphereWrappedUVCoords(triangles, texCoord, longitudes);
+        FixSphereWrappedUV(wrappedCoords, vertices, triangles, texCoord);
+
+        normals = vertices;
 
         return sphereMesh;
     }
 
     //
-    sRef<Mesh> Geometry::CreateQuadsphere(float radius, unsigned int subdivisions) {
-        unsigned int noOfVerts = subdivisions * subdivisions * 6;
-        std::vector<glm::vec3> verticiesArray(noOfVerts);
-        std::vector<TriangleI> trianglesArray((subdivisions - 1) * (subdivisions - 1) * 2 * 6);
-        std::vector<glm::vec2> texCoordsArray(noOfVerts);
+    Mesh_F32 Geometry::CreateQuadsphere(float radius, uint32_t subdivisions) {
+        size_t noOfVerts = subdivisions * subdivisions * 6;
+        size_t noOfTriangles = (subdivisions - 1) * (subdivisions - 1) * 2 * 6;
+
+        Mesh_F32 sphereMesh(3, noOfVerts * 3, noOfVerts * 3, noOfVerts * 2,
+                            noOfTriangles * 3);
+
+        std::vector<float> &vertices = sphereMesh.GetVertexArray();
+        std::vector<float> &normals = sphereMesh.GetNormalsArray();
+        std::vector<float> &texCoords = sphereMesh.GetTexCoordsArray();
+        std::vector<uint32_t> &triangles = sphereMesh.GetIndicesArray();
 
         constexpr glm::vec3 localUps[] = {
             glm::vec3{0.0f, 1.0f, 0.0f},
@@ -284,25 +193,28 @@ namespace GEng {
         glm::vec3 axisA;
         glm::vec3 axisB;
 
-        unsigned int triIndex = 0;
+        size_t triIndex = 0;
 
-        for (unsigned int faces = 0; faces < 6; faces++) {
+        for (uint32_t faces = 0; faces < 6; faces++) {
             axisA.x = localUps[faces].y;
             axisA.y = localUps[faces].z;
             axisA.z = localUps[faces].x;
 
             axisB = glm::cross(localUps[faces], axisA);
 
-            for (unsigned int y = 0; y < subdivisions; y++) {
-                for (unsigned int x = 0; x < subdivisions; x++) {
+            for (uint32_t y = 0; y < subdivisions; y++) {
+                for (uint32_t x = 0; x < subdivisions; x++) {
                     glm::vec2 percent(x, y);
                     percent /= (float) (subdivisions - 1);
 
-                    unsigned int index = x + y * subdivisions + faces * subdivisions * subdivisions;
-                    verticiesArray[index] = glm::normalize(
+                    size_t index = (x + y * subdivisions + faces * subdivisions * subdivisions);
+                    glm::vec3 vertex = glm::normalize(
                         localUps[faces] +
                         (percent.x - 0.5f) * 2.0f * axisA +
                         (percent.y - 0.5f) * 2.0f * axisB);
+                    vertices[index * 3 + 0] = vertex.x;
+                    vertices[index * 3 + 1] = vertex.y;
+                    vertices[index * 3 + 2] = vertex.z;
 
                     if (x != subdivisions - 1 && y != subdivisions - 1) {
                         // trianglesArray[triIndex] = index;
@@ -313,13 +225,13 @@ namespace GEng {
                         // trianglesArray[triIndex + 4] = index + 1;
                         // trianglesArray[triIndex + 5] = index + subdivisions + 1;
 
-                        trianglesArray[triIndex].x = index;
-                        trianglesArray[triIndex].y = index + subdivisions + 1;
-                        trianglesArray[triIndex].z = index + subdivisions;
+                        triangles[triIndex * 3 + 0] = index;
+                        triangles[triIndex * 3 + 1] = index + subdivisions + 1;
+                        triangles[triIndex * 3 + 2] = index + subdivisions;
 
-                        trianglesArray[triIndex + 1].x = index;
-                        trianglesArray[triIndex + 1].y = index + 1;
-                        trianglesArray[triIndex + 1].z = index + subdivisions + 1;
+                        triangles[(triIndex + 1) * 3 + 0] = index;
+                        triangles[(triIndex + 1) * 3 + 1] = index + 1;
+                        triangles[(triIndex + 1) * 3 + 2] = index + subdivisions + 1;
 
                         triIndex += 2;
                     }
@@ -327,89 +239,68 @@ namespace GEng {
             }
         }
 
-        for (unsigned int i = 0; i < verticiesArray.size(); i++) {
-            const glm::vec3 &normal = verticiesArray[i];
+        for (size_t i = 0; i < vertices.size() / 3; i++) {
+            const glm::vec3 normal = {vertices[i * 3 + 0], vertices[i * 3 + 1], vertices[i * 3 + 2]};
 
-            texCoordsArray[i].x = ((atan2(normal.x, normal.z) + Maths::PI) / Maths::PI) * 0.5f;
-            texCoordsArray[i].y = ((acos(normal.y) + Maths::PI) / Maths::PI) - 1.0;
+            texCoords[i * 2 + 0] = ((atan2(normal.x, normal.z) + Maths::PI) / Maths::PI) * 0.5f;
+            texCoords[i * 2 + 1] = ((acos(normal.y) + Maths::PI) / Maths::PI) - 1.0;
         }
 
-        // std::vector<unsigned int> wrappedCoords = move(DetectSphereWrappedUVCoords(trianglesArray, texCoordsArray, subdivisions * 4));
-        // FixSphereWrappedUV(wrappedCoords, verticiesArray, trianglesArray, texCoordsArray, unsigned int(subdivisions * 4.5f));
+        normals = vertices;
 
-        sRef<Mesh> sphereMesh = make<Mesh>(
-            verticiesArray.size() * sizeof(glm::vec3) * 2 /*For normals array */ +
-            trianglesArray.size() * sizeof(TriangleI) +
-            texCoordsArray.size() * sizeof(glm::vec2));
-
-        float *vertexArrayS = sphereMesh->GetVertexArray(verticiesArray.size() * 3);
-        unsigned int *indiciesArrayS = sphereMesh->GetIndiciesArray(trianglesArray.size() * 3);
-        float *normalsArrayS = sphereMesh->GetNormalsArray(verticiesArray.size() * 3);
-        float *texCoordArrayS = sphereMesh->GetTexCoordsArray(texCoordsArray.size() * 2);
-
-        std::memcpy(normalsArrayS, &verticiesArray[0], verticiesArray.size() * sizeof(glm::vec3));
-
-        for (glm::vec3 &vertex: verticiesArray) {
-            vertex *= radius;
-        }
-
-        std::memcpy(vertexArrayS, &verticiesArray[0], verticiesArray.size() * sizeof(glm::vec3));
-        std::memcpy(indiciesArrayS, &trianglesArray[0].x, trianglesArray.size() * sizeof(TriangleI));
-        std::memcpy(texCoordArrayS, &texCoordsArray[0], texCoordsArray.size() * sizeof(glm::vec2));
+        for (float &v: vertices)
+            v *= radius;
 
         return sphereMesh;
     }
 
     //
-    sRef<Mesh> Geometry::CreateIcosahedron(float size) {
-        sRef<Mesh> icosahedronMesh = make<Mesh>(
-            ICOSAHEDRON_VERTS.size() * sizeof(float) * 2 +
-            ICOSAHEDRON_TRIS.size() * sizeof(unsigned int));
+    Mesh_F32 Geometry::CreateIcosahedron(float size) {
+        Mesh_F32 icosahedronMesh(3,
+                                 ICOSAHEDRON_VERTS.size(),
+                                 ICOSAHEDRON_VERTS.size(),
+                                 0,
+                                 ICOSAHEDRON_TRIS.size());
 
-        float *Verticies = icosahedronMesh->GetVertexArray(ICOSAHEDRON_VERTS.size());
-        float *Normals = icosahedronMesh->GetNormalsArray(ICOSAHEDRON_VERTS.size());
-        unsigned int *Indicies = icosahedronMesh->GetIndiciesArray(ICOSAHEDRON_TRIS.size());
-
-        unsigned int i = 0;
-
+        size_t i = 0;
         for (; i < ICOSAHEDRON_VERTS.size(); i++) {
-            Normals[i] = (float) ICOSAHEDRON_VERTS[i];
-            Verticies[i] = (float) ICOSAHEDRON_VERTS[i] * size;
+            icosahedronMesh.GetNormalsArray()[i] = (float) ICOSAHEDRON_VERTS[i];
+            icosahedronMesh.GetVertexArray()[i] = (float) ICOSAHEDRON_VERTS[i] * size;
         }
         for (i = 0; i < ICOSAHEDRON_TRIS.size(); i++) {
-            Indicies[i] = (unsigned int) ICOSAHEDRON_TRIS[i];
+            icosahedronMesh.GetIndicesArray()[i] = ICOSAHEDRON_TRIS[i];
         }
 
         return icosahedronMesh;
     }
-
     //
-    sRef<Mesh> Geometry::CreateIcosphere(float radius, unsigned int subdivisions) {
-        auto PrecomputeNoTriangles = [](unsigned int subdivisions) -> unsigned int {
-            return 20 * Maths::IntegerPow<unsigned int>(4, subdivisions);
+    // //
+    Mesh_F32 Geometry::CreateIcosphere(float radius, uint32_t subdivisions) {
+        auto PrecomputeNoTriangles = [](uint32_t subdivisions) -> uint32_t {
+            return 20 * Maths::IntegerPow<uint32_t>(4, subdivisions);
         };
 
-        auto PrecomputeVertexAmount = [](unsigned int subdivisions) -> unsigned int {
-            unsigned int result = 12;
+        auto PrecomputeVertexAmount = [](uint32_t subdivisions) -> uint32_t {
+            uint32_t result = 12;
 
-            for (unsigned int i = 1; i <= subdivisions; i++) {
-                result += (30 * Maths::IntegerPow((unsigned int) 4, i - 1));
+            for (uint32_t i = 1; i <= subdivisions; i++) {
+                result += (30 * Maths::IntegerPow((uint32_t) 4, i - 1));
             }
             return result;
         };
 
-        std::vector<Vertex> icoVerticies;
-        icoVerticies.reserve(PrecomputeVertexAmount(subdivisions));
+        std::vector<Vertex> icoVertices;
+        icoVertices.reserve(PrecomputeVertexAmount(subdivisions));
         std::vector<TriangleI> icoTriangles;
         icoTriangles.reserve(PrecomputeNoTriangles(subdivisions));
         std::vector<TriangleI> icoTrianglesBuffer;
         icoTrianglesBuffer.reserve(subdivisions > 0 ? PrecomputeNoTriangles(subdivisions - 1) : 0);
 
-        unsigned int i = 0;
+        uint32_t i = 0;
 
         // Write Icosahedron Data
         for (i = 0; i < ICOSAHEDRON_VERTS.size() / 3; i++) {
-            icoVerticies.emplace_back(
+            icoVertices.emplace_back(
                 ICOSAHEDRON_VERTS[i * 3 + 0],
                 ICOSAHEDRON_VERTS[i * 3 + 1],
                 ICOSAHEDRON_VERTS[i * 3 + 2]);
@@ -421,25 +312,25 @@ namespace GEng {
                 ICOSAHEDRON_TRIS[i * 3 + 2]);
         }
 
-        std::unordered_map<std::pair<unsigned int, unsigned int>, unsigned int, hash_pair> lookupTable;
+        std::unordered_map<std::pair<uint32_t, uint32_t>, uint32_t, hash_pair> lookupTable;
 
         // Lamda functions for subdividing icosahedron
-        auto CalculateVertex = [&lookupTable, &icoVerticies](unsigned int first, unsigned int second) -> unsigned int {
-            std::pair<unsigned int, unsigned int> key(first, second);
+        auto CalculateVertex = [&lookupTable, &icoVertices](uint32_t first, uint32_t second) -> uint32_t {
+            std::pair<uint32_t, uint32_t> key(first, second);
             if (key.first > key.second) {
                 std::swap(key.first, key.second);
             }
 
-            auto inserted = lookupTable.insert({key, icoVerticies.size()});
+            auto inserted = lookupTable.insert({key, icoVertices.size()});
             if (inserted.second) {
-                const glm::vec3 &edge0 = icoVerticies[first];
-                const glm::vec3 &edge1 = icoVerticies[second];
-                icoVerticies.push_back(glm::normalize(edge0 + edge1));
+                const glm::vec3 &edge0 = icoVertices[first];
+                const glm::vec3 &edge1 = icoVertices[second];
+                icoVertices.push_back(glm::normalize(edge0 + edge1));
             }
 
             return inserted.first->second;
         };
-        auto Subdivide = [&CalculateVertex, &icoTriangles, &icoTrianglesBuffer, &icoVerticies, &lookupTable]() -> void {
+        auto Subdivide = [&CalculateVertex, &icoTriangles, &icoTrianglesBuffer, &icoVertices, &lookupTable]() -> void {
             TriangleI midPointTri;
             lookupTable.clear();
             icoTriangles.clear();
@@ -471,168 +362,399 @@ namespace GEng {
 
         icoTrianglesBuffer.clear();
 
-        // Create an array to hold texture coordinates
-        std::vector<glm::vec2> texCoords;
-        texCoords.reserve(icoVerticies.size());
-        // Populate texture coordinate array
-        for (i = 0; i < icoVerticies.size(); i++) {
-            const glm::vec3 &normal = icoVerticies[i];
+        Mesh_F32 icoSphereMesh(3, icoVertices.size() * 3, icoVertices.size() * 3, icoVertices.size() * 2,
+                               icoTriangles.size() * 3);
 
-            texCoords[i].x = ((atan2(normal.x, normal.z) + Maths::PI) / Maths::PI) * 0.5f;
-            texCoords[i].y = ((acos(normal.y) + Maths::PI) / Maths::PI) - 1.0;
+        // Populate texture coordinate array
+        for (i = 0; i < icoVertices.size(); i++) {
+            const glm::vec3 &normal = icoVertices[i];
+
+            icoSphereMesh.GetTexCoordsArray()[i * 2 + 0] = ((atan2(normal.x, normal.z) + Maths::PI) / Maths::PI) * 0.5f;
+            icoSphereMesh.GetTexCoordsArray()[i * 2 + 1] = ((acos(normal.y) + Maths::PI) / Maths::PI) - 1.0;
+
+            icoSphereMesh.GetVertexArray()[i * 3 + 0] = icoVertices[i][0] * radius;
+            icoSphereMesh.GetVertexArray()[i * 3 + 1] = icoVertices[i][1] * radius;
+            icoSphereMesh.GetVertexArray()[i * 3 + 2] = icoVertices[i][2] * radius;
+
+            icoSphereMesh.GetNormalsArray()[i * 3 + 0] = icoVertices[i][0];
+            icoSphereMesh.GetNormalsArray()[i * 3 + 1] = icoVertices[i][1];
+            icoSphereMesh.GetNormalsArray()[i * 3 + 2] = icoVertices[i][2];
+
+            icoSphereMesh.GetIndicesArray()[i * 3 + 0] = icoTriangles[i][0];
+            icoSphereMesh.GetIndicesArray()[i * 3 + 1] = icoTriangles[i][1];
+            icoSphereMesh.GetIndicesArray()[i * 3 + 2] = icoTriangles[i][2];
         }
 
         // Fix texture seam issue by duplicating verticies and correcting texture coordinates
-        std::vector<unsigned int> wrappedCoords = move(DetectSphereWrappedUVCoords(icoTriangles, texCoords));
-        FixSphereWrappedUV(wrappedCoords, icoVerticies, icoTriangles, texCoords);
-
-        // Create a mesh object to store data
-        sRef<Mesh> icoSphereMesh = make<Mesh>(
-            icoVerticies.size() * sizeof(glm::vec3) * 2 +
-            icoTriangles.size() * sizeof(TriangleI) +
-            texCoords.size() * 2 * sizeof(float));
-
-        float *icosphereVerts = icoSphereMesh->GetVertexArray(icoVerticies.size() * 3);
-        float *icosphereNorms = icoSphereMesh->GetNormalsArray(icoVerticies.size() * 3);
-        unsigned int *icosphereIndicies = icoSphereMesh->GetIndiciesArray(icoTriangles.size() * 3);
-        float *icosphereUV = icoSphereMesh->GetTexCoordsArray(icoVerticies.size() * 2);
-
-        // Copy normalised verticies first
-        std::memcpy(icosphereNorms, &icoVerticies[0], icoVerticies.size() * sizeof(glm::vec3));
-
-        // Scale all verticies by radius
-        for (glm::vec3 &vert: icoVerticies) {
-            vert *= radius;
-        }
-
-        // Copy verticies, UV coordinates and triangles (indicies) into data buffer
-        std::memcpy(icosphereVerts, &icoVerticies[0], icoVerticies.size() * sizeof(glm::vec3));
-        std::memcpy(icosphereIndicies, &icoTriangles[0], icoTriangles.size() * sizeof(TriangleI));
-        std::memcpy(icosphereUV, &texCoords[0], texCoords.size() * sizeof(glm::vec2));
+        std::vector<uint32_t> wrappedCoords = DetectSphereWrappedUVCoords(
+            icoSphereMesh.GetIndicesArray(), icoSphereMesh.GetTexCoordsArray());
+        FixSphereWrappedUV(wrappedCoords, icoSphereMesh.GetVertexArray(), icoSphereMesh.GetIndicesArray(),
+                           icoSphereMesh.GetTexCoordsArray());
 
         // Return icosphere mesh
         return icoSphereMesh;
     }
 
     //
-    sRef<Mesh> Geometry::CreateCylinder(float radius, float height, size_t segments) {
-        std::vector<glm::vec3> vertices(2 * segments + 2);
-        // std::vector<glm::vec3> normals(2 * segments + 2);
+    Mesh_F32 Geometry::CreateCylinder(float radius, float height, size_t segments) {
+        size_t noOfVertices = 2 * segments + 2;
         size_t noTriangles = 4 * segments;
-        std::vector<unsigned int> indicies;
-        indicies.reserve(noTriangles * 3);
 
-        vertices[0] = {0.0f, 0.0f, height * 0.5f};
-        for (size_t i = 0; i < segments; i++) {
+        Mesh_F32 cylinderMesh(3, noOfVertices * 3, 0, 0, noTriangles * 3);
+
+        std::vector<float> &vertices = cylinderMesh.GetVertexArray();
+        std::vector<uint32_t> &indices = cylinderMesh.GetIndicesArray();
+
+        size_t idx = 0, i = 0;
+
+        vertices[0] = 0.0f;
+        vertices[1] = 0.0f;
+        vertices[2] = height * 0.5f;
+
+        for (i = 1; i < segments + 1; i++) {
             float theta = 2.0f * std::numbers::pi * float(i) / float(segments);
             glm::vec3 v1(radius * cos(theta), radius * sin(theta), height * 0.5f);
             glm::vec3 v2(v1.x, v1.y, -height * 0.5f);
-            vertices[i + 1] = v1;
+            vertices[i * 3 + 0] = v1.x;
+            vertices[i * 3 + 1] = v1.y;
+            vertices[i * 3 + 2] = v1.z;
             // normals[i + 1] = glm::vec3(v1.x, v2.y, 0.0f);
-            vertices[i + 1 + segments] = v2;
+            vertices[(i + segments) * 3 + 0] = v2.x;
+            vertices[(i + segments) * 3 + 1] = v2.y;
+            vertices[(i + segments) * 3 + 2] = v2.z;
             // normals[i + 1 + segments] = glm::vec3(v1.x, v2.y, 0.0f);
         }
-        vertices[2 * segments + 1] = {0.0f, 0.0f, -height * 0.5f};
 
-        for (size_t i = 0; i < segments; i++) {
-            indicies.push_back(i + 1);
-            indicies.push_back(0);
-            indicies.push_back(i == segments - 1 ? 1 : i + 2);
+        vertices[(2 * segments + 1) * 3 + 0] = 0.0f; //{0.0f, 0.0f, -height * 0.5f};
+        vertices[(2 * segments + 1) * 3 + 1] = 0.0f;
+        vertices[(2 * segments + 1) * 3 + 2] = -height * 0.5f;
+
+
+        for (i = 0; i < segments; i++) {
+            indices[idx++] = (i + 1);
+            indices[idx++] = (0);
+            indices[idx++] = (i == segments - 1 ? 1 : i + 2);
         }
 
-        for (size_t i = 0; i < segments; i++) {
-            indicies.push_back(i == segments - 1 ? 1 : i + 2);
-            indicies.push_back(i + 1);
-            indicies.push_back(segments + i + 1);
+        for (i = 0; i < segments; i++) {
+            indices[idx++] = (i == segments - 1 ? 1 : i + 2);
+            indices[idx++] = (i + 1);
+            indices[idx++] = (segments + i + 1);
 
-            indicies.push_back(segments + i + 1);
-            indicies.push_back(i == segments - 1 ? segments + 1 : segments + i + 2);
-            indicies.push_back(i == segments - 1 ? 1 : i + 2);
+            indices[idx++] = (segments + i + 1);
+            indices[idx++] = (i == segments - 1 ? segments + 1 : segments + i + 2);
+            indices[idx++] = (i == segments - 1 ? 1 : i + 2);
         }
 
-        for (size_t i = 0; i < segments; i++) {
-            indicies.push_back(i + segments + 1);
-            indicies.push_back(2 * segments + 1);
-            indicies.push_back(i == segments - 1 ? segments + 1 : i + segments + 2);
+        for (i = 0; i < segments; i++) {
+            indices[idx++] = (i + segments + 1);
+            indices[idx++] = (2 * segments + 1);
+            indices[idx++] = (i == segments - 1 ? segments + 1 : i + segments + 2);
         }
-
-        sRef<Mesh> cylinderMesh = std::make_shared<Mesh>(vertices.size() * sizeof(glm::vec3) +
-                                                         indicies.size() * sizeof(unsigned int));
-
-        float *vertexArray = cylinderMesh->GetVertexArray(vertices.size() * 3);
-        unsigned int *indicesArray = cylinderMesh->GetIndiciesArray(indicies.size());
-
-        std::memcpy(vertexArray, vertices.data(), vertices.size() * sizeof(glm::vec3));
-        std::memcpy(indicesArray, indicies.data(), indicies.size() * sizeof(unsigned int));
 
         return cylinderMesh;
     }
+    //
+    Mesh_F32 Geometry::CreateCone(float height, float radius, size_t segments) {
+        segments = std::max<size_t>(segments, 3);
+
+        size_t noOfVertices = segments + 2;
+        size_t noOfTriangles = segments * 2;
+        Mesh_F32 coneMesh(3, noOfVertices * 3, noOfVertices * 3,
+                          0, noOfTriangles * 3);
+
+
+        std::vector<float> &vertices = coneMesh.GetVertexArray();
+        std::vector<float> &normals = coneMesh.GetNormalsArray();
+        std::vector<uint32_t> &indices = coneMesh.GetIndicesArray();
+
+        //Vertex 0
+        vertices[0] = 0.0f;
+        vertices[1] = 0.0f;
+        vertices[2] = height;
+
+        //Vertex 1
+        vertices[3] = 0.0f;
+        vertices[4] = 0.0f;
+        vertices[5] = 0.0f;
+
+        size_t idx = 6;
+        for (size_t i = 0; i < segments; i++) {
+            float theta = 2.0f * std::numbers::pi * float(i) / float(segments);
+
+
+            vertices[idx++] = radius * cos(theta);
+            vertices[idx++] = radius * sin(theta);
+            vertices[idx++] = 0.0f;
+        }
+
+        indices[0] = 1;
+        indices[1] = 2;
+        indices[2] = segments + 1;
+
+        indices[3] = 0;
+        indices[4] = segments + 1;
+        indices[5] = 2;
+
+        idx = 6;
+        for (size_t i = 2; i < segments + 1; i++) {
+            indices[idx++] = 1;
+            indices[idx++] = i + 1;
+            indices[idx++] = i;
+
+            indices[idx++] = 0;
+            indices[idx++] = i;
+            indices[idx++] = i + 1;
+        }
+
+        CalculateNormals(vertices, indices, normals);
+
+        return coneMesh;
+    }
+    //
+    Mesh_F32 Geometry::CreatePyramid(float size) {
+        return CreateCone(1.0f, 1.0f, 4);
+    }
+    //
+    Mesh_F32 Geometry::CreateOctahedron(float height, float size) {
+        Mesh_F32 octahedronMesh(3, 0, 0, 0, 0);
+
+        octahedronMesh.GetVertexArray() = {
+            0.0f, 0.0f, height,
+            -size, -size, 0.0f,
+            size, -size, 0.0f,
+            size, size, 0.0f,
+            -size, size, 0.0f,
+            0.0f, 0.0f, -height
+        };
+        octahedronMesh.GetNormalsArray() = {
+            0.0f, 0.0f, 1.0f,
+            -1.0f, -1.0f, 0.0f,
+            1.0f, -1.0f, 0.0f,
+            1.0f, 1.0f, 0.0f,
+            -1.0f, 1.0f, 0.0f,
+            0.0f, 0.0f, -1.0f
+        };
+        octahedronMesh.GetIndicesArray() = {
+            0, 1, 2,
+            0, 2, 3,
+            0, 3, 4,
+            0, 4, 1,
+            2, 1, 5,
+            3, 2, 5,
+            4, 3, 5,
+            4, 1, 5
+        };
+
+        return octahedronMesh;
+    }
+    //
+    Mesh_F32 Geometry::CreateTetrahedron(float size) {
+        return CreateCone(1.0f, 1.0f, 3);
+    }
+    //
+    Mesh_F32 Geometry::CreateDodecahedron(float size) {
+        Mesh_F32 dodecahedronMesh(3, 0, 0, 0, 0);
+
+        dodecahedronMesh.GetVertexArray() = {
+            0.577350, 0.577350, -0.57735,
+            0.577350, -0.577350, -0.57735,
+            0.577350, 0.577350, 0.57735,
+            0.577350, -0.577350, 0.57735,
+            -0.577350, 0.577350, -0.57735,
+            -0.577350, -0.577350, -0.57735,
+            -0.577350, 0.577350, 0.57735,
+            -0.577350, -0.577350, 0.57735,
+            0.356822, 0.000000, -0.93417,
+            -0.356822, 0.000000, -0.93417,
+            0.356822, 0.000000, 0.93417,
+            -0.356822, 0.000000, 0.93417,
+            0.934172, 0.356822, 0.00000,
+            0.934172, -0.356822, 0.00000,
+            -0.934172, 0.356822, 0.00000,
+            -0.934172, -0.356822, 0.00000,
+            0.000000, 0.934172, -0.35682,
+            0.000000, 0.934172, 0.35682,
+            0.000000, -0.934172, -0.35682,
+            0.000000, -0.934172, 0.356822
+        };
+
+        dodecahedronMesh.GetNormalsArray() = dodecahedronMesh.GetVertexArray();
+
+        dodecahedronMesh.GetIndicesArray() = {
+            8, 4, 16,
+            12, 1, 8,
+            16, 2, 12,
+            1, 5, 9,
+            2, 3, 13,
+            4, 6, 17,
+            5, 14, 4,
+            11, 2, 17,
+            19, 1, 13,
+            15, 18, 19,
+            11, 14, 15,
+            19, 10, 11,
+            16, 0, 8,
+            8, 9, 4,
+            8, 0, 12,
+            12, 13, 1,
+            12, 0, 16,
+            16, 17, 2,
+            9, 8, 1,
+            1, 18, 5,
+            13, 12, 2,
+            2, 10, 3,
+            17, 16, 4,
+            4, 14, 6,
+            4, 9, 5,
+            5, 15, 14,
+            17, 6, 11,
+            11, 10, 2,
+            13, 3, 19,
+            19, 18, 1,
+            19, 7, 15,
+            15, 5, 18,
+            15, 7, 11,
+            11, 6, 14,
+            11, 7, 19,
+            19, 3, 10
+        };
+
+        return dodecahedronMesh;
+    }
 
     //
-    sRef<Mesh> Geometry::CreateQuad() {
+    Mesh_F32 Geometry::CreateQuad() {
         constexpr float quadVerticies[] = {-1.0f, -1.0f, 1.0f, -1.0f, 1.0f, 1.0f, -1.0f, 1.0f};
-        constexpr unsigned int quadIndicies[] = {0, 1, 3, 3, 1, 2};
+        constexpr uint32_t quadIndicies[] = {0, 1, 3, 3, 1, 2};
 
-        constexpr unsigned int vertexCount = sizeof(quadVerticies) / sizeof(float);
-        constexpr unsigned int indiciesCount = sizeof(quadIndicies) / sizeof(unsigned int);
+        constexpr uint32_t vertexCount = sizeof(quadVerticies) / sizeof(float);
+        constexpr uint32_t indiciesCount = sizeof(quadIndicies) / sizeof(uint32_t);
 
-        sRef<Mesh> quadMesh = make<Mesh>(vertexCount * sizeof(float) + indiciesCount * sizeof(unsigned int));
-        std::memcpy(quadMesh->GetVertexArray(vertexCount), &quadVerticies, vertexCount * sizeof(float));
-        std::memcpy(quadMesh->GetIndiciesArray(indiciesCount), &quadIndicies, indiciesCount * sizeof(unsigned int));
-        quadMesh->vertexElementSize = 2;
+        Mesh_F32 quadMesh(2, vertexCount, 0, 0, indiciesCount);
+        std::memcpy(quadMesh.GetVertexArray().data(), &quadVerticies, vertexCount * sizeof(float));
+        std::memcpy(quadMesh.GetIndicesArray().data(), &quadIndicies, indiciesCount * sizeof(uint32_t));
 
         return quadMesh;
     }
-
     //
-    sRef<Mesh> Geometry::CreateGrid(float scale, unsigned int slices, unsigned int stacks) {
-        // unsigned int vertexCount = (slices + 1) * (stacks + 1) * 3;
+    Mesh_F32 Geometry::CreateSquircle(float radius, uint32_t roundness, uint32_t segments) {
+        size_t noOfVerts = segments * 2 + 1;
+        size_t noOfTriangles = (segments - 1) * 2;
+        Mesh_F32 squircleMesh(2, noOfVerts * 2, 0, 0, noOfTriangles * 3);
 
-        std::vector<float> vertices;
-        std::vector<unsigned int> indices;
 
-        unsigned int i = 0, j = 0;
+        std::vector<float> &vertices = squircleMesh.GetVertexArray();
+        std::vector<uint32_t> &indices = squircleMesh.GetIndicesArray();
 
-        for (j = 0; j <= slices; ++j) {
+        float n = (float) roundness * 2.0f;
+        auto squircleEq = [](float x, float n) {
+            return pow(1.0f - pow(x, n), 1.0f / n);
+        };
+        float halfX = squircleEq(0.5f, n);
+
+        vertices[0] = 0.0f;
+        vertices[1] = 0.0f;
+
+
+        size_t idx = 0;
+        for (uint32_t i = 0; i < segments; i++) {
+            float x = (glm::smoothstep(0.0f, 1.0f, float(i) / (float) (segments - 1)) - 0.5f) * 2.0f;
+            float y = squircleEq(x, n);
+
+            idx = (i + 1) * 2;
+            vertices[idx + 0] = x;
+            vertices[idx + 1] = y;
+
+            idx = (i + segments + 1) * 2;
+            vertices[idx + 0] = x;
+            vertices[idx + 1] = -y;
+        }
+
+        idx = 0;
+
+        for (uint32_t i = 0; i < noOfTriangles / 2; i++) {
+            indices[idx++] = 0;
+            indices[idx++] = i + 1;
+            indices[idx++] = i + 2;
+
+            indices[idx++] = 0;
+            indices[idx++] = i + 1 + segments;
+            indices[idx++] = i + 2 + segments;
+        }
+
+
+        return squircleMesh;
+    }
+    Mesh_F32 Geometry::CreateZSurface(const glm::vec3 scaling, const glm::vec2 axisStart, const glm::vec2 axisEnd,
+                                      uint32_t resolution, const std::function<float(float, float)> &func) {
+        Mesh_F32 surfaceMesh = CreateGrid(1.0f, resolution, resolution);
+        std::vector<float> &vertices = surfaceMesh.GetVertexArray();
+
+        for (size_t i = 0; i <= resolution; i++)
+            for (size_t j = 0; j <= resolution; j++) {
+                size_t index = (i * (resolution + 1) + j) * 3;
+                float &x = vertices[index + 0];
+                float &y = vertices[index + 1];
+                float &z = vertices[index + 2];
+
+                float funcX = Maths::Remap(x, 0.0f, 1.0f, axisStart.x, axisEnd.x);
+                float funcZ = Maths::Remap(z, 0.0f, 1.0f, axisStart.y, axisEnd.y);
+
+                y = -func(funcX, funcZ);
+
+                x *= scaling.x;
+                z *= scaling.y;
+                y *= scaling.z;
+            }
+
+
+        return surfaceMesh;
+    }
+    //
+    Mesh_F32 Geometry::CreateGrid(float scale, uint32_t slices, uint32_t stacks) {
+        uint32_t vertexCount = (slices + 1) * (stacks + 1);
+        uint32_t noOfTriangles = (slices + 1) * (stacks + 1) * 2;
+
+        Mesh_F32 gridMesh(3, vertexCount * 3, 0, 0, noOfTriangles * 3);
+        std::vector<float> &vertices = gridMesh.GetVertexArray();
+        std::vector<uint32_t> &indices = gridMesh.GetIndicesArray();
+
+        uint32_t i = 0, j = 0, idx = 0;
+
+        for (j = 0; j <= stacks; ++j) {
             for (i = 0; i <= slices; ++i) {
                 float x = ((float) i / (float) slices) * scale;
                 float y = 0;
-                float z = ((float) j / (float) slices) * scale;
-                vertices.push_back(x);
-                vertices.push_back(y);
-                vertices.push_back(z);
+                float z = ((float) j / (float) stacks) * scale;
+
+                //idx = (j + i * slices);
+                vertices[idx++] = x;
+                vertices[idx++] = y;
+                vertices[idx++] = z;
             }
         }
 
-        for (j = 0; j < slices; ++j) {
-            for (i = 0; i < slices; ++i) {
-                unsigned int row1 = j * (slices + 1);
-                unsigned int row2 = (j + 1) * (slices + 1);
+        idx = 0;
 
-                indices.push_back(row1 + i);
-                indices.push_back(row1 + i + 1);
-                indices.push_back(row1 + i + 1);
-                indices.push_back(row2 + i + 1);
+        for (j = 0; j < stacks; j++)
+            for (i = 0; i < slices; i++) {
+                uint32_t idx2 = j * (slices + 1) + i;
+                indices[idx++] = idx2;
+                indices[idx++] = idx2 + slices + 2;
+                indices[idx++] = idx2 + 1;
 
-                indices.push_back(row2 + i + 1);
-                indices.push_back(row2 + i);
-                indices.push_back(row2 + i);
-                indices.push_back(row1 + i);
+
+                indices[idx++] = idx2;
+                indices[idx++] = idx2 + slices + 1;
+                indices[idx++] = idx2 + slices + 2;
             }
-        }
-
-        sRef<Mesh> gridMesh = make<Mesh>(vertices.size() * sizeof(float) + indices.size() * sizeof(unsigned int));
-        float *vArraySpan = gridMesh->GetVertexArray(vertices.size());
-        unsigned int *iArraySpan = gridMesh->GetIndiciesArray(indices.size());
-
-        std::memcpy(vArraySpan, &vertices[0], vertices.size() * sizeof(float));
-        std::memcpy(iArraySpan, &indices[0], indices.size() * sizeof(unsigned int));
 
         return gridMesh;
     }
-
     //
-    sRef<Mesh> Geometry::CreateCube(float size) {
+    // //
+    Mesh_F32 Geometry::CreateCube(float size) {
         constexpr glm::vec3 cubeVerticies[] = {
             // Front
             {-1, -1, 1},
@@ -775,36 +897,30 @@ namespace GEng {
             {0.0f, 0.0f}
         };
 
-        sRef<Mesh> cubeMesh = make<Mesh>(
-            sizeof(cubeVerticies) +
-            sizeof(cubeNormals) +
-            sizeof(cubeUV));
+        Mesh_F32 cubeMesh(3, sizeof(cubeVerticies) / sizeof(float), sizeof(cubeNormals) / sizeof(float),
+                          sizeof(cubeUV) / sizeof(float), 0);
 
-        float *vertSpan = cubeMesh->GetVertexArray(sizeof(cubeVerticies) / sizeof(float));
-        float *normalSpan = cubeMesh->GetNormalsArray(sizeof(cubeNormals) / sizeof(float));
-        float *texCoordSpan = cubeMesh->GetTexCoordsArray(sizeof(cubeUV) / sizeof(float));
+        std::memcpy(cubeMesh.GetVertexArray().data(), &cubeVerticies, sizeof(cubeVerticies));
+        std::memcpy(cubeMesh.GetNormalsArray().data(), &cubeNormals, sizeof(cubeNormals));
+        std::memcpy(cubeMesh.GetTexCoordsArray().data(), &cubeUV, sizeof(cubeUV));
 
-        std::memcpy(vertSpan, &cubeVerticies, sizeof(cubeVerticies));
-        std::memcpy(normalSpan, &cubeNormals, sizeof(cubeNormals));
-        std::memcpy(texCoordSpan, &cubeUV, sizeof(cubeUV));
-
-        for (unsigned int i = 0; i < sizeof(cubeVerticies) / sizeof(float); i++) {
-            vertSpan[i] *= size;
-        }
+        for (float &v: cubeMesh.GetVertexArray())
+            v *= size;
 
         return cubeMesh;
     }
-
     //
-    sRef<Mesh> Geometry::CreateCircle(float radius, size_t segments) {
-        //Two dimensional vertices are used here
+    // //
+    Mesh_F32 Geometry::CreateCircle(float radius, size_t segments) {
+        //Two-dimensional vertices are used here
         size_t numberOfVerts = segments + 1;
         size_t numberOfIndices = segments * 3;
-        sRef<Mesh> circleMesh = make<Mesh>(numberOfVerts * 2 * sizeof(float) +
-                                           numberOfIndices * sizeof(unsigned int));
-        circleMesh->vertexElementSize = 2;
-        float *vertices = circleMesh->GetVertexArray(numberOfVerts * 2);
-        unsigned int *indices = circleMesh->GetIndiciesArray(numberOfIndices);
+        Mesh_F32 circleMesh(2, numberOfVerts * 2, 0, 0,
+                            numberOfIndices);
+
+
+        std::vector<float> &vertices = circleMesh.GetVertexArray();
+        std::vector<uint32_t> &indices = circleMesh.GetIndicesArray();
 
         vertices[0] = 0.0f;
         vertices[1] = 0.0f;
@@ -828,28 +944,28 @@ namespace GEng {
 
         return circleMesh;
     }
-
     //
-    sRef<Mesh> Geometry::CreateRings(float innerRadius, float outerRadius, unsigned int segments) {
-        unsigned int &faceCount = segments;
+    // //
+    Mesh_F32 Geometry::CreateRings(float innerRadius, float outerRadius, uint32_t segments) {
+        uint32_t &faceCount = segments;
         size_t vertexCount = (size_t) faceCount * 4;
         size_t indexCount = (size_t) segments * 6;
 
-        sRef<Mesh> ringMesh = make<Mesh>(vertexCount * sizeof(float) + indexCount * sizeof(unsigned int));
+        Mesh_F32 ringMesh(2, vertexCount, 0, 0, indexCount);
 
-        float *Verticies = ringMesh->GetVertexArray(vertexCount);
-        unsigned int *Indicies = ringMesh->GetIndiciesArray(indexCount);
+        std::vector<float> &Vertices = ringMesh.GetVertexArray();
+        std::vector<uint32_t> &Indicies = ringMesh.GetIndicesArray();
 
         float theta;
-        unsigned int i = 0;
+        uint32_t i = 0;
         for (i = 0; i < faceCount; i++) {
             theta = 2.0f * Maths::PI * float(i) / float(segments);
 
-            Verticies[(size_t) i * 4 + 0] = innerRadius * cos(theta);
-            Verticies[(size_t) i * 4 + 1] = innerRadius * sin(theta);
+            Vertices[(size_t) i * 4 + 0] = innerRadius * cos(theta);
+            Vertices[(size_t) i * 4 + 1] = innerRadius * sin(theta);
 
-            Verticies[(size_t) i * 4 + 2] = outerRadius * cos(theta);
-            Verticies[(size_t) i * 4 + 3] = outerRadius * sin(theta);
+            Vertices[(size_t) i * 4 + 2] = outerRadius * cos(theta);
+            Vertices[(size_t) i * 4 + 3] = outerRadius * sin(theta);
         }
 
         for (i = 0; i < segments; i++) {
@@ -874,28 +990,28 @@ namespace GEng {
 
         return ringMesh;
     }
-
     //
-    sRef<Mesh> Geometry::CreateHalfRings(float innerRadius, float outerRadius, unsigned int segments) {
-        unsigned int faceCount = segments / 2 + 1;
+    // //
+    Mesh_F32 Geometry::CreateHalfRings(float innerRadius, float outerRadius, uint32_t segments) {
+        uint32_t faceCount = segments / 2 + 1;
         size_t vertexCount = (size_t) faceCount * 4;
         size_t indexCount = (size_t) (faceCount - 1) * 6;
 
-        sRef<Mesh> ringMesh = make<Mesh>(vertexCount * sizeof(float) + indexCount * sizeof(unsigned int));
+        Mesh_F32 ringMesh(2, vertexCount, 0, 0, indexCount);
 
-        float *Verticies = ringMesh->GetVertexArray(vertexCount);
-        unsigned int *Indicies = ringMesh->GetIndiciesArray(indexCount);
+        std::vector<float> &Vertices = ringMesh.GetVertexArray();
+        std::vector<uint32_t> &Indicies = ringMesh.GetIndicesArray();
 
         float theta;
-        unsigned int i = 0;
+        uint32_t i = 0;
         for (i = 0; i < faceCount; i++) {
             theta = 2.0f * Maths::PI * float(i) / float(segments);
 
-            Verticies[(size_t) i * 4 + 0] = innerRadius * cos(theta);
-            Verticies[(size_t) i * 4 + 1] = innerRadius * sin(theta);
+            Vertices[(size_t) i * 4 + 0] = innerRadius * cos(theta);
+            Vertices[(size_t) i * 4 + 1] = innerRadius * sin(theta);
 
-            Verticies[(size_t) i * 4 + 2] = outerRadius * cos(theta);
-            Verticies[(size_t) i * 4 + 3] = outerRadius * sin(theta);
+            Vertices[(size_t) i * 4 + 2] = outerRadius * cos(theta);
+            Vertices[(size_t) i * 4 + 3] = outerRadius * sin(theta);
         }
 
         for (i = 0; i < faceCount - 1; i++) {
@@ -910,29 +1026,28 @@ namespace GEng {
 
         return ringMesh;
     }
-
     //
-    sRef<Mesh> Geometry::CreateTorus(float innerRadius, float outerRadius, float depth, unsigned int sides,
-                                     unsigned int rings, unsigned short twistyness) {
+    //
+    Mesh_F32 Geometry::CreateTorus(float innerRadius, float outerRadius, float depth, uint32_t sides,
+                                   uint32_t rings, uint32_t twistyness) {
         // Array for final verticies and normal vectors
-        unsigned int elementCount = (sides + 1) * ((rings + 1) * (twistyness + 1));
+        uint32_t elementCount = (sides + 1) * ((rings + 1) * (twistyness + 1));
         size_t vertexCount = ((size_t) elementCount * 3);
         size_t texCoordsCount = ((size_t) elementCount * 2);
         size_t indiciesCount = ((size_t) elementCount * 3) - 6;
 
-        sRef<Mesh> torusMesh = make<Mesh>(
-            vertexCount * sizeof(float) * 2 + // For verticies and normals
-            texCoordsCount * sizeof(float) +
-            indiciesCount * sizeof(unsigned int));
+        Mesh_F32 torusMesh(3,
+                           vertexCount, vertexCount, texCoordsCount,
+                           indiciesCount);
 
-        float *Vertices = torusMesh->GetVertexArray(vertexCount);
-        float *Normals = torusMesh->GetNormalsArray(vertexCount);
-        float *TextureCoordinates = torusMesh->GetTexCoordsArray(texCoordsCount);
-        unsigned int *Indicies = torusMesh->GetIndiciesArray(indiciesCount);
+        std::vector<float> &Vertices = torusMesh.GetVertexArray();
+        std::vector<float> &Normals = torusMesh.GetNormalsArray();
+        std::vector<float> &TextureCoordinates = torusMesh.GetTexCoordsArray();
+        std::vector<uint32_t> &Indicies = torusMesh.GetIndicesArray();
 
         // Incremental varibles
-        unsigned int i = 0, j = 0;
-        unsigned int a = 0;
+        uint32_t i = 0, j = 0;
+        uint32_t a = 0;
 
         // Tesselation "twistyness". Varible used for correct quad tesselation
         short k = twistyness;
@@ -967,7 +1082,7 @@ namespace GEng {
             }
         }
 
-        j = (unsigned int) (indiciesCount / 6);
+        j = (uint32_t) (indiciesCount / 6);
         for (i = 0; i < j; i++) {
             Indicies[(size_t) i * 6 + 0] = i * 2;
             Indicies[(size_t) i * 6 + 1] = i * 2 + 1;
@@ -980,19 +1095,19 @@ namespace GEng {
 
         return torusMesh;
     }
-
     //
-    std::vector<unsigned int> Geometry::DetectSphereWrappedUVCoords(const std::vector<TriangleI> &triangles,
-                                                                    const std::vector<glm::vec2> &texCoords,
-                                                                    unsigned int hintCount) {
-        std::vector<unsigned int> returnIndicies;
+    //
+    std::vector<uint32_t> Geometry::DetectSphereWrappedUVCoords(const std::vector<uint32_t> &triangles,
+                                                                const std::vector<float> &texCoords,
+                                                                uint32_t hintCount) {
+        std::vector<uint32_t> returnIndicies;
         returnIndicies.reserve(hintCount > 0 ? hintCount : 100);
 
-        for (unsigned int i = 0; i < triangles.size(); ++i) {
-            const TriangleI &currentTri = triangles[i];
-            glm::vec3 texA(texCoords[currentTri[0]], 0.0f);
-            glm::vec3 texB(texCoords[currentTri[1]], 0.0f);
-            glm::vec3 texC(texCoords[currentTri[2]], 0.0f);
+        for (uint32_t i = 0; i < triangles.size() / 3; ++i) {
+            const TriangleI currentTri = {triangles[i * 3 + 0], triangles[i * 3 + 1], triangles[i * 3 + 2]};
+            glm::vec3 texA(texCoords[currentTri[0] * 2 + 0], texCoords[currentTri[0] * 2 + 1], 0.0f);
+            glm::vec3 texB(texCoords[currentTri[1] * 2 + 0], texCoords[currentTri[1] * 2 + 1], 0.0f);
+            glm::vec3 texC(texCoords[currentTri[2] * 2 + 0], texCoords[currentTri[2] * 2 + 1], 0.0f);
 
             glm::vec3 normal = glm::cross(texB - texA, texC - texA);
             if (normal.z > 0.0f) {
@@ -1002,133 +1117,154 @@ namespace GEng {
 
         returnIndicies.shrink_to_fit();
 
-        return move(returnIndicies);
+        return returnIndicies;
     }
-
     //
-    void Geometry::FixSphereWrappedUV(const std::vector<unsigned int> &wrapped, std::vector<glm::vec3> &verticies,
-                                      std::vector<TriangleI> &triangles, std::vector<glm::vec2> &texCoords,
-                                      unsigned int hintCount) {
-        unsigned int verticieIndex = verticies.size() - 1;
-        std::unordered_map<unsigned int, unsigned int> visited;
+    // //
+    void Geometry::FixSphereWrappedUV(const std::vector<uint32_t> &wrapped, std::vector<float> &verticies,
+                                      std::vector<uint32_t> &triangles, std::vector<float> &texCoords,
+                                      uint32_t hintCount) {
+        uint32_t vertexIndex = verticies.size() - 1;
+        std::unordered_map<uint32_t, uint32_t> visited;
 
         if (hintCount > 0) {
             verticies.reserve(hintCount);
             texCoords.reserve(hintCount);
         }
 
-        for (const unsigned int i: wrapped) {
-            unsigned int a = triangles[i][0];
-            unsigned int b = triangles[i][1];
-            unsigned int c = triangles[i][2];
+        for (uint32_t i: wrapped) {
+            uint32_t a = triangles[i * 3 + 0];
+            uint32_t b = triangles[i * 3 + 1];
+            uint32_t c = triangles[i * 3 + 2];
 
-            if (texCoords[a].x < 0.25f) {
-                unsigned int tempA = a;
+            if (texCoords[a * 2 + 0] < 0.25f) {
+                uint32_t tempA = a;
                 if (visited.find(a) == visited.end()) {
-                    glm::vec3 dVertex = verticies[a];
-                    verticies.push_back(dVertex);
-                    glm::vec2 dTexCoord = texCoords[a];
-                    texCoords.emplace_back(dTexCoord.x + 1.0f, dTexCoord.y);
-                    verticieIndex++;
-                    visited.insert({a, verticieIndex});
-                    tempA = verticieIndex;
+                    // glm::vec3 dVertex = verticies[a];
+                    // verticies.push_back(dVertex);
+
+
+                    verticies.push_back(verticies[a * 3 + 0]);
+                    verticies.push_back(verticies[a * 3 + 1]);
+                    verticies.push_back(verticies[a * 3 + 2]);
+
+                    // glm::vec2 dTexCoord = texCoords[a];
+                    // texCoords.emplace_back(dTexCoord.x + 1.0f, dTexCoord.y);
+
+                    texCoords.push_back(texCoords[a * 2 + 0] + 1.0f);
+                    texCoords.push_back(texCoords[a * 2 + 1]);
+
+                    vertexIndex++;
+                    visited.insert({a, vertexIndex});
+                    tempA = vertexIndex;
                 } else {
                     tempA = visited[a];
                 }
                 a = tempA;
             }
 
-            if (texCoords[b].x < 0.25f) {
-                unsigned int tempB = b;
+            if (texCoords[b * 2 + 0] < 0.25f) {
+                uint32_t tempB = b;
                 if (visited.find(b) == visited.end()) {
-                    glm::vec3 dVertex = verticies[b];
-                    verticies.push_back(dVertex);
-                    glm::vec2 dTexCoord = texCoords[b];
-                    texCoords.emplace_back(dTexCoord.x + 1.0f, dTexCoord.y);
-                    verticieIndex++;
-                    visited.insert({b, verticieIndex});
-                    tempB = verticieIndex;
+                    // glm::vec3 dVertex = verticies[a];
+                    // verticies.push_back(dVertex);
+
+                    verticies.push_back(verticies[a * 3 + 0]);
+                    verticies.push_back(verticies[a * 3 + 1]);
+                    verticies.push_back(verticies[a * 3 + 2]);
+
+                    // glm::vec2 dTexCoord = texCoords[a];
+                    // texCoords.emplace_back(dTexCoord.x + 1.0f, dTexCoord.y);
+
+                    texCoords.push_back(texCoords[a * 2 + 0] + 1.0f);
+                    texCoords.push_back(texCoords[a * 2 + 1]);
+
+                    vertexIndex++;
+                    visited.insert({b, vertexIndex});
+                    tempB = vertexIndex;
                 } else {
                     tempB = visited[b];
                 }
                 b = tempB;
             }
 
-            if (texCoords[c].x < 0.25f) {
-                unsigned int tempC = c;
+            if (texCoords[c * 2 + 0] < 0.25f) {
+                uint32_t tempC = c;
                 if (visited.find(b) == visited.end()) {
-                    glm::vec3 dVertex = verticies[c];
-                    verticies.push_back(dVertex);
-                    glm::vec2 dTexCoord = texCoords[c];
-                    texCoords.emplace_back(dTexCoord.x + 1.0f, dTexCoord.y);
-                    verticieIndex++;
-                    visited.insert({c, verticieIndex});
-                    tempC = verticieIndex;
+                    verticies.push_back(verticies[a * 3 + 0]);
+                    verticies.push_back(verticies[a * 3 + 1]);
+                    verticies.push_back(verticies[a * 3 + 2]);
+
+                    // glm::vec2 dTexCoord = texCoords[a];
+                    // texCoords.emplace_back(dTexCoord.x + 1.0f, dTexCoord.y);
+
+                    texCoords.push_back(texCoords[a * 2 + 0] + 1.0f);
+                    texCoords.push_back(texCoords[a * 2 + 1]);
+
+                    vertexIndex++;
+                    visited.insert({c, vertexIndex});
+                    tempC = vertexIndex;
                 } else {
                     tempC = visited[c];
                 }
                 c = tempC;
             }
 
-            triangles[i].x = a;
-            triangles[i].y = b;
-            triangles[i].z = c;
+            triangles[i * 3 + 0] = a;
+            triangles[i * 3 + 1] = b;
+            triangles[i * 3 + 2] = c;
         }
-
-        verticies.shrink_to_fit();
-        triangles.shrink_to_fit();
-        texCoords.shrink_to_fit();
     }
-
     //
-    void Geometry::FixPoleVerticies(std::vector<glm::vec3> &verticies, std::vector<glm::vec2> &texCoords,
-                                    std::vector<TriangleI> &triangles) {
-        unsigned int northPole = 0, southPole = 0;
-        unsigned int i = 0;
-
-        for (; i < verticies.size(); i++) {
-            if (verticies[i].y >= 0.9995f)
-                northPole = i;
-            else if (verticies[i].y <= -0.9995f)
-                southPole = i;
-        }
-
-        unsigned int verticeIndex = (unsigned int) verticies.size() - 1;
-
-        auto FixVertex = [&triangles, &texCoords, &verticies, &verticeIndex](
-            unsigned int i, unsigned int poleIndex, unsigned int b, unsigned int c) -> void {
-            const TriangleI &currentTri = triangles[i];
-            const glm::vec2 &B = texCoords[currentTri[b]];
-            const glm::vec2 &C = texCoords[currentTri[c]];
-            verticies.push_back(verticies[currentTri[poleIndex]]);
-            // texCoords.emplace_back((B.x + C.x) * 0.5f, texCoords[currentTri[poleIndex]].y);
-            texCoords.emplace_back(1, 1);
-            verticeIndex++;
-            triangles[i][poleIndex] = verticeIndex;
-        };
-
-        for (i = 0; i < triangles.size(); i++) {
-            if (triangles[i].x == northPole) {
-                FixVertex(i, 0, 1, 2);
-            } else if (triangles[i].y == northPole) {
-                FixVertex(i, 1, 0, 2);
-            } else if (triangles[i].z == northPole) {
-                FixVertex(i, 2, 0, 1);
-            }
-
-            if (triangles[i].x == southPole) {
-                FixVertex(i, 0, 1, 2);
-            } else if (triangles[i].y == southPole) {
-                FixVertex(i, 1, 0, 2);
-            } else if (triangles[i].z == southPole) {
-                FixVertex(i, 2, 0, 1);
-            }
-        }
-    }
+    // //
+    // void Geometry::FixPoleVerticies(std::vector<glm::vec3> &verticies, std::vector<glm::vec2> &texCoords,
+    //                                 std::vector<TriangleI> &triangles) {
+    //     uint32_t northPole = 0, southPole = 0;
+    //     uint32_t i = 0;
+    //
+    //     for (; i < verticies.size(); i++) {
+    //         if (verticies[i].y >= 0.9995f)
+    //             northPole = i;
+    //         else if (verticies[i].y <= -0.9995f)
+    //             southPole = i;
+    //     }
+    //
+    //     uint32_t verticeIndex = (uint32_t) verticies.size() - 1;
+    //
+    //     auto FixVertex = [&triangles, &texCoords, &verticies, &verticeIndex](
+    //         uint32_t i, uint32_t poleIndex, uint32_t b, uint32_t c) -> void {
+    //         const TriangleI &currentTri = triangles[i];
+    //         const glm::vec2 &B = texCoords[currentTri[b]];
+    //         const glm::vec2 &C = texCoords[currentTri[c]];
+    //         verticies.push_back(verticies[currentTri[poleIndex]]);
+    //         // texCoords.emplace_back((B.x + C.x) * 0.5f, texCoords[currentTri[poleIndex]].y);
+    //         texCoords.emplace_back(1, 1);
+    //         verticeIndex++;
+    //         triangles[i][poleIndex] = verticeIndex;
+    //     };
+    //
+    //     for (i = 0; i < triangles.size(); i++) {
+    //         if (triangles[i].x == northPole) {
+    //             FixVertex(i, 0, 1, 2);
+    //         } else if (triangles[i].y == northPole) {
+    //             FixVertex(i, 1, 0, 2);
+    //         } else if (triangles[i].z == northPole) {
+    //             FixVertex(i, 2, 0, 1);
+    //         }
+    //
+    //         if (triangles[i].x == southPole) {
+    //             FixVertex(i, 0, 1, 2);
+    //         } else if (triangles[i].y == southPole) {
+    //             FixVertex(i, 1, 0, 2);
+    //         } else if (triangles[i].z == southPole) {
+    //             FixVertex(i, 2, 0, 1);
+    //         }
+    //     }
+    // }
 
     /*
     private void FixSharedPoleVertices(Mesh sphereMesh)
-{
+    {
     Vertex north = sphereMesh.Vertices.First((v) => v.Position.Y == 1);
     Vertex south = sphereMesh.Vertices.First((v) => v.Position.Y == -1);
     uint northIndex = (uint)Array.IndexOf(sphereMesh.Vertices, north);
@@ -1161,7 +1297,7 @@ namespace GEng {
         }
     }
     sphereMesh.Vertices = vertices.ToArray();
-}
+    }
     */
     //
 #pragma endregion

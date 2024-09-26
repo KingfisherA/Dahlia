@@ -33,7 +33,7 @@
 int main(int argc, char **argv) {
     Example::Application app;
     if (!app.Init()) {
-        std::cout << "Failed to initialise application \n";
+        GENG_FATAL(main, "Failed to initialise application")
         return 1;
     }
     app.Run();
@@ -92,7 +92,10 @@ namespace Example {
         mCam.MoveTo(glm::vec3(0.0f, 0.0f, 0.0f), 10.0f);
         UpdateProjectionMatrix();
 
-        mVAO = VertexArray::Create(GEng::Geometry::CreateQuadsphere(1.0f, 40));
+        mVAO = VertexArray::Create(Geometry::CreateZSurface({5.0f,5.0f, 0.5f}, {-3.0f, -3.0f}, {3.0f, 3.0f}, 500,
+                                                            [](float x, float y)->float {
+                                                                return (float)cos(x*x*x+y*y*y);
+                                                            })); //Geometry::CreateQuadsphere(1.0f, 40));
 
         const char *shaderFilePath = "../../../../Assets/Shaders/ColourDiffuse.glsl";
         mShader = GEng::ShaderProgram::CreateFromFile(shaderFilePath);
@@ -125,8 +128,8 @@ namespace Example {
         // Was certainty remaining engrossed applauded sir how discovery. Settled opinion how enjoyed greater joy adapted too shy. Now properly surprise expenses interest nor replying she she.
         // Bore tall nay many many time yet less. Doubtful for answered one fat indulged margaret sir shutters together. Ladies so in wholly around whence in at. Warmth he up giving oppose if.
         // Impossible is dissimilar entreaties oh on terminated. Earnest studied article country ten respect showing had. But required offering him elegance son improved informed. )";
-        mText->SetScaling(m_Window->GetContentScaling().x * 1.0f);
-        mText->AddText("Example Graphics Engine Application", {{-1.0f, -0.8f, 2.0f}, TextLayoutInfo::Alignment::Left});
+        mText->SetScaling(m_Window->GetContentScaling().x * 0.3f);
+        mText->AddText("Example Graphics Engine Application", {{-1.0f, -0.95f, 2.0f}, TextLayoutInfo::Alignment::Left});
         mText->LayoutText(*mUbuntuLight);
 
         return true;
@@ -177,7 +180,7 @@ namespace Example {
         mVAO->SubmitArrays(Primitive::Triangles);
 
         float aspect = (float) mViewportFramebuffer->GetWidth() / (float) mViewportFramebuffer->GetHeight();
-        mText->DrawText(glm::ortho(-aspect, aspect, 1.0f, -1.0f));
+        mText->DrawText(glm::ortho(-aspect, aspect, 1.0f, -1.0f, 0.1f, 100.0f));
 
         mViewportFramebuffer->Unbind();
     }

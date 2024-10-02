@@ -14,172 +14,88 @@
 namespace GEng {
     //
     //
-    constexpr float POS_MAX_ACCELERATION = 100.0f;
-    constexpr float POS_ACCELERATION_FACTOR = 0.08f;
-    //
-    constexpr float ANGLE_AROUND_MAX_ACCELERATION = 5.0f;
-    constexpr float ANGLE_AROUND_ACCELERATION_FACTOR = 0.01f;
-    //
-    constexpr float PITCH_MAX_ACCELERATION = 10.0f;
-    constexpr float PITCH_ACCELERATION_FACTOR = 0.6f;
-    //
-    constexpr float ZOOM_MAX_ACCELERATION = 500.0f;
-    constexpr float ZOOM_ACCELERATION_FACTOR = 2.0f;
-    //
-    Camera3D::Camera3D() : viewMatrix(1.0f), centrePosition(0.0f), targetPosition(0.0f), posVelocity(0.0f) {
+    Camera3D::Camera3D(float pitchYawAcc, float posAcc, float zoomAcc, float decayFactor) : mViewMatrix(1.0f),
+        mPosVel(0.0f), mCentrePos(0.0f), mPitchYawAcc(pitchYawAcc), mPosAcc(posAcc), mZoomAcc(zoomAcc),
+        mDecayFactor(decayFactor) {
         RecalculateActualPos();
     }
 
     //
-    void Camera3D::UpdateMouse(float mouseDX, float mouseDY, int buttonClicked, int modKeys) {
-        if (isFollowingPath)
-            StopPath();
-
-        if (buttonClicked != -1 && (modKeys & GLFW_MOD_SHIFT)) {
-            zoomVelocity += glm::length(glm::vec2(mouseDX, mouseDY)) * glm::sign(mouseDY) * 2.0f;
+    void Camera3D::UpdateMovement(const glm::vec2 mouseDPosNormalised, int buttonClicked, int key, int modKeys) {
+        if (buttonClicked != -1 && ((modKeys & GLFW_MOD_SHIFT) || key == 340)) {
+            mZoomVel += glm::length(mouseDPosNormalised) * glm::sign(mouseDPosNormalised.y) * 2.0f * mZoomAcc;
         } else if (buttonClicked == GLFW_MOUSE_BUTTON_RIGHT) {
-            posVelocity -= glm::vec3(this->GetInverseViewMatrix() * glm::vec4(mouseDX, mouseDY, 0.0f, 0.0f) * 0.01f);
+            mPosVel += glm::vec3(
+                        this->GetInverseViewMatrix() * glm::vec4(-mouseDPosNormalised.x, mouseDPosNormalised.y, 0.0f,
+                                                                 0.0f)) *
+                    mPosAcc;
         } else if (buttonClicked == GLFW_MOUSE_BUTTON_LEFT) {
-            pitchAcceleration += PITCH_ACCELERATION_FACTOR;
-            pitchAcceleration = glm::clamp(pitchAcceleration, -PITCH_MAX_ACCELERATION, PITCH_MAX_ACCELERATION);
-            pitchVelocity -= mouseDY * 0.1f; // * pitchAcceleration;
+            mPitchVel -= mouseDPosNormalised.y * mPitchYawAcc;
+            mYawVel += mouseDPosNormalised.x * mPitchYawAcc;
+        } else {
+            glm::vec3 vecToCam = normalize(mCentrePos - mActualPos);
 
-            yawAcceleration += ANGLE_AROUND_ACCELERATION_FACTOR;
-            yawAcceleration = glm::clamp(yawAcceleration, -ANGLE_AROUND_MAX_ACCELERATION,
-                                         ANGLE_AROUND_MAX_ACCELERATION);
-            yawVelocity += mouseDX * 0.1f; // * yawAcceleration;
+            glm::vec3 deltaVec(0.0f);
+
+            if (key == GLFW_KEY_W) {
+                deltaVec = vecToCam;
+            }
+            if (key == GLFW_KEY_S) {
+                deltaVec = -vecToCam;
+            }
+            if (key == GLFW_KEY_A) {
+                deltaVec = glm::cross(vecToCam, glm::vec3(mViewMatrix[0][1], mViewMatrix[1][1], mViewMatrix[2][1]));
+            }
+            if (key == GLFW_KEY_D) {
+                deltaVec = -glm::cross(
+                    vecToCam,
+                    glm::vec3(mViewMatrix[0][1], mViewMatrix[1][1], mViewMatrix[2][1])
+                    /*The camera's up vector in world space*/);
+            }
+
+
+            mPosVel += deltaVec;
         }
-    }
-
-    void Camera3D::UpdateKeyboard(int key) {
-        if (key != GLFW_KEY_W &&
-            key != GLFW_KEY_S &&
-            key != GLFW_KEY_A &&
-            key != GLFW_KEY_D) {
-            posAcceleration *= 0.8f;
-            return;
-        }
-
-        if (isFollowingPath)
-            StopPath();
-        glm::vec3 vecToCam = normalize(centrePosition - actualPosition);
-
-        glm::vec3 deltaVec;
-        posAcceleration += POS_ACCELERATION_FACTOR;
-
-        if (key == GLFW_KEY_W) {
-            deltaVec = vecToCam;
-        }
-        if (key == GLFW_KEY_S) {
-            deltaVec = -vecToCam;
-        }
-        if (key == GLFW_KEY_A) {
-            deltaVec = glm::cross(vecToCam, glm::vec3(viewMatrix[0][1], viewMatrix[1][1], viewMatrix[2][1]));
-        }
-        if (key == GLFW_KEY_D) {
-            deltaVec = -glm::cross(
-                vecToCam,
-                glm::vec3(viewMatrix[0][1], viewMatrix[1][1], viewMatrix[2][1])
-                /*The camera's up vector in world space*/);
-        }
-
-        deltaVec *= posAcceleration;
-
-        posVelocity += deltaVec;
-
-        posAcceleration = glm::min(posAcceleration, POS_MAX_ACCELERATION);
     }
 
     void Camera3D::UpdateZoom(double mouseWheelD) {
-        if (isFollowingPath)
-            StopPath();
-        zoomAcceleration += ZOOM_ACCELERATION_FACTOR;
-        zoomAcceleration = glm::clamp(zoomAcceleration, -ZOOM_MAX_ACCELERATION, ZOOM_MAX_ACCELERATION);
-        zoomVelocity -= mouseWheelD * 0.1f;
+        mZoomVel -= static_cast<float>(mouseWheelD) * mZoomAcc;
     }
 
-    void Camera3D::MoveTo(const glm::vec3 &newPosition, const float targetZoomIn) {
-        targetZoom = targetZoomIn;
-        targetPosition = newPosition;
-        isFollowingPath = true;
-        posVelocity = glm::vec3(0.11f, 0.0f, 0.0f);
-    }
+    void Camera3D::UpdateCamera(float deltaTime) {
+        mCentrePos += mPosVel * deltaTime;
+        mPosVel *= mDecayFactor;
 
-    void Camera3D::StopPath() {
-        isFollowingPath = false;
+        mZoomVel *= mDecayFactor;
 
-        posAcceleration = 0.0f;
-        posVelocity = glm::vec3(0.0f);
+        mYaw += mYawVel * deltaTime;
+        mPitch += mPitchVel * deltaTime;
+        mZoom += mZoomVel * deltaTime;
+        mZoom = std::max(mZoom, 0.0f);
 
-        yawVelocity = 0.0f;
-        yawAcceleration = 0.0f;
+        mPitchVel *= mDecayFactor;
+        mYawVel *= mDecayFactor;
 
-        pitchAcceleration = 0.0f;
-        pitchVelocity = 0.0f;
-
-        zoomAcceleration = 0.0f;
-        zoomVelocity = 0.0f;
-    }
-
-    void Camera3D::UpdateCamera(double deltaTime, int key) {
-        UpdateKeyboard(key);
-        if (isFollowingPath) {
-            constexpr float thresholdDistance = 0.001f;
-            if (glm::distance2(centrePosition, targetPosition) < thresholdDistance * thresholdDistance &&
-                glm::abs(targetZoom - zoom) < thresholdDistance) {
-                isFollowingPath = false;
-                posVelocity = glm::vec3(0.0f);
-                centrePosition = targetPosition;
-                zoom = targetZoom;
-            } else {
-                centrePosition = glm::mix(centrePosition, targetPosition, posVelocity.x);
-                zoom = glm::mix(zoom, targetZoom, posVelocity.x);
-            }
-        } else {
-            // centrePosition += posVelocity * (float) deltaTime;
-            // posVelocity *= 0.99;
-
-
-        }
-
-        centrePosition += posVelocity * (float) deltaTime;
-        posVelocity *= 0.9;
-
-        zoomAcceleration *= 0.92f;
-        zoomVelocity *= 0.9f;
-
-        yaw += yawVelocity * deltaTime;
-        pitch += pitchVelocity * deltaTime;
-        zoom += zoomVelocity * deltaTime;
-        zoom = std::max(zoom, 0.0f);
-
-        pitchVelocity *= 0.9f;
-        pitchAcceleration *= 0.9f;
-
-        yawAcceleration *= 0.99f;
-        yawVelocity *= 0.99f;
-
-        this->RecalculateActualPos();
-        this->RecalculateViewMatrix();
+        RecalculateActualPos();
+        RecalculateViewMatrix();
     }
 
     //
     void Camera3D::RecalculateActualPos() {
-        float horiDistanceFromCentre = zoom * cos(glm::radians(pitch));
-        float vertiDistanceFromCentre = zoom * sin(glm::radians(pitch));
+        float horiDistanceFromCentre = mZoom * (float) cos(glm::radians(mPitch));
+        float vertiDistanceFromCentre = mZoom * (float) sin(glm::radians(mPitch));
 
-        actualPosition = centrePosition;
-        actualPosition.x -= horiDistanceFromCentre * sin(glm::radians(180.0f - yaw));
-        actualPosition.y += vertiDistanceFromCentre;
-        actualPosition.z -= horiDistanceFromCentre * cos(glm::radians(180.0f - yaw));
+        mActualPos = mCentrePos;
+        mActualPos.x -= horiDistanceFromCentre * (float) sin(glm::radians(180.0f - mYaw));
+        mActualPos.y += vertiDistanceFromCentre;
+        mActualPos.z -= horiDistanceFromCentre * (float) cos(glm::radians(180.0f - mYaw));
     }
 
     void Camera3D::RecalculateViewMatrix() {
-        rotationsMatrix = glm::rotate(glm::radians(pitch), glm::vec3(1, 0, 0)) *
-                          glm::rotate(glm::radians(yaw), glm::vec3(0, 1, 0)) * glm::rotate(
-                              glm::radians(roll), glm::vec3(0, 0, 1));
-        viewMatrix = rotationsMatrix * glm::translate(-actualPosition);
-        invViewMatrix = glm::inverse(viewMatrix);
+        mViewMatrix = glm::rotate(glm::radians(mPitch), glm::vec3(1, 0, 0)) *
+                      glm::rotate(glm::radians(mYaw), glm::vec3(0, 1, 0)) * glm::rotate(
+                          glm::radians(mRoll), glm::vec3(0, 0, 1)) * glm::translate(-mActualPos);
+        mInvViewMatrix = glm::inverse(mViewMatrix);
     }
 
     //

@@ -10,9 +10,14 @@ namespace GEng {
     public:
         Camera2D() = default;
 
+        explicit Camera2D(const glm::vec2 nearFar): mProjectionMatrix(1.0f), mViewMatrix(1.0f), mNearFar(nearFar) {
+        }
+
         Camera2D(const Camera2D &cam) : mViewMatrix(cam.mViewMatrix),
+                                        mProjectionMatrix(cam.mProjectionMatrix),
                                         mPos(cam.mPos),
-                                        mZoom(cam.mZoom) {
+                                        mZoom(cam.mZoom),
+                                        mNearFar(cam.mNearFar) {
         }
 
         Camera2D &operator=(const Camera2D &cam) {
@@ -60,14 +65,18 @@ namespace GEng {
 
         const float &GetZoom() const { return mZoom; }
 
+        const glm::vec2 &GetNearFarPlanes() const { return mNearFar; }
+        void SetNearFarPlanes(const glm::vec2 nearFar) { mNearFar = nearFar; }
+
         void RecalculateViewMatrix();
-        void RecalculateOrthographicProjection(const glm::vec2 &screenDimensions);
+        void RecalculateOrthographicProjection(const glm::vec2 screenDimensions);
 
     private:
         glm::mat4 mProjectionMatrix;
         glm::mat4 mViewMatrix;
         glm::vec2 mPos = {0.0f, 0.0f};
         glm::vec2 mVel = {0, 0};
+        glm::vec2 mNearFar = {0.01f, 1000.0f};
 
         float mZoom = 1.0f;
         float mZoomVel = 0.0f;

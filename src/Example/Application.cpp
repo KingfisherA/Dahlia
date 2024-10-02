@@ -89,12 +89,13 @@ namespace Example {
         GPUContext *ctx = GPUContext::Get();
         ctx->SetDepthTest(true);
 
-        mCam.MoveTo(glm::vec3(0.0f, 0.0f, 0.0f), 10.0f);
+        mCam.SetCentrePosition({0.0f, 0.0f, 0.0f});
+        mCam.SetZoom(10.0f);
         UpdateProjectionMatrix();
 
-        mVAO = VertexArray::Create(Geometry::CreateZSurface({5.0f,5.0f, 0.5f}, {-3.0f, -3.0f}, {3.0f, 3.0f}, 500,
-                                                            [](float x, float y)->float {
-                                                                return (float)cos(x*x*x+y*y*y);
+        mVAO = VertexArray::Create(Geometry::CreateZSurface({5.0f, 5.0f, 0.5f}, {-3.0f, -3.0f}, {3.0f, 3.0f}, 500,
+                                                            [](float x, float y)-> float {
+                                                                return (float) cos(x * x * x + y * y * y);
                                                             })); //Geometry::CreateQuadsphere(1.0f, 40));
 
         const char *shaderFilePath = "../../../../Assets/Shaders/ColourDiffuse.glsl";
@@ -147,11 +148,13 @@ namespace Example {
     bool Application::OnMouseMove(GEng::MouseMoveEvent &e) {
         GraphicsApp::OnMouseMove(e);
 
-        if (mIsViewportFocused)
-            mCam.UpdateMouse((float) mDeltaMousePos.x,
-                             (float) mDeltaMousePos.y,
-                             m_MouseButtonDown,
-                             m_KeyMods);
+        if (mIsViewportFocused) {
+            mDeltaMousePos /= glm::vec2(m_Window->GetWidth(), m_Window->GetHeight());
+            mCam.UpdateMovement(mDeltaMousePos,
+                                m_MouseButtonDown,
+                                m_KeyDown,
+                                m_KeyMods);
+        }
 
         return true;
     }
@@ -166,7 +169,7 @@ namespace Example {
     }
 
     void Application::OnRender() {
-        mCam.UpdateCamera(m_DeltaTime, m_KeyDown);
+        mCam.UpdateCamera((float) m_DeltaTime);
         mViewportFramebuffer->Bind();
 
         GPUContext::Get()->SetPolygonMode(mPolygonMode);

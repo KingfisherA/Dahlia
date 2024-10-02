@@ -35,10 +35,8 @@ namespace GEng {
         mViewMatrix = glm::translate(-glm::vec3(mPos, 0.0f)) * glm::scale(glm::vec3(mZoom));
     }
 
-    void Camera2D::RecalculateOrthographicProjection(const glm::vec2 &screenDimensions) {
-        constexpr float zNear = 0.1f;
-        constexpr float zFar = 100.0f;
+    void Camera2D::RecalculateOrthographicProjection(const glm::vec2 screenDimensions) {
         float aspect = screenDimensions.x / screenDimensions.y;
-        mProjectionMatrix = glm::ortho(-aspect, aspect, 1.0f, -1.0f, zNear, zFar);
+        mProjectionMatrix = glm::ortho(-aspect, aspect, 1.0f, -1.0f, mNearFar.x, mNearFar.y);
     }
 }

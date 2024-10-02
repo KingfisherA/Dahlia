@@ -3,82 +3,91 @@
 #include "GraphicsEngine/GEng_API.h"
 #include <glm/glm.hpp>
 
-namespace GEng
-{
-	GENG_API class Camera3D
-	{
-	public:
-		Camera3D();
-		//
-		void UpdateMouse(float mouseDX, float mouseDY, int buttonClicked, int modKeys = 0);
-		//
-		void UpdateZoom(double mouseWheelD);
-		//
-		void MoveTo(const glm::vec3 &newPosition, const float targetZoomIn);
-		void StopPath();
-		//
-		inline float GetPitch() const { return pitch; }
-		inline float GetYaw() const { return yaw; }
-		inline float GetRoll() const { return roll; }
-		//
-		inline glm::vec3 GetRotation() const { return glm::vec3(pitch, yaw, roll); }
-		//
-		void UpdateCamera(double deltaTime, int key);
-		//
-		inline const glm::mat4 &GetViewMatrix() const { return viewMatrix; }
-		inline const glm::mat4 &GetInverseViewMatrix() const { return invViewMatrix; }
-		inline const glm::mat4 &GetRotationsMatrix() const { return rotationsMatrix; }
-		inline const glm::vec3 &GetCentrePosition() const { return centrePosition; }
-		void SetCentrePosition(const glm::vec3 &pos)
-		{
-			StopPath();
-			centrePosition = pos;
-		}
-		const glm::vec3 &GetActualPosition() const { return actualPosition; }
-		const float GetZoom() const { return zoom; }
-		void SetZoom(const float zoomIn)
-		{
-			StopPath();
-			zoom = zoomIn;
-		}
-		//
-		inline float GetX() const { return centrePosition.x; }
-		inline float GetY() const { return centrePosition.y; }
-		inline float GetZ() const { return centrePosition.z; }
-		//
-		inline const glm::vec3 &GetVelocity() const { return posVelocity; }
-		//
-	private:
-		//
-		void UpdateKeyboard(int key);
-		void RecalculateActualPos();
-		void RecalculateViewMatrix();
-		//
-		glm::mat4 rotationsMatrix;
-		glm::mat4 viewMatrix;
-		glm::mat4 invViewMatrix;
-		//
-		bool isFollowingPath = false;
-		float posAcceleration = 0.0f;
-		glm::vec3 posVelocity;
-		//
-		glm::vec3 centrePosition;
-		glm::vec3 targetPosition;
-		glm::vec3 actualPosition;
-		//
-		float roll = 0.0f; // Z axis
-		//
-		float pitch = 0.0f; // X axis
-		float pitchVelocity = 0.0f;
-		float pitchAcceleration = 0.0f;
-		//
-		float yaw = 0.0f; // Y axis
-		float yawAcceleration = 0.0f;
-		float yawVelocity = 0.0f;
-		//
-		float zoom = 5.0f;
-		float zoomVelocity = 0.0f;
-		float zoomAcceleration = 0.0f;
-		float targetZoom = 0.0f;
-	};
+namespace GEng {
+    GENG_API class Camera3D {
+    public:
+        explicit Camera3D(float pitchYawAcc = 10100.0f, float posAcc = 5000.0f, float zoomAcc = 5000.0f,
+                          float decayFactor = 0.91f);
+        //
+        void UpdateMovement(const glm::vec2 mouseDPosNormalised, int buttonClicked, int key = 0, int modKeys = 0);
+        void UpdateZoom(double mouseWheelD);
+        //
+        [[nodiscard]] float GetPitch() const { return mPitch; }
+        [[nodiscard]] float GetYaw() const { return mYaw; }
+        [[nodiscard]] float GetRoll() const { return mRoll; }
+        //
+        [[nodiscard]] glm::vec3 GetRotation() const { return {mPitch, mYaw, mRoll}; }
+        //
+        void UpdateCamera(float deltaTime);
+        //
+        [[nodiscard]] const glm::mat4 &GetViewMatrix() const { return mViewMatrix; }
+        [[nodiscard]] const glm::mat4 &GetInverseViewMatrix() const { return mInvViewMatrix; }
+        [[nodiscard]] const glm::vec3 &GetCentrePosition() const { return mCentrePos; }
+        void SetCentrePosition(const glm::vec3 &pos) {
+            mCentrePos = pos;
+        }
+        [[nodiscard]] const glm::vec3 &GetActualPosition() const { return mActualPos; }
+        [[nodiscard]] const float &GetZoom() const { return mZoom; }
+        void SetZoom(const float zoomIn) {
+            mZoom = zoomIn;
+        }
+        //
+        [[nodiscard]] const float &GetX() const { return mCentrePos.x; }
+        [[nodiscard]] const float &GetY() const { return mCentrePos.y; }
+        [[nodiscard]] const float &GetZ() const { return mCentrePos.z; }
+        //
+        [[nodiscard]] const glm::vec3 &GetVelocity() const { return mPosVel; }
+        //
+        [[nodiscard]] const float &GetPitchYawAcc() const {
+            return mPitchYawAcc;
+        }
+        void SetPitchYawAcc(float v) {
+            mPitchYawAcc = v;
+        }
+        [[nodiscard]] const float &GetPosAcc() const {
+            return mPosAcc;
+        }
+        void SetPosAcc(float v) {
+            mPosAcc = v;
+        }
+        [[nodiscard]] const float &GetZoomAcc() const {
+            return mZoomAcc;
+        }
+        void SetZoomAcc(float v) {
+            mZoomAcc = v;
+        }
+        [[nodiscard]] const float &GetDecayFactor() const {
+            return mDecayFactor;
+        }
+        void SetDecayFactor(float v) {
+            mDecayFactor = v;
+        }
+        //
+    private:
+        //
+        void RecalculateActualPos();
+        void RecalculateViewMatrix();
+        //
+        glm::mat4 mViewMatrix;
+        glm::mat4 mInvViewMatrix{};
+        //
+        glm::vec3 mPosVel;
+        //
+        glm::vec3 mCentrePos;
+        glm::vec3 mActualPos{};
+        //
+        float mPitchYawAcc, mPosAcc, mZoomAcc, mDecayFactor;
+        //
+        float mRoll = 0.0f; // Z axis
+        //
+        float mPitch = 0.0f; // X axis
+        float mPitchVel = 0.0f;
+        //
+        float mYaw = 0.0f; // Y axis
+        float mYawVel = 0.0f;
+        //
+        float mZoom = 5.0f;
+        float mZoomVel = 0.0f;
+        //
+    };
 }

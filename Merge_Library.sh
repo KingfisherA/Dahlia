@@ -1,1 +1,0 @@
-libtool --mode=link cc -static -o ""

@@ -3,75 +3,71 @@
 #include "GraphicsEngine/GEng_API.h"
 #include <thread>
 
-namespace GEng
-{
-	GENG_API class Thread
-	{
-	public:
-		Thread() : mThread(nullptr), mThreadFinished(false) {}
-		Thread(const Thread &) = delete;
-		Thread(Thread &&t) noexcept : mThread(std::move(t.mThread)) { mThreadFinished.store(t.mThreadFinished); };
+namespace GEng {
+    GENG_API class Thread {
+    public:
+        Thread() : mThread(), mThreadFinished(false),mThreadStarted(false) {
+        }
 
-		virtual ~Thread()
-		{
-			if (mThread != nullptr)
-				mThread->request_stop();
-		}
+        Thread(const Thread &) = delete;
 
-		void operator=(Thread &&t) noexcept
-		{
-			Stop();
-			mThread = std::move(t.mThread);
-			mThreadFinished.store(t.mThreadFinished.load());
-		}
+        Thread(Thread &&t) noexcept : mThread(std::move(t.mThread)), mThreadFinished(t.mThreadFinished.load()),
+                                      mThreadStarted(true) {
+        }
 
-		template <class _Fn, class... _Args>
-		void Start(_Fn &&_Fx, _Args &&..._Ax)
-		{
-			Stop();
-			mThreadFinished.store(false);
-			mThread = std::make_unique<std::jthread>(std::forward<_Fn>(_Fx), std::forward<_Args>(_Ax)...);
-		}
+        virtual ~Thread() {
+            if (mThread.joinable()) {
+                mThread.request_stop();
+                mThread.join();
+            }
+        }
 
-		void Stop()
-		{
-			if (mThread == nullptr)
-				return;
+        Thread &operator=(Thread &&t) noexcept {
+            Stop();
+            mThread = std::move(t.mThread);
+            mThreadFinished.store(t.mThreadFinished.load());
+            mThreadStarted = t.mThreadStarted;
 
-			if (!mThreadFinished)
-			{
-				mThreadFinished.store(true);
-				mThread->request_stop();
-				mThread->join();
-			}
-		}
+            return *this;
+        }
 
-		void Join()
-		{
-			Stop();
-		}
+        template<class Fn, class... Args>
+        void Start(Fn &&Fx, Args &&... Ax) {
+            Stop();
+            mThreadFinished.store(false);
+            mThreadStarted = true;
+            mThread = std::move(std::jthread(std::forward<Fn>(Fx), std::forward<Args>(Ax)...));
+        }
 
-		void Detach()
-		{
-			if (mThread == nullptr)
-				return;
-			if (!mThreadFinished)
-			{
-				mThread->detach();
-			}
-		}
+        void Stop() {
+            if (!mThreadFinished.load() && mThread.joinable()) {
+                mThreadFinished.store(true);
+                mThread.request_stop();
+                mThread.join();
+            }
+        }
 
-		void MarkAsFinished()
-		{
-			mThreadFinished.store(true);
-		}
+        void Join() {
+            Stop();
+        }
 
-		const bool ShouldStop() const { return mThread->get_stop_token().stop_requested(); }
-		const bool IsRunning() const { return (!mThreadFinished.load()) && mThread != nullptr; }
-		const bool HasFinished() const { return mThreadFinished.load(); }
+        void Detach() {
+            if (!mThreadFinished.load()) {
+                mThread.detach();
+            }
+        }
 
-	protected:
-		std::unique_ptr<std::jthread> mThread;
-		std::atomic<bool> mThreadFinished;
-	};
+        void MarkAsFinished() {
+            mThreadFinished.store(true);
+        }
+
+        [[nodiscard]] bool ShouldStop() const { return mThread.get_stop_token().stop_requested(); }
+        [[nodiscard]] bool IsRunning() const { return (!mThreadFinished.load()) && mThreadStarted; }
+        [[nodiscard]] bool HasFinished() const { return mThreadFinished.load() && mThreadStarted; }
+
+    protected:
+        std::jthread mThread;
+        bool mThreadStarted = false;
+        std::atomic<bool> mThreadFinished;
+    };
 }

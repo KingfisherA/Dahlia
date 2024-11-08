@@ -26,6 +26,32 @@ namespace GEng {
 
     using FontAtlasMap = std::unordered_map<char, AtlasGlyphInfo>;
 
+    class Font {
+    public:
+        explicit Font(const uint8_t *fontData, size_t fontDataSize)
+            : mFontDataPtr(fontData), mFontDataSize(fontDataSize) {
+        }
+
+        explicit Font(const std::string_view fontPath): mFontPath(fontPath) {
+        }
+
+        Font(const Font &other) = default;
+        Font(Font &&) noexcept = delete;
+
+        Font &operator=(const Font &other) = default;
+
+        [[nodiscard]] bool IsMemoryFont() const { return mFontDataPtr != nullptr; }
+
+        [[nodiscard]] const uint8_t* GetFontData() const { return mFontDataPtr; }
+        [[nodiscard]] size_t GetMemoryFontSize() const { return mFontDataSize; }
+        [[nodiscard]] const std::string& GetFontPath() const { return mFontPath; }
+
+    private:
+        const uint8_t *mFontDataPtr = nullptr;
+        size_t mFontDataSize = 0;
+        std::string mFontPath;
+    };
+
     class FontAtlasBase {
     public:
         virtual ~FontAtlasBase() = default;
@@ -127,6 +153,7 @@ namespace GEng {
     struct TextLayoutInfo {
     public:
         glm::vec3 bounds;
+
         enum class Alignment {
             Left = 0,
             Centre,
@@ -149,11 +176,11 @@ namespace GEng {
         constexpr static const char *ASCII_GLYPH_SET =
                 " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
 
-        sRef<FontAtlasBitmap> CreateFontAtlasBitmap(const char *fontFilePath, const FT_UInt glyphResolution,
+        sRef<FontAtlasBitmap> CreateFontAtlasBitmap(const Font& font, const FT_UInt glyphResolution,
                                                     const char *glyphSet = ASCII_GLYPH_SET,
                                                     const GlyphRenderingMode mode = GlyphRenderingMode::Normal) const;
 
-        sRef<FontAtlas> CreateFontAtlas(const char *fontFilePath, const FT_UInt glyphResolution,
+        sRef<FontAtlas> CreateFontAtlas(const Font& font, const FT_UInt glyphResolution,
                                         const char *glyphSet = ASCII_GLYPH_SET,
                                         const GlyphRenderingMode mode = GlyphRenderingMode::Normal) const;
         static sRef<FontAtlas> CreateFontAtlas(const FontAtlasBitmap &bitmap);
@@ -167,7 +194,9 @@ namespace GEng {
         // The z components defines the width of the box. If it is set to zero the text won't be wrapped.
         static std::vector<glm::vec2> LayoutText(const std::string_view text,
                                                  const FontAtlasBase &atlas,
-                                                 const TextLayoutInfo& layoutInfo = {{0.0f, 0.0f, 0.0f}, TextLayoutInfo::Alignment::Left});
+                                                 const TextLayoutInfo &layoutInfo = {
+                                                     {0.0f, 0.0f, 0.0f}, TextLayoutInfo::Alignment::Left
+                                                 });
         static glm::vec2 MeasureText(const FontAtlasBase &atlas, const std::string_view text);
 
     private:
@@ -182,13 +211,13 @@ namespace GEng {
         static sRef<Text> Create();
 
         void SetScaling(const float scaling) { mScaling = scaling; }
-        void AddText(const std::string_view text, const TextLayoutInfo& layoutInfo);
+        void AddText(const std::string_view text, const TextLayoutInfo &layoutInfo);
         void ClearText();
         void LayoutText(const FontAtlas &atlas);
         void DrawText(const glm::mat4 &pvMatrix) const;
 
     private:
-        std::vector<std::pair<std::string, TextLayoutInfo>> mTextStrings;
+        std::vector<std::pair<std::string, TextLayoutInfo> > mTextStrings;
 
         size_t mNoOfGlyphs = 0;
         float mScaling = 0.8f;

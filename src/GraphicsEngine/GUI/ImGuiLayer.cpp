@@ -7,10 +7,9 @@
 
 #include <ImGui/imgui.h>
 
-#include "GraphicsEngine/Events/KeyEvents.h"
 #include "GraphicsEngine/Events/MouseEvents.h"
-#include "GraphicsEngine/Utilities/PathUtils.h"
 #include "GraphicsEngine/GUI/Display.h"
+#include "GraphicsEngine/Resources/Resources.h"
 
 namespace ImGui {
     void TextCentered(const char *txt) {
@@ -20,13 +19,16 @@ namespace ImGui {
 }
 
 namespace GEng {
-    ImGuiLayer::ImGuiLayer(const Display *mainDisplay) : Layer("ImGui Layer"), mDisplay(mainDisplay) {
+    ImGuiLayer::ImGuiLayer(const Display *mainDisplay, const Font &font) : Layer("ImGui Layer"),
+                                                                           mDisplay(mainDisplay),
+                                                                           mFont(font) {
     }
 
     void ImGuiLayer::OnInit() {
         // Setup Dear ImGui context
         IMGUI_CHECKVERSION();
-        ImGui::CreateContext();
+        mContext.ctx = ImGui::CreateContext();
+        ImGui::GetAllocatorFunctions(&mContext.allocFunc, &mContext.freeFunc, &mContext.userData);
         ImGuiIO &io = (ImGuiIO &) ImGui::GetIO();
         io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
         // io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
@@ -36,16 +38,39 @@ namespace GEng {
         // io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoMerge;
         io.ConfigWindowsMoveFromTitleBarOnly = true;
 
-        //..\..\..\assets\fonts\ubuntu\Ubuntu - R.ttf
+        float normalScale = 20.0f * mDisplay->GetContentScaling().x;
+        float largeScale = 48.0f * mDisplay->GetContentScaling().x;
 
-#ifdef _WIN32
-        const char* fontPath = "C:/Windows/Fonts/Ubuntu-L.ttf";
-#else
-        const char* fontPath = "/usr/share/fonts/truetype/ubuntu/UbuntuSans[wdth,wght].ttf";
-#endif
+        // const char* fontPath = "/media/charlie/Data/dev/C++/GraphicsEngine/Assets/Fonts/Ubuntu-Light.ttf";
+        // io.FontDefault = io.Fonts->AddFontFromFileTTF(fontPath, normalScale);
+        // io.Fonts->AddFontFromFileTTF(fontPath, largeScale);
 
-        io.FontDefault = io.Fonts->AddFontFromFileTTF(fontPath, 20.0f * mDisplay->GetContentScaling().x);
-        io.Fonts->AddFontFromFileTTF(fontPath, 48.0f * mDisplay->GetContentScaling().x);
+        // ImFontConfig fontConfig;
+        // fontConfig.FontDataOwnedByAtlas = false;
+        //
+        // Font ubuntuLight = Res::FontRes::GetDefaultFont();
+        // io.FontDefault = io.Fonts->AddFontFromMemoryTTF((void *)ubuntuLight.GetFontData() ,
+        //                                                 ubuntuLight.GetMemoryFontSize(), normalScale, &fontConfig);
+        // io.Fonts->AddFontFromMemoryTTF((void *) ubuntuLight.GetFontData(),
+        //                                ubuntuLight.GetMemoryFontSize(), largeScale, &fontConfig);
+
+        if (mFont.IsMemoryFont()) {
+            //Make sure that ImGui does not try and delete the data as it is in static storage of the
+            //binary
+            ImFontConfig fontConfig;
+            fontConfig.FontDataOwnedByAtlas = false;
+
+            Font ubuntuLight = Res::FontRes::GetDefaultFont();
+            io.FontDefault = io.Fonts->AddFontFromMemoryTTF((void *)ubuntuLight.GetFontData() ,
+                                                            ubuntuLight.GetMemoryFontSize(), normalScale, &fontConfig);
+            io.Fonts->AddFontFromMemoryTTF((void *) ubuntuLight.GetFontData(),
+                                           ubuntuLight.GetMemoryFontSize(), largeScale, &fontConfig);
+        } else {
+
+            io.FontDefault = io.Fonts->AddFontFromFileTTF(mFont.GetFontPath().c_str(), normalScale);
+            io.Fonts->AddFontFromFileTTF(mFont.GetFontPath().c_str(), largeScale);
+        }
+
         // Setup Dear ImGui style
         ImGui::StyleColorsDark();
 
@@ -66,6 +91,9 @@ namespace GEng {
     }
 
     void ImGuiLayer::OnDestroy() {
+        ImGui::SetCurrentContext(mContext.ctx);
+        ImGui::SetAllocatorFunctions(mContext.allocFunc, mContext.freeFunc, mContext.userData);
+
         ImGui_ImplOpenGL3_Shutdown();
         ImGui_ImplGlfw_Shutdown();
         ImGui::DestroyContext();

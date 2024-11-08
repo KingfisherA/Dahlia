@@ -1,4 +1,4 @@
-﻿add_library("GraphicsEngine_Shared" SHARED
+﻿add_library("GraphicsEngine" SHARED
     "src/GraphicsEngine/3D/Buffers.cpp"
     "src/GraphicsEngine/3D/Buffers.h"
     "src/GraphicsEngine/3D/Framebuffer.cpp"
@@ -56,6 +56,9 @@
       "src/GraphicsEngine/Platform/OpenGL/OpenGLVertexArray.h"
       "src/GraphicsEngine/Platform/Windows/Console.cpp"
       "src/GraphicsEngine/Platform/Windows/Console.h"
+    "src/GraphicsEngine/Resources/FontsRes.cpp"
+    "src/GraphicsEngine/Resources/Resources.h"
+    "src/GraphicsEngine/Resources/ShaderSources.cpp"
     "src/GraphicsEngine/Scene/Camera2D.cpp"
     "src/GraphicsEngine/Scene/Camera2D.h"
     "src/GraphicsEngine/Scene/Camera3D.cpp"
@@ -70,32 +73,32 @@
     "src/GraphicsEngine/Utilities/Threading.h"
 )
 if(CMAKE_BUILD_TYPE STREQUAL Debug)
-  set_target_properties("GraphicsEngine_Shared" PROPERTIES
-    OUTPUT_NAME "GraphicsEngine_Shared"
-    ARCHIVE_OUTPUT_DIRECTORY "/media/charlie/SSD/dev/C++/GraphicsEngine/bin/linux/Debug-x64/GraphicsEngine_Shared"
-    LIBRARY_OUTPUT_DIRECTORY "/media/charlie/SSD/dev/C++/GraphicsEngine/bin/linux/Debug-x64/GraphicsEngine_Shared"
-    RUNTIME_OUTPUT_DIRECTORY "/media/charlie/SSD/dev/C++/GraphicsEngine/bin/linux/Debug-x64/GraphicsEngine_Shared"
+  set_target_properties("GraphicsEngine" PROPERTIES
+    OUTPUT_NAME "GraphicsEngine"
+    ARCHIVE_OUTPUT_DIRECTORY "/media/charlie/Data/dev/C++/GraphicsEngine/bin/linux/Debug-x64"
+    LIBRARY_OUTPUT_DIRECTORY "/media/charlie/Data/dev/C++/GraphicsEngine/bin/linux/Debug-x64"
+    RUNTIME_OUTPUT_DIRECTORY "/media/charlie/Data/dev/C++/GraphicsEngine/bin/linux/Debug-x64"
   )
 endif()
-target_include_directories("GraphicsEngine_Shared" PRIVATE
-  $<$<CONFIG:Debug>:/media/charlie/SSD/dev/C++/GraphicsEngine/src>
+target_include_directories("GraphicsEngine" PRIVATE
+  $<$<CONFIG:Debug>:/media/charlie/Data/dev/C++/GraphicsEngine/src>
   $<$<CONFIG:Debug>:/usr/include>
   $<$<CONFIG:Debug>:/usr/local/include>
-  $<$<CONFIG:Debug>:/media/charlie/SSD/dev/Libraries/glm>
-  $<$<CONFIG:Debug>:/media/charlie/SSD/dev/Libraries/ImGui>
-  $<$<CONFIG:Debug>:/media/charlie/SSD/dev/Libraries>
+  $<$<CONFIG:Debug>:/media/charlie/Data/dev/Libraries/glm>
+  $<$<CONFIG:Debug>:/media/charlie/Data/dev/Libraries/ImGui>
+  $<$<CONFIG:Debug>:/media/charlie/Data/dev/Libraries>
   $<$<CONFIG:Debug>:/usr/include/freetype2>
   $<$<CONFIG:Debug>:/usr/include/libpng16>
 )
-target_compile_definitions("GraphicsEngine_Shared" PRIVATE
+target_compile_definitions("GraphicsEngine" PRIVATE
   $<$<CONFIG:Debug>:OS_LINUX>
   $<$<CONFIG:Debug>:GENG_BUILD>
   $<$<CONFIG:Debug>:CONFIG_DEBUG>
 )
-target_link_directories("GraphicsEngine_Shared" PRIVATE
-  $<$<CONFIG:Debug>:/media/charlie/SSD/dev/Libraries/ImGui/bin/linux/Release-x64>
+target_link_directories("GraphicsEngine" PRIVATE
+  $<$<CONFIG:Debug>:/media/charlie/Data/dev/Libraries/ImGui/bin/linux/Release-x64>
 )
-target_link_libraries("GraphicsEngine_Shared"
+target_link_libraries("GraphicsEngine"
   $<$<CONFIG:Debug>:glfw3>
   $<$<CONFIG:Debug>:ImGui>
   $<$<CONFIG:Debug>:boost_filesystem>
@@ -112,7 +115,7 @@ target_link_libraries("GraphicsEngine_Shared"
   $<$<CONFIG:Debug>:gdk-3>
   $<$<CONFIG:Debug>:glib-2.0>
 )
-target_compile_options("GraphicsEngine_Shared" PRIVATE
+target_compile_options("GraphicsEngine" PRIVATE
   $<$<AND:$<CONFIG:Debug>,$<COMPILE_LANGUAGE:C>>:-m64>
   $<$<AND:$<CONFIG:Debug>,$<COMPILE_LANGUAGE:C>>:-O0>
   $<$<AND:$<CONFIG:Debug>,$<COMPILE_LANGUAGE:C>>:-fPIC>
@@ -124,7 +127,7 @@ target_compile_options("GraphicsEngine_Shared" PRIVATE
   $<$<AND:$<CONFIG:Debug>,$<COMPILE_LANGUAGE:CXX>>:-std=c++20>
 )
 if(CMAKE_BUILD_TYPE STREQUAL Debug)
-  set_target_properties("GraphicsEngine_Shared" PROPERTIES
+  set_target_properties("GraphicsEngine" PROPERTIES
     CXX_STANDARD 20
     CXX_STANDARD_REQUIRED YES
     CXX_EXTENSIONS NO
@@ -133,32 +136,32 @@ if(CMAKE_BUILD_TYPE STREQUAL Debug)
   )
 endif()
 if(CMAKE_BUILD_TYPE STREQUAL Release)
-  set_target_properties("GraphicsEngine_Shared" PROPERTIES
-    OUTPUT_NAME "GraphicsEngine_Shared"
-    ARCHIVE_OUTPUT_DIRECTORY "/media/charlie/SSD/dev/C++/GraphicsEngine/bin/linux/Release-x64/GraphicsEngine_Shared"
-    LIBRARY_OUTPUT_DIRECTORY "/media/charlie/SSD/dev/C++/GraphicsEngine/bin/linux/Release-x64/GraphicsEngine_Shared"
-    RUNTIME_OUTPUT_DIRECTORY "/media/charlie/SSD/dev/C++/GraphicsEngine/bin/linux/Release-x64/GraphicsEngine_Shared"
+  set_target_properties("GraphicsEngine" PROPERTIES
+    OUTPUT_NAME "GraphicsEngine"
+    ARCHIVE_OUTPUT_DIRECTORY "/media/charlie/Data/dev/C++/GraphicsEngine/bin/linux/Release-x64"
+    LIBRARY_OUTPUT_DIRECTORY "/media/charlie/Data/dev/C++/GraphicsEngine/bin/linux/Release-x64"
+    RUNTIME_OUTPUT_DIRECTORY "/media/charlie/Data/dev/C++/GraphicsEngine/bin/linux/Release-x64"
   )
 endif()
-target_include_directories("GraphicsEngine_Shared" PRIVATE
-  $<$<CONFIG:Release>:/media/charlie/SSD/dev/C++/GraphicsEngine/src>
+target_include_directories("GraphicsEngine" PRIVATE
+  $<$<CONFIG:Release>:/media/charlie/Data/dev/C++/GraphicsEngine/src>
   $<$<CONFIG:Release>:/usr/include>
   $<$<CONFIG:Release>:/usr/local/include>
-  $<$<CONFIG:Release>:/media/charlie/SSD/dev/Libraries/glm>
-  $<$<CONFIG:Release>:/media/charlie/SSD/dev/Libraries/ImGui>
-  $<$<CONFIG:Release>:/media/charlie/SSD/dev/Libraries>
+  $<$<CONFIG:Release>:/media/charlie/Data/dev/Libraries/glm>
+  $<$<CONFIG:Release>:/media/charlie/Data/dev/Libraries/ImGui>
+  $<$<CONFIG:Release>:/media/charlie/Data/dev/Libraries>
   $<$<CONFIG:Release>:/usr/include/freetype2>
   $<$<CONFIG:Release>:/usr/include/libpng16>
 )
-target_compile_definitions("GraphicsEngine_Shared" PRIVATE
+target_compile_definitions("GraphicsEngine" PRIVATE
   $<$<CONFIG:Release>:OS_LINUX>
   $<$<CONFIG:Release>:GENG_BUILD>
   $<$<CONFIG:Release>:CONFIG_RELEASE>
 )
-target_link_directories("GraphicsEngine_Shared" PRIVATE
-  $<$<CONFIG:Release>:/media/charlie/SSD/dev/Libraries/ImGui/bin/linux/Release-x64>
+target_link_directories("GraphicsEngine" PRIVATE
+  $<$<CONFIG:Release>:/media/charlie/Data/dev/Libraries/ImGui/bin/linux/Release-x64>
 )
-target_link_libraries("GraphicsEngine_Shared"
+target_link_libraries("GraphicsEngine"
   $<$<CONFIG:Release>:glfw3>
   $<$<CONFIG:Release>:ImGui>
   $<$<CONFIG:Release>:boost_filesystem>
@@ -175,7 +178,7 @@ target_link_libraries("GraphicsEngine_Shared"
   $<$<CONFIG:Release>:gdk-3>
   $<$<CONFIG:Release>:glib-2.0>
 )
-target_compile_options("GraphicsEngine_Shared" PRIVATE
+target_compile_options("GraphicsEngine" PRIVATE
   $<$<AND:$<CONFIG:Release>,$<COMPILE_LANGUAGE:C>>:-m64>
   $<$<AND:$<CONFIG:Release>,$<COMPILE_LANGUAGE:C>>:-O2>
   $<$<AND:$<CONFIG:Release>,$<COMPILE_LANGUAGE:C>>:-fPIC>
@@ -185,7 +188,7 @@ target_compile_options("GraphicsEngine_Shared" PRIVATE
   $<$<AND:$<CONFIG:Release>,$<COMPILE_LANGUAGE:CXX>>:-std=c++20>
 )
 if(CMAKE_BUILD_TYPE STREQUAL Release)
-  set_target_properties("GraphicsEngine_Shared" PROPERTIES
+  set_target_properties("GraphicsEngine" PROPERTIES
     CXX_STANDARD 20
     CXX_STANDARD_REQUIRED YES
     CXX_EXTENSIONS NO

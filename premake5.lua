@@ -1,10 +1,9 @@
 workspace "GraphicsEngine"
 	architecture "x64"
-
 	configurations
 	{
-	"Debug",
-	"Release"
+		"Debug",
+		"Release"
 	}
 
 filter{"system:linux"}
@@ -12,88 +11,94 @@ filter{"system:linux"}
 
 filter{"system:windows"}
 	defines{"OS_WIN"}
-	outputdir = "%{os.host()}/%{cfg.buildcfg}-x64/%{prj.name}"
-	libDir = "%{wks.location}/libs/"
+	
+outputDir = "%{os.host()}/%{cfg.buildcfg}-x64/"
+
+--project "GraphicsEngine"
+--	kind "StaticLib"
+--	language "C++"
+--	cppdialect "C++20"
+--	systemversion "latest"
+--	location ("./Projects/" .. _ACTION)
+--
+--	targetdir("bin/" .. outputDir)
+--	objdir("bin-obj/" .. outputDir)
+--	debugdir("bin/" .. outputDir)
+--
+--	defines{"GENG_STATIC","GENG_BUILD"}
+--
+--	files
+--	{
+--		"%{wks.location}/src/GraphicsEngine/**.h",
+--		"%{wks.location}/src/GraphicsEngine/**.hpp",
+--	  	"%{wks.location}/src/GraphicsEngine/**.cpp",
+--		--"%{wks.location}/src/Resources/**.h",
+--		--"%{wks.location}/src/Resources/**.hpp",
+--		--"%{wks.location}/src/Resources/**.cpp"
+--	}
+--
+--	filter{"system:linux"}
+--		defines {"GLEW_STATIC"}
+--		includedirs
+--		{
+--			"%{wks.location}/src/",
+--			"/usr/include",
+--			"/usr/local/include",
+--			"../../Libraries/glm",
+--			"../../Libraries/ImGui",
+--			"../../Libraries/",
+--			"/usr/include/freetype2",
+--			"/usr/include/libpng16"
+--		}
+--
+--	filter{"system:windows"}
+--		defines {"GLEW_STATIC"}
+--		includedirs
+--		{
+--			"%{wks.location}/src/",
+--			"../../Libraries/glfw-3.3.2/include",
+--			"../../Libraries/glew-2.1.0/include",
+--			"../../Libraries/glm",
+--			"../../Libraries/boost_1_83_0",
+--			"../../Libraries/ImGui",
+--			"../../Libraries/freetype-2.13.3/include",
+--			"../../Libraries/"
+--		}
+--
+--    	filter {"configurations:Debug", "system:windows"}
+--		buildoptions{"/MDd"}
+--
+--    	filter {"configurations:Release", "system:windows"}
+--		buildoptions{"/MD"}
+--
+--
+--	filter { "configurations:Debug"}
+--		symbols "On"
+--		optimize "Off"
+--		defines { "CONFIG_DEBUG" }
+--
+--
+--	filter { "configurations:Release"}
+--		optimize "On"
+--		symbols "Off"
+--		defines { "CONFIG_RELEASE"}
 
 project "GraphicsEngine"
-	kind "StaticLib"
-	language "C++"
-	cppdialect "C++20"
-	systemversion "latest"
-	
-	targetdir("bin/" .. outputdir)
-	objdir("bin-obj/" .. outputdir)
-	debugdir("bin/" .. outputdir)
-	
-	defines{"GENG_STATIC","GENG_BUILD"}
-	
-	files
-	{
-	"%{wks.location}/src/GraphicsEngine/**.h",
-	"%{wks.location}/src/GraphicsEngine/**.hpp",
-  	"%{wks.location}/src/GraphicsEngine/**.cpp",
-	}
-	
-	filter{"system:linux"}
-		includedirs
-		{
-		  "%{wks.location}/src/",
-		  "/usr/include",
-		  "/usr/local/include",
-		  "../../Libraries/glm",
-		  "../../Libraries/ImGui",
-          "../../Libraries/",
-          "/usr/include/freetype2",
-          "/usr/include/libpng16"
-		}
-	
-	filter{"system:windows"}
-		defines {"GLEW_STATIC"}
-		includedirs
-		{
-		  "%{wks.location}/src/",
-		  "../../Libraries/glfw-3.3.2/include",
-		  "../../Libraries/glew-2.1.0/include",
-		  "../../Libraries/glm",
-		  "../../Libraries/boost_1_83_0",
-		  "../../Libraries/ImGui",
-		  "../../Libraries/freetype-2.13.3/include",
-		  "../../Libraries/"
-		}
-
-    filter {"configurations:Debug", "system:windows"}
-        buildoptions{"/MDd"}
-
-    filter {"configurations:Release", "system:windows"}
-        buildoptions{"/MD"}
-	
-	
-	filter { "configurations:Debug"}
-		symbols "On"
-		optimize "Off"
-		defines { "CONFIG_DEBUG" }
-		
-		
-	filter { "configurations:Release"}
-		optimize "On"
-		symbols "Off"
-		defines { "CONFIG_RELEASE"}
-
-project "GraphicsEngine_Shared"
 	kind "SharedLib"
 	language "C++"
 	cppdialect "C++20"
 	systemversion "latest"
+	location ("./Projects/" .. _ACTION)
 	
-	targetdir("bin/" .. outputdir)
-	objdir("bin-obj/" .. outputdir)
-	debugdir("bin/" .. outputdir)
+	targetdir("bin/" .. outputDir)
+	objdir("bin-obj/" .. outputDir)
+	debugdir("bin/" .. outputDir)
 	
 	files
 	{
-	"%{wks.location}/src/GraphicsEngine/**.h",
-	"%{wks.location}/src/GraphicsEngine/**.hpp",
-  	"%{wks.location}/src/GraphicsEngine/**.cpp",
+		"%{wks.location}/src/GraphicsEngine/**.h",
+		"%{wks.location}/src/GraphicsEngine/**.cpp",
+		"%{wks.location}/src/GraphicsEngine/**.hpp"
 	}
 	
 	defines{"GENG_BUILD"}
@@ -110,33 +115,31 @@ project "GraphicsEngine_Shared"
           "/usr/include/freetype2",
           "/usr/include/libpng16"
 		}
-        libdirs{
-        "../../Libraries/ImGui/bin/linux/Release-x64"}
+        libdirs{ "../../Libraries/ImGui/bin/linux/Release-x64" }
 		links { "glfw3", "ImGui", "boost_filesystem", "GLEW.a", "GL", "m", "Xrandr", "Xi", "X11", "Xxf86vm", "pthread", "gtk-3", "z", "gdk-3", "glib-2.0" }
-	
 	
 	filter{"system:windows"}
 		defines{"GLEW_BUILD", "_GLFW_BUILD_DLL", "IMGUI_BUILD_DLL"}
 		includedirs
 		{
-		  "%{wks.location}/src/Example",
-		  "%{wks.location}/src/",
-		  "../../Libraries/glfw-3.3.2/include",
-		  "../../Libraries/glew-2.1.0/include",
-		  "../../Libraries/glm",
-		  "../../Libraries/boost_1_83_0",
-		  "../../Libraries/ImGui",
-		  "../../Libraries/freetype-2.13.3/include",
-		  "../../Libraries/"
+			"%{wks.location}/src/Example",
+			"%{wks.location}/src/",
+			"../../Libraries/glfw-3.3.2/include",
+			"../../Libraries/glew-2.1.0/include",
+			"../../Libraries/glm",
+			"../../Libraries/boost_1_83_0",
+			"../../Libraries/ImGui",
+			"../../Libraries/freetype-2.13.3/include",
+			"../../Libraries/"
 		}
 		libdirs
         {
-		    "../../Libraries/boost_1_83_0/stage/lib/",
+			"../../Libraries/boost_1_83_0/stage/lib/",
 		    "../../Libraries/ImGui/bin/windows/Release-x64/",
 		    "../../Libraries/glfw-3.3.2/lib/x64",
 		    "../../Libraries/glew-2.1.0/lib/Release/x64",
 			"C:/Program Files (x86)/Windows Kits/10/Lib/10.0.22000.0/um/x64",
-			"../../Libraries/freetype-2.13.3/objs",
+			"../../Libraries/freetype-2.13.3/build/Release",
         }
 		links { "OpenGL32.lib", "glew32s", "glfw3", "freetype.lib", "ImGui"}
 		linkoptions { '/NODEFAULTLIB:"LIBCMTD" /NODEFAULTLIB:"LIBCMT"' }
@@ -165,10 +168,11 @@ project "Example"
 	language "C++"
 	cppdialect "C++20"
 	systemversion "latest"
+	location ("./Projects/" .. _ACTION)
 
-	targetdir("bin/" .. outputdir)
-	objdir("bin-obj/" .. outputdir)
-	debugdir("bin/" .. outputdir)
+	targetdir("bin/" .. outputDir)
+	objdir("bin-obj/" .. outputDir)
+	debugdir("bin/" .. outputDir)
 	
 	defines {"GENG_STATIC"}
 	
@@ -188,14 +192,15 @@ project "Example"
 		  "/usr/local/include",
 		  "../../Libraries/glm",
 		  "../../Libraries/ImGui",
-          "../../Libraries/",
-          "/usr/include/freetype2",
-          "/usr/include/libpng16"
+		  "../../Libraries/",
+		  "/usr/include/freetype2",
+		  "/usr/include/libpng16"
 		}
-        libdirs{
-        "../../Libraries/ImGui/bin/linux/Release-x64"}
-		links { "glfw3", "ImGui", "freetype", "boost_filesystem", "GLEW.a", "GL", "m", "Xrandr", "Xi", "X11", "Xxf86vm", "pthread", "gtk-3", "z", "gdk-3", "glib-2.0", "GraphicsEngine" }
-		--linkoptions { "`pkg-config --libs gtk+-3.0`" }
+        libdirs
+		{
+        	"../../Libraries/ImGui/bin/linux/Release-x64"
+		}
+		links { "GraphicsEngine" }
 	
 	filter{"system:windows"}
 		defines {"GLEW_STATIC"}
@@ -211,12 +216,14 @@ project "Example"
 		  "../../Libraries/freetype-2.13.3/include",
 		  "../../Libraries/"
 		}
-		libdirs{
-		"../../Libraries/boost_1_83_0/stage/lib/",
-		"../../Libraries/ImGui/bin/windows/Release-x64/",
-		"../../Libraries/glfw-3.3.2/lib/x64",
-		"../../Libraries/glew-2.1.0/lib/Release/x64",
-		"../../Libraries/freetype-2.13.3/objs"}
+		libdirs
+		{
+			"../../Libraries/boost_1_83_0/stage/lib/",
+			"../../Libraries/ImGui/bin/windows/Release-x64/",
+			"../../Libraries/glfw-3.3.2/lib/x64",
+			"../../Libraries/glew-2.1.0/lib/Release/x64",
+			"../../Libraries/freetype-2.13.3/build/Release"
+		}
 		links { "opengl32", "glew32s", "glfw3", "ImGui", "freetype", "GraphicsEngine"}
 		linkoptions { '/NODEFAULTLIB:"LIBCMTD" /NODEFAULTLIB:"LIBCMT"' }
 

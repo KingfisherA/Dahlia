@@ -25,6 +25,5 @@ set(CMAKE_C_FLAGS_RELEASE "")
 set(CMAKE_CXX_FLAGS_RELEASE "")
 
 project("GraphicsEngine")
-include(Example.cmake)
-include(GraphicsEngine.cmake)
-include(GraphicsEngine_Shared.cmake)
+include(Projects/cmake/Example.cmake)
+include(Projects/cmake/GraphicsEngine.cmake)

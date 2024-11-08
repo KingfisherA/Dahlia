@@ -5,6 +5,7 @@
 #include "GraphicsEngine/3D/Framebuffer.h"
 #include "GraphicsEngine/GUI/Display.h"
 #include "GraphicsEngine/GUI/ImGuiLayer.h"
+#include "GraphicsEngine/GUI/Text.h"
 
 #include "GraphicsEngine/Events/Events.h"
 #include "GraphicsEngine/Events/WindowEvents.h"
@@ -16,7 +17,8 @@ namespace GEng {
 #define BIND_EVENT_FNC(x) std::bind(&GraphicsApp::x, this, std::placeholders::_1)
 
     GraphicsApp::GraphicsApp(const char *displayTitle, size_t width, size_t height,
-                             const FramebufferSpecification &viewportSpec) {
+                             const FramebufferSpecification &viewportSpec,
+                             const Font &font) : mFont(font) {
         mInitParams = std::make_unique<InitParams>();
         mInitParams->displayTitle = displayTitle;
         mInitParams->width = width;
@@ -39,7 +41,7 @@ namespace GEng {
         m_ShadingLanguageStr = ctx->GetShadingVersionStr();
         m_ShadingLanguageStr.insert(0, "GLSL ");
 
-        m_ImGuiLayer = new ImGuiLayer(m_Window.get());
+        m_ImGuiLayer = new ImGuiLayer(m_Window.get(), mFont);
         PushOverlay(m_ImGuiLayer);
 
         mViewportFramebuffer = Framebuffer::Create(mInitParams->viewportSpec);

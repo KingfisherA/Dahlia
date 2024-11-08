@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Example">
+      <UniqueIdentifier>{D10136E2-3DE1-B47D-46F9-3F54B2571BDF}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{000BCD17-6C75-818E-B5B3-3234215D5FE3}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\src\Example\Application.h">
+      <Filter>Example</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Resources\Resources.h">
+      <Filter>Resources</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\Example\Application.cpp">
+      <Filter>Example</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

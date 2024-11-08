@@ -47,10 +47,10 @@ namespace Example {
     // Constants
     constexpr float NEAR_PLANE = 0.1f;
     constexpr float FAR_PLANE = 100.0f;
-
 #define BIND_EVENT_FNC(x) std::bind(&Application::x, this, std::placeholders::_1)
 
-    Application::Application() : GraphicsApp("Example Graphics Engine Application", 800, 600, FramebufferSpecification{
+    Application::Application() : GraphicsApp("Example Graphics Engine Application", 800, 600,
+                                             FramebufferSpecification{
                                                  800, 600, 1,
                                                  {
                                                      FramebufferAttachment(PixelFormat::RGBA8),
@@ -81,6 +81,8 @@ namespace Example {
     }
 
     bool Application::OnInit() {
+        GRAPHICS_APP_INIT_IMGUI_CTX
+
         this->mRenderViewport = true;
         this->mViewportName = "Viewport";
 
@@ -98,37 +100,13 @@ namespace Example {
                                                                 return (float) cos(x * x * x + y * y * y);
                                                             })); //Geometry::CreateQuadsphere(1.0f, 40));
 
-        const char *shaderFilePath = "../../../../Assets/Shaders/ColourDiffuse.glsl";
-        mShader = GEng::ShaderProgram::CreateFromFile(shaderFilePath);
+        mShader = ShaderProgram::Create(Res::ShaderSources::GetColourDiffuseGLSL());
         mShader->UploadMatF("uTransformMatrix", glm::mat4(1.0f));
 
-#ifdef _WIN32
-        const char* fontPath = "C:/Windows/Fonts/Ubuntu-L.ttf";
-#else
-        const char *fontPath = "/usr/share/fonts/truetype/ubuntu/UbuntuSans[wdth,wght].ttf";
-#endif
-        mUbuntuLight = mFontManager.CreateFontAtlas(fontPath,
+        mUbuntuLight = mFontManager.CreateFontAtlas(Res::FontRes::GetDefaultFont(),
                                                     80.0f);
 
         mText = Text::Create();
-        //         constexpr const char *TEST_TXT =
-        //                 R"(Seen you eyes son show. Far two unaffected one alteration apartments celebrated but middletons interested.
-        // Described deficient applauded consisted my me do. Passed edward two talent effect seemed engage six. On ye great do child sorry lived. Proceed cottage far letters ashamed get clothes day. Stairs regret at if matter to. On as needed almost at basket remain. By improved sensible servants children striking in surprise.
-        //
-        // By in no ecstatic wondered disposal my speaking. Direct wholly valley or uneasy it at really. Sir wish like said dull and need make.
-        // Sportsman one bed departure rapturous situation disposing his. Off say yet ample ten ought hence. Depending in newspaper an september do existence strangers.
-        // Total great saw water had mirth happy new. Projecting pianoforte no of partiality is on. Nay besides joy society him totally six.
-        //
-        // Repulsive questions contented him few extensive supported. Of remarkably thoroughly he appearance in. Supposing tolerably applauded or of be.
-        // Suffering unfeeling so objection agreeable allowance me of. Ask within entire season sex common far who family. As be valley warmth assure on.
-        // Park girl they rich hour new well way you. Face ye be me been room we sons fond.
-        //
-        // Written enquire painful ye to offices forming it. Then so does over sent dull on. Likewise offended humoured mrs fat trifling answered.
-        // On ye position greatest so desirous. So wound stood guest weeks no terms up ought. By so these am so rapid blush songs begin. Nor but mean time one over.
-        //
-        // Was certainty remaining engrossed applauded sir how discovery. Settled opinion how enjoyed greater joy adapted too shy. Now properly surprise expenses interest nor replying she she.
-        // Bore tall nay many many time yet less. Doubtful for answered one fat indulged margaret sir shutters together. Ladies so in wholly around whence in at. Warmth he up giving oppose if.
-        // Impossible is dissimilar entreaties oh on terminated. Earnest studied article country ten respect showing had. But required offering him elegance son improved informed. )";
         mText->SetScaling(m_Window->GetContentScaling().x * 0.3f);
         mText->AddText("Example Graphics Engine Application", {{-1.0f, -0.95f, 2.0f}, TextLayoutInfo::Alignment::Left});
         mText->LayoutText(*mUbuntuLight);

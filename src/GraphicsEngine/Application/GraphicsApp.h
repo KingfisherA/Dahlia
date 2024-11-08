@@ -4,13 +4,16 @@
 #include <string>
 #include <ImGui/imgui.h>
 #include <glm/glm.hpp>
+
 #include "GraphicsEngine/Utilities/Memory.h"
 #include "GraphicsEngine/Layers/LayerStack.h"
 #include "GraphicsEngine/GUI/Display.h"
 #include "GraphicsEngine/3D/Framebuffer.h"
+#include "GraphicsEngine/GUI/ImGuiLayer.h"
+#include "GraphicsEngine/GUI/Text.h"
+#include "GraphicsEngine/Resources/Resources.h"
 
-namespace GEng
-{
+namespace GEng {
     class Event;
     class Layer;
     class WindowCloseEvent;
@@ -26,10 +29,14 @@ namespace GEng
 
     using size_t = std::size_t;
 
-    GENG_API class GraphicsApp
-    {
+#define GRAPHICS_APP_INIT_IMGUI_CTX ImGui::SetCurrentContext(m_ImGuiLayer->GetContext().ctx);\
+    ImGui::SetAllocatorFunctions(m_ImGuiLayer->GetContext().allocFunc, m_ImGuiLayer->GetContext().freeFunc, m_ImGuiLayer->GetContext().userData);
+
+    GENG_API class GraphicsApp {
     public:
-        GraphicsApp(const char *displayTitle, size_t width, size_t height, const FramebufferSpecification &viewportSpec);
+        GraphicsApp(const char *displayTitle,
+                    size_t width, size_t height, const FramebufferSpecification &viewportSpec,
+                    const Font &font = Res::FontRes::GetDefaultFont());
         virtual ~GraphicsApp() = default;
 
         bool Init();
@@ -46,9 +53,15 @@ namespace GEng
         constexpr double GetTime() const { return m_Time; }
 
     protected:
-        virtual void OnViewportResize() {}
-        virtual void OnRender() {}
-        virtual void OnImGuiRender() {}
+        virtual void OnViewportResize() {
+        }
+
+        virtual void OnRender() {
+        }
+
+        virtual void OnImGuiRender() {
+        }
+
         virtual bool OnInit() { return true; }
         virtual void OnDestroy();
 
@@ -93,9 +106,10 @@ namespace GEng
 
         std::string mViewportName;
 
+        Font mFont;
+
     private:
-        GENG_API struct InitParams
-        {
+        GENG_API struct InitParams {
             const char *displayTitle = nullptr;
             size_t width = 0, height = 0;
             FramebufferSpecification viewportSpec;

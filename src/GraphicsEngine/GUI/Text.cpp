@@ -41,12 +41,17 @@ namespace GEng {
         FT_Done_FreeType(mFontLibrary);
     }
 
-    sRef<FontAtlasBitmap> FontManager::CreateFontAtlasBitmap(const char *fontFilePath,
+    sRef<FontAtlasBitmap> FontManager::CreateFontAtlasBitmap(const Font &font,
                                                              const FT_UInt glyphResolution,
                                                              const char *glyphSet,
                                                              const GlyphRenderingMode mode) const {
         FT_Face fontFace = nullptr;
-        FT_Error error = FT_New_Face(mFontLibrary, fontFilePath, 0, &fontFace);
+        FT_Error error = 0;
+
+        if (font.IsMemoryFont())
+            error = FT_New_Memory_Face(mFontLibrary, font.GetFontData(), font.GetMemoryFontSize(), 0, &fontFace);
+        else
+            error = FT_New_Face(mFontLibrary, font.GetFontPath().c_str(), 0, &fontFace);
         if (error) {
             GENG_FATAL(GEng::TextString,
                        std::string("FreeType could not create the required font face. ")+ GetFreeTypeErrorMsg(error));
@@ -128,10 +133,10 @@ namespace GEng {
         return atlasBmp;
     }
 
-    sRef<FontAtlas> FontManager::CreateFontAtlas(const char *fontFilePath, const FT_UInt glyphResolution,
+    sRef<FontAtlas> FontManager::CreateFontAtlas(const Font& font, const FT_UInt glyphResolution,
                                                  const char *glyphSet,
                                                  const GlyphRenderingMode mode) const {
-        return std::make_shared<FontAtlas>(*CreateFontAtlasBitmap(fontFilePath, glyphResolution, glyphSet, mode));
+        return std::make_shared<FontAtlas>(*CreateFontAtlasBitmap(font, glyphResolution, glyphSet, mode));
     }
 
     sRef<FontAtlas> FontManager::CreateFontAtlas(const FontAtlasBitmap &bitmap) {
@@ -327,8 +332,7 @@ void main()
     }
 
     void Text::DrawText(const glm::mat4 &pvMatrix) const {
-
-        GPUContext* ctx = GPUContext::Get<GPUContext>();
+        GPUContext *ctx = GPUContext::Get<GPUContext>();
         ctx->SetBlending(true);
         ctx->SetDepthTest(false);
 

@@ -1,38 +1,60 @@
 #pragma once
 
+#include <imgui.h>
+
 #include "GraphicsEngine/GEng_API.h"
 #include "GraphicsEngine/Layers/Layer.h"
 #include "GraphicsEngine/Events/Events.h"
+#include "GraphicsEngine/GUI/Text.h"
 
-namespace ImGui
-{
-	GENG_API void TextCentered(const char *txt);
+
+namespace ImGui {
+    GENG_API void TextCentered(const char *txt);
 }
 
-namespace GEng
-{
-	class Display;
+namespace GEng {
+    class Display;
+    class Font;
 
-	GENG_API class ImGuiLayer : public Layer
-	{
-	public:
-		ImGuiLayer(const Display *mainDisplay);
-		~ImGuiLayer()=default;
+    GENG_API class ImGuiLayer : public Layer {
+    public:
+        class Context {
+        public:
+            // Context() {
+            //     ctx = ImGui::CreateContext();
+            //     ImGui::GetAllocatorFunctions(&allocFunc, &freeFunc, &userData);
+            // }
+            Context() = default;
+            Context(const Context &) = default;
+            ImGuiContext *ctx = nullptr;
+            ImGuiMemAllocFunc allocFunc = nullptr;
+            ImGuiMemFreeFunc freeFunc = nullptr;
+            void *userData = nullptr;
+        };
 
-		virtual void OnInit() override;
-		virtual void OnDestroy() override;
-		virtual void OnImGuiRender() override;
+        ImGuiLayer(const Display *mainDisplay, const Font &font);
+        ~ImGuiLayer() override = default;
 
-		virtual void OnEvent(Event &e) override;
+        void OnInit() override;
+        void OnDestroy() override;
+        void OnImGuiRender() override;
 
-		void RenderDockspace();
+        void OnEvent(Event &e) override;
 
-		void Begin();
-		void End();
+        void RenderDockspace();
 
-	private:
-		void SetDarkThemeColors();
 
-		const Display *mDisplay;
-	};
+        [[nodiscard]] Context &GetContext() { return mContext; }
+
+        void Begin();
+        void End();
+
+    private:
+        void SetDarkThemeColors();
+
+        Font mFont;
+        Context mContext;
+
+        const Display *mDisplay;
+    };
 }

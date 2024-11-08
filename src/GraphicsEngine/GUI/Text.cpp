@@ -29,7 +29,7 @@ namespace GEng {
     }
 
     FontManager::FontManager() {
-        FT_Error error = FT_Init_FreeType(&mFontLibrary);
+        FT_Error error = FT_Init_FreeType((FT_Library*)&mFontLibrary);
         if (error) {
             GENG_FATAL(GEng::TextString,
                        std::string("FreeType could not create a font library. ")+ GetFreeTypeErrorMsg(error));
@@ -38,20 +38,20 @@ namespace GEng {
     }
 
     FontManager::~FontManager() {
-        FT_Done_FreeType(mFontLibrary);
+        FT_Done_FreeType((FT_Library)mFontLibrary);
     }
 
     sRef<FontAtlasBitmap> FontManager::CreateFontAtlasBitmap(const Font &font,
-                                                             const FT_UInt glyphResolution,
+                                                             const unsigned int glyphResolution,
                                                              const char *glyphSet,
                                                              const GlyphRenderingMode mode) const {
         FT_Face fontFace = nullptr;
         FT_Error error = 0;
 
         if (font.IsMemoryFont())
-            error = FT_New_Memory_Face(mFontLibrary, font.GetFontData(), font.GetMemoryFontSize(), 0, &fontFace);
+            error = FT_New_Memory_Face((FT_Library)mFontLibrary, font.GetFontData(), font.GetMemoryFontSize(), 0, &fontFace);
         else
-            error = FT_New_Face(mFontLibrary, font.GetFontPath().c_str(), 0, &fontFace);
+            error = FT_New_Face((FT_Library)mFontLibrary, font.GetFontPath().c_str(), 0, &fontFace);
         if (error) {
             GENG_FATAL(GEng::TextString,
                        std::string("FreeType could not create the required font face. ")+ GetFreeTypeErrorMsg(error));
@@ -133,7 +133,7 @@ namespace GEng {
         return atlasBmp;
     }
 
-    sRef<FontAtlas> FontManager::CreateFontAtlas(const Font& font, const FT_UInt glyphResolution,
+    sRef<FontAtlas> FontManager::CreateFontAtlas(const Font& font, const unsigned int glyphResolution,
                                                  const char *glyphSet,
                                                  const GlyphRenderingMode mode) const {
         return std::make_shared<FontAtlas>(*CreateFontAtlasBitmap(font, glyphResolution, glyphSet, mode));

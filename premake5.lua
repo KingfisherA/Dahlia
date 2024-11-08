@@ -111,12 +111,13 @@ project "GraphicsEngine"
 		  "/usr/local/include",
 		  "../../Libraries/glm",
 		  "../../Libraries/ImGui",
-          "../../Libraries/",
-          "/usr/include/freetype2",
-          "/usr/include/libpng16"
+		  "../../Libraries/",
+		  "/usr/include/freetype2",
+		  "/usr/include/libpng16"
 		}
         libdirs{ "../../Libraries/ImGui/bin/linux/Release-x64" }
-		links { "glfw3", "ImGui", "boost_filesystem", "GLEW.a", "GL", "m", "Xrandr", "Xi", "X11", "Xxf86vm", "pthread", "gtk-3", "z", "gdk-3", "glib-2.0" }
+        --"glew32s", "glfw3", "ImGui",
+		links { "glfw3", "ImGui", "freetype", "boost_filesystem", "GLEW.a", "GL", "m", "Xrandr", "Xi", "X11", "Xxf86vm", "pthread", "gtk-3", "z", "gdk-3", "glib-2.0" }
 	
 	filter{"system:windows"}
 		defines{"GLEW_BUILD", "_GLFW_BUILD_DLL", "IMGUI_BUILD_DLL"}
@@ -224,7 +225,7 @@ project "Example"
 			"../../Libraries/glew-2.1.0/lib/Release/x64",
 			"../../Libraries/freetype-2.13.3/build/Release"
 		}
-		links { "opengl32", "glew32s", "glfw3", "ImGui", "freetype", "GraphicsEngine"}
+		links { "opengl32", "GraphicsEngine"}
 		linkoptions { '/NODEFAULTLIB:"LIBCMTD" /NODEFAULTLIB:"LIBCMT"' }
 
     filter {"configurations:Debug", "system:windows"}

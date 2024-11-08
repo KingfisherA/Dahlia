@@ -101,6 +101,7 @@ target_link_directories("GraphicsEngine" PRIVATE
 target_link_libraries("GraphicsEngine"
   $<$<CONFIG:Debug>:glfw3>
   $<$<CONFIG:Debug>:ImGui>
+  $<$<CONFIG:Debug>:freetype>
   $<$<CONFIG:Debug>:boost_filesystem>
   $<$<CONFIG:Debug>:GLEW.a>
   $<$<CONFIG:Debug>:GL>
@@ -164,6 +165,7 @@ target_link_directories("GraphicsEngine" PRIVATE
 target_link_libraries("GraphicsEngine"
   $<$<CONFIG:Release>:glfw3>
   $<$<CONFIG:Release>:ImGui>
+  $<$<CONFIG:Release>:freetype>
   $<$<CONFIG:Release>:boost_filesystem>
   $<$<CONFIG:Release>:GLEW.a>
   $<$<CONFIG:Release>:GL>

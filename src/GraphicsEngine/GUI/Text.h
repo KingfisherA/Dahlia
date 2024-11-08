@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstring>
 #include <string>
 #include <unordered_map>
 #include <glm/matrix.hpp>
@@ -7,9 +8,6 @@
 
 #include "GraphicsEngine/3D/Texture.h"
 #include "GraphicsEngine/Utilities/Memory.h"
-
-#include <ft2build.h>
-#include FT_FREETYPE_H
 
 namespace GEng {
     class VertexBuffer;
@@ -176,11 +174,11 @@ namespace GEng {
         constexpr static const char *ASCII_GLYPH_SET =
                 " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
 
-        sRef<FontAtlasBitmap> CreateFontAtlasBitmap(const Font& font, const FT_UInt glyphResolution,
+        sRef<FontAtlasBitmap> CreateFontAtlasBitmap(const Font& font, const unsigned int glyphResolution,
                                                     const char *glyphSet = ASCII_GLYPH_SET,
                                                     const GlyphRenderingMode mode = GlyphRenderingMode::Normal) const;
 
-        sRef<FontAtlas> CreateFontAtlas(const Font& font, const FT_UInt glyphResolution,
+        sRef<FontAtlas> CreateFontAtlas(const Font& font, const unsigned int glyphResolution,
                                         const char *glyphSet = ASCII_GLYPH_SET,
                                         const GlyphRenderingMode mode = GlyphRenderingMode::Normal) const;
         static sRef<FontAtlas> CreateFontAtlas(const FontAtlasBitmap &bitmap);
@@ -200,7 +198,7 @@ namespace GEng {
         static glm::vec2 MeasureText(const FontAtlasBase &atlas, const std::string_view text);
 
     private:
-        FT_Library mFontLibrary = nullptr;
+        void* mFontLibrary = nullptr;
     };
 
     class Text {

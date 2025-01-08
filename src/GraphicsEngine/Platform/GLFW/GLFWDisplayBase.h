@@ -1,30 +1,31 @@
 #pragma once
 
-#include <GLFW/glfw3.h>
+#include<string>
 #include "GraphicsEngine/GUI/Display.h"
 
-#include<string>
+struct GLFWwindow;
 
 namespace GEng {
     class GLFWDisplayBase : public Display {
     public:
         ~GLFWDisplayBase() override;
 
-        void Show() const override { glfwShowWindow(mWindow); }
-        void Hide() const override { glfwHideWindow(mWindow); }
-        void Focus() const override { glfwFocusWindow(mWindow); }
+        void Show() const override;
+        void Hide() const override;
+        void Focus() const override;
 
         void Refresh() override;
         [[nodiscard]] size_t GetWidth() const override { return mWidth; }
         [[nodiscard]] size_t GetHeight() const override { return mHeight; }
+        void SetSize(size_t width, size_t height) override;
         [[nodiscard]] glm::vec2 GetContentScaling() const override;
 
         void BindEventCallback(const EventCallbackFnc &callback) override {
             mEventCallback = callback;
         }
 
-        [[nodiscard]] bool CloseRequested() const override { return glfwWindowShouldClose(mWindow); }
-        [[nodiscard]] double GetTime() const override { return glfwGetTime(); }
+        [[nodiscard]] bool CloseRequested() const override;
+        [[nodiscard]] double GetTime() const override;
 
         [[nodiscard]] void *GetAPIDisplay() const override { return (void *) mWindow; };
 

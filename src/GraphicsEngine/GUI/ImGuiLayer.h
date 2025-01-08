@@ -9,7 +9,7 @@
 
 
 namespace ImGui {
-    GENG_API void TextCentered(const char *txt);
+    GENG_API void TextCentered(const char *fmt);
 }
 
 namespace GEng {

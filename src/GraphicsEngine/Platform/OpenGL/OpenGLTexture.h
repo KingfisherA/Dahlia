@@ -2,6 +2,7 @@
 
 #include "GraphicsEngine/GEng_API.h"
 #include "GraphicsEngine/3D/Texture.h"
+#include "OpenGLContext.h"
 
 namespace GEng
 {
@@ -15,14 +16,14 @@ namespace GEng
 		explicit OpenGLTexture2D(GLenum texID, const Dimension2D &dimensions,
 								 PixelFormat texFormat);
 		OpenGLTexture2D(const OpenGLTexture2D &) = delete;
-		OpenGLTexture2D(OpenGLTexture2D &&tex);
+		OpenGLTexture2D(OpenGLTexture2D &&tex) noexcept;
 
 	private:
 		void CreateTexture(const Dimension2D &dimensions, const byte *textureData,
 						   PixelFormat texFormat);
 
 	public:
-		virtual ~OpenGLTexture2D();
+		virtual ~OpenGLTexture2D() override;
 
 		virtual void Bind(unsigned short unit) override;
 		virtual void Unbind() override;
@@ -30,19 +31,19 @@ namespace GEng
 		virtual void GenerateMipMaps(const MipmapFiltering filtering) override;
 		virtual void DeleteMipMaps() override;
 
-		virtual const Dimension2D &GetDimensions() const override { return m_imageDimensions; }
+		virtual const Dimension2D &GetDimensions() const override { return mImageDimensions; }
 
-		virtual void UpdateData(const Dimension2D offset, const Dimension2D size, const byte *data) override;
+		virtual void UpdateData(Dimension2D offset, Dimension2D size, const byte *data) override;
 
-		virtual unsigned int GetRendererID() const noexcept override { return m_texID; }
+		virtual GLid GetRendererID() const noexcept override { return mTexID; }
+
+		static GLenum FormatToGL(PixelFormat format) noexcept;
 
 	private:
-		Dimension2D m_imageDimensions;
-
-		GLenum m_texID = 0;
-		PixelFormat m_pixelFormat;
-		bool m_mipMapsGenerated = false;
-
-		unsigned short m_texUnit = 0;
+		Dimension2D mImageDimensions;
+		GLid mTexID = 0;
+		PixelFormat mPixelFormat;
+		bool mMipMapsGenerated = false;
+		uint16_t mTexUnit = 0;
 	};
 }

@@ -19,13 +19,15 @@ namespace GEng {
 
 
     using Index = unsigned int;
-    constexpr Index IndexUndefined = (Index) -1;
+    constexpr Index IndexUndefined = static_cast<Index>(-1);
 
     GENG_API enum class Primitive {
         Triangles = 0,
         Lines,
         Points,
-        TriangleFan
+        TriangleFan,
+        Quads,
+        QuadStrip
     };
 
     GENG_API class VertexArray {
@@ -38,28 +40,25 @@ namespace GEng {
         virtual void Bind() = 0;
         virtual void Unbind() = 0;
 
-        virtual void SubmitArrays(const Primitive drawMode = Primitive::Triangles, size_t instances = 1) = 0;
+        virtual void SubmitArrays(Primitive drawMode = Primitive::Triangles, size_t instances = 1) = 0;
 
-        virtual Index AddVertexBuffer(const sRef<VertexBuffer> &buffer, const VertexSpecification spec = {3, 0, 0}) = 0;
+        virtual Index AddVertexBuffer(const sRef<VertexBuffer> &buffer, VertexSpecification spec = {3, 0, 0}) = 0;
         virtual void AddIndexBuffer(const sRef<IndexBuffer> &buffer) = 0;
 
         virtual void StoreMesh(const Mesh_F32 &meshData);
 
-        virtual Index QueryBufferIndex(const sRef<VertexBuffer> &buffer) = 0;
+        [[nodiscard]] virtual Index QueryBufferIndex(const sRef<VertexBuffer> &buffer) = 0;
 
-        virtual sRef<VertexBuffer> GetVBuffer(Index index) = 0;
-        virtual sRef<IndexBuffer> GetIBuffer() = 0;
-        virtual bool IsIndexed() const = 0;
+        [[nodiscard]] virtual sRef<VertexBuffer> GetVBuffer(Index index) = 0;
+        [[nodiscard]] virtual sRef<IndexBuffer> GetIBuffer() = 0;
+        [[nodiscard]] virtual bool IsIndexed() const = 0;
 
-        virtual size_t GetNoOfVBuffers() const = 0;
+        [[nodiscard]] virtual size_t GetNoOfVBuffers() const = 0;
 
-        void UpdateElementLength(const size_t newEleLength) {
-            m_elementLength = newEleLength;
-        }
-
-        size_t GetArrayElementLength() const { return m_elementLength; }
+        void UpdateElementLength(size_t newEleLength);
+        [[nodiscard]] size_t GetArrayElementLength() const;
 
     protected:
-        size_t m_elementLength = 0;
+        size_t mElementLength = 0;
     };
 }

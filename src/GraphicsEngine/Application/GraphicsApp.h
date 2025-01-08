@@ -1,14 +1,16 @@
 #pragma once
 
-#include "GraphicsEngine/GEng_API.h"
 #include <string>
 #include <ImGui/imgui.h>
 #include <glm/glm.hpp>
 
+#include "GraphicsEngine/GEng_API.h"
 #include "GraphicsEngine/Utilities/Memory.h"
 #include "GraphicsEngine/Layers/LayerStack.h"
 #include "GraphicsEngine/GUI/Display.h"
 #include "GraphicsEngine/3D/Framebuffer.h"
+#include "GraphicsEngine/Events/KeyEvents.h"
+#include "GraphicsEngine/Events/MouseEvents.h"
 #include "GraphicsEngine/GUI/ImGuiLayer.h"
 #include "GraphicsEngine/GUI/Text.h"
 #include "GraphicsEngine/Resources/Resources.h"
@@ -39,7 +41,7 @@ namespace GEng {
                     const Font &font = Res::FontRes::GetDefaultFont());
         virtual ~GraphicsApp() = default;
 
-        bool Init();
+        bool Init(GraphicsAPI api, uint32_t majorVersion, uint32_t minorVersion);
         void Run();
 
         void OnEvent(Event &e);
@@ -48,9 +50,9 @@ namespace GEng {
         void PushOverlay(Layer *overlay);
 
         Framebuffer &GetViewportFramebuffer() { return *mViewportFramebuffer; }
-        const inline Display &GetDisplay() const { return *m_Window; }
-        constexpr double GetDeltaTime() const { return m_DeltaTime; }
-        constexpr double GetTime() const { return m_Time; }
+        [[nodiscard]] const Display &GetDisplay() const { return *mWindow; }
+        [[nodiscard]] constexpr double GetDeltaTime() const { return mDeltaTime; }
+        [[nodiscard]] constexpr double GetTime() const { return mTime; }
 
     protected:
         virtual void OnViewportResize() {
@@ -77,29 +79,27 @@ namespace GEng {
         bool mRenderViewport = true;
 
         void RenderViewport();
-        void RenderCameraPanel();
-        void RenderSceneInformation();
 
-        std::string m_VersionStr, m_VendorStr, m_ShadingLanguageStr;
+        std::string mVersionStr, mVendorStr, mShadingLanguageStr;
 
-        bool m_IsRunning = true;
-        uRef<Display> m_Window;
+        bool mIsRunning = true;
+        uRef<Display> mWindow;
         sRef<Framebuffer> mViewportFramebuffer = nullptr;
-        ImVec2 m_viewPortPanelSize = {0, 0};
-        ImVec2 m_lastViewportSize = {0, 0};
+        ImVec2 mViewPortPanelSize = {0, 0};
+        ImVec2 mLastViewportSize = {0, 0};
 
         ImGuiLayer *m_ImGuiLayer = nullptr;
-        LayerStack m_LayerStack;
+        LayerStack mLayerStack;
 
-        double m_Time = 0.0;
-        double m_DeltaTime = 0.0;
+        double mTime = 0.0;
+        double mDeltaTime = 0.0;
 
-        glm::dvec2 mCurrentMousePos;
-        glm::dvec2 mLastMousePos;
-        glm::dvec2 mDeltaMousePos;
-        int m_MouseButtonDown = -1;
-        int m_KeyDown = -1;
-        int m_KeyMods = 0;
+        glm::vec2 mCurrentMousePos{};
+        glm::vec2 mLastMousePos{};
+        glm::vec2 mDeltaMousePos{};
+        MouseButton mMouseButtonDown = MouseButton::None;
+        KeyCode mKeyDown = KeyCode::UNKNOWN;
+        int mKeyMods = 0;
 
         double mDeltaScroll = 0.0;
         double mLastScrollTime = 0.0;

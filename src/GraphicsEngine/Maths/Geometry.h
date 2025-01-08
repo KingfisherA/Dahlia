@@ -1,12 +1,12 @@
 #pragma once
 
-#include "GraphicsEngine/GEng_API.h"
-#include "GraphicsEngine/Utilities/Memory.h"
-
 #include <array>
 #include <vector>
-#include<functional>
+#include <functional>
 #include <glm/glm.hpp>
+
+#include "GraphicsEngine/GEng_API.h"
+#include "GraphicsEngine/Utilities/Memory.h"
 
 namespace GEng {
     template<typename FloatType, typename IndexType>

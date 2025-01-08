@@ -1,8 +1,5 @@
 #pragma once
 
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-
 #include <unordered_map>
 
 #include "GraphicsEngine/GEng_API.h"
@@ -10,13 +7,16 @@
 
 namespace GEng {
     using GLid = unsigned int;
+    using GLenum = unsigned int;
+    using GLuint = unsigned int;
+    using GLint = int;
 
     GENG_API class OpenGLContext : public GPUContext {
     public:
         OpenGLContext(uint32_t major, uint32_t minor);
         void InitOpenGLFunctionBindings();
 
-        virtual API GetContextAPI() const override { return API::OpenGL; }
+        virtual GraphicsAPI GetContextAPI() const override { return GraphicsAPI::OpenGL; }
 
         uint32_t GetMajorVersion() const { return mMajorVersion; }
         uint32_t GetMinorVersion() const { return mMinorVersion; }
@@ -40,8 +40,8 @@ namespace GEng {
 
         void SetFaceCulling(bool activate) override;
         void SetDepthTest(bool activate) override;
-        void SetPolygonMode(const PolygonMode mode) override;
-        void SetBlending(bool activate, const Blending mode) override;
+        void SetPolygonMode(PolygonMode mode) override;
+        void SetBlending(bool activate, Blending mode) override;
 
         void SetViewport(const glm::ivec4 &bounds) override;
 

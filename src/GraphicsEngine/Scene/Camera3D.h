@@ -3,13 +3,16 @@
 #include "GraphicsEngine/GEng_API.h"
 #include <glm/glm.hpp>
 
+#include "GraphicsEngine/Events/KeyEvents.h"
+#include "GraphicsEngine/Events/MouseEvents.h"
+
 namespace GEng {
     GENG_API class Camera3D {
     public:
         explicit Camera3D(float pitchYawAcc = 10100.0f, float posAcc = 5000.0f, float zoomAcc = 5000.0f,
                           float decayFactor = 0.91f);
         //
-        void UpdateMovement(const glm::vec2 mouseDPosNormalised, int buttonClicked, int key = 0, int modKeys = 0);
+        void UpdateMovement(glm::vec2 mouseDPosNormalised, MouseButton buttonClicked, KeyCode key = KeyCode::UNKNOWN, int modKeys = 0);
         void UpdateZoom(double mouseWheelD);
         //
         [[nodiscard]] float GetPitch() const { return mPitch; }

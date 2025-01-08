@@ -1,10 +1,9 @@
 #pragma once
 
-#include "GraphicsEngine/GEng_API.h"
 #include <glm/glm.hpp>
 #include <glm/gtx/norm.hpp>
-#include <cmath>
-#include <math.h>
+
+#include "GraphicsEngine/GEng_API.h"
 
 GENG_API inline bool operator<(const glm::vec2 &v1, const glm::vec2 &v2)
 {

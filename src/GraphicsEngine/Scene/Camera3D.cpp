@@ -1,16 +1,13 @@
-#include "GraphicsEngine/Scene/Camera3D.h"
-#include <GLFW/glfw3.h>
-
+#include<iostream>
 #define GLM_RADIANS
 #include <glm/glm.hpp>
 #include <glm/gtx/norm.hpp>
 #include<glm/gtx/transform.hpp>
 
-#include<iostream>
+#include "GraphicsEngine/Scene/Camera3D.h"
 
 //
 //
-
 namespace GEng {
     //
     //
@@ -21,15 +18,15 @@ namespace GEng {
     }
 
     //
-    void Camera3D::UpdateMovement(const glm::vec2 mouseDPosNormalised, int buttonClicked, int key, int modKeys) {
-        if (buttonClicked != -1 && ((modKeys & GLFW_MOD_SHIFT) || key == 340)) {
+    void Camera3D::UpdateMovement(const glm::vec2 mouseDPosNormalised, MouseButton buttonClicked, KeyCode key, int modKeys) {
+        if (buttonClicked != MouseButton::None && ((modKeys & ModKeyBits::MOD_BIT_SHIFT) || key == KeyCode::K_LEFT_SHIFT)) {
             mZoomVel += glm::length(mouseDPosNormalised) * glm::sign(mouseDPosNormalised.y) * 2.0f * mZoomAcc;
-        } else if (buttonClicked == GLFW_MOUSE_BUTTON_RIGHT) {
+        } else if (buttonClicked == MouseButton::Right) {
             mPosVel += glm::vec3(
                         this->GetInverseViewMatrix() * glm::vec4(-mouseDPosNormalised.x, mouseDPosNormalised.y, 0.0f,
                                                                  0.0f)) *
                     mPosAcc;
-        } else if (buttonClicked == GLFW_MOUSE_BUTTON_LEFT) {
+        } else if (buttonClicked == MouseButton::Left) {
             mPitchVel -= mouseDPosNormalised.y * mPitchYawAcc;
             mYawVel += mouseDPosNormalised.x * mPitchYawAcc;
         } else {
@@ -37,16 +34,16 @@ namespace GEng {
 
             glm::vec3 deltaVec(0.0f);
 
-            if (key == GLFW_KEY_W) {
+            if (key == KeyCode::K_W) {
                 deltaVec = vecToCam;
             }
-            if (key == GLFW_KEY_S) {
+            if (key == KeyCode::K_S) {
                 deltaVec = -vecToCam;
             }
-            if (key == GLFW_KEY_A) {
+            if (key == KeyCode::K_A) {
                 deltaVec = glm::cross(vecToCam, glm::vec3(mViewMatrix[0][1], mViewMatrix[1][1], mViewMatrix[2][1]));
             }
-            if (key == GLFW_KEY_D) {
+            if (key == KeyCode::K_D) {
                 deltaVec = -glm::cross(
                     vecToCam,
                     glm::vec3(mViewMatrix[0][1], mViewMatrix[1][1], mViewMatrix[2][1])

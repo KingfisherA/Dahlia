@@ -1,9 +1,9 @@
 #pragma once
 
-#include <algorithm>
 #include "glm/vec2.hpp"
 #include "glm/matrix.hpp"
 #include "GraphicsEngine/GEng_API.h"
+#include "GraphicsEngine/Events/MouseEvents.h"
 
 namespace GEng {
     GENG_API class Camera2D {
@@ -28,10 +28,7 @@ namespace GEng {
             return *this;
         }
 
-        void UpdateMouse(float mouseDX,
-                         float mouseDY,
-                         int buttonClicked,
-                         int modKeys = 0);
+        void UpdateMouse(glm::vec2 deltaMouse, MouseButton buttonClicked);
 
         void UpdateZoom(float mouseWheelD);
 

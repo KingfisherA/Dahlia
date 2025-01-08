@@ -1,6 +1,7 @@
+#include <GL/glew.h>
+
 #include "GraphicsEngine/Platform/OpenGL/OpenGLContext.h"
 #include "GraphicsEngine/Platform/OpenGL/OpenGLTexture.h"
-
 #include "OpenGLShaderProgram.h"
 
 //
@@ -8,38 +9,38 @@
 
 namespace GEng {
     OpenGLTexture2D::OpenGLTexture2D(const Dimension2D &dimensions,
-                                     const byte *textureData, PixelFormat texFormat) : m_imageDimensions(dimensions),
-        m_pixelFormat(texFormat) {
+                                     const byte *textureData, PixelFormat texFormat) : mImageDimensions(dimensions),
+        mPixelFormat(texFormat) {
         CreateTexture(dimensions, textureData, texFormat);
     }
 
     OpenGLTexture2D::OpenGLTexture2D(GLenum texID, const Dimension2D &dimensions,
-                                     PixelFormat texFormat) : m_texID(texID),
-                                                              m_imageDimensions(dimensions),
-                                                              m_pixelFormat(texFormat) {
+                                     PixelFormat texFormat) : mTexID(texID),
+                                                              mImageDimensions(dimensions),
+                                                              mPixelFormat(texFormat) {
     }
 
-    OpenGLTexture2D::OpenGLTexture2D(OpenGLTexture2D &&tex) : m_imageDimensions(tex.m_imageDimensions),
-                                                              m_mipMapsGenerated(tex.m_mipMapsGenerated),
-                                                              m_pixelFormat(tex.m_pixelFormat),
-                                                              m_texID(tex.m_texID),
-                                                              m_texUnit(tex.m_texUnit) {
-        tex.m_texID = 0;
+    OpenGLTexture2D::OpenGLTexture2D(OpenGLTexture2D &&tex) noexcept : mImageDimensions(tex.mImageDimensions),
+                                                              mMipMapsGenerated(tex.mMipMapsGenerated),
+                                                              mPixelFormat(tex.mPixelFormat),
+                                                              mTexID(tex.mTexID),
+                                                              mTexUnit(tex.mTexUnit) {
+        tex.mTexID = 0;
     }
 
     void OpenGLTexture2D::CreateTexture(const Dimension2D &dimensions, const byte *textureData,
                                         PixelFormat texFormat) {
-        if (m_texID != 0) {
-            glDeleteTextures(1, &m_texID);
+        if (mTexID != 0) {
+            glDeleteTextures(1, &mTexID);
         }
 
         glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-        glGenTextures(1, &m_texID);
+        glGenTextures(1, &mTexID);
 
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, m_texID);
-        glTexImage2D(GL_TEXTURE_2D, 0, texFormat.FormatToGL(), dimensions.x, dimensions.y,
-                     0, texFormat.FormatToGL(), GL_UNSIGNED_BYTE, (const void *) textureData);
+        glBindTexture(GL_TEXTURE_2D, mTexID);
+        glTexImage2D(GL_TEXTURE_2D, 0, FormatToGL(texFormat), dimensions.x, dimensions.y,
+                     0, FormatToGL(texFormat), GL_UNSIGNED_BYTE, (const void *) textureData);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glBindTexture(GL_TEXTURE_2D, 0);
@@ -47,27 +48,27 @@ namespace GEng {
     }
 
     OpenGLTexture2D::~OpenGLTexture2D() {
-        glDeleteTextures(1, &m_texID);
-        m_texID = 0;
+        glDeleteTextures(1, &mTexID);
+        mTexID = 0;
     }
 
     void OpenGLTexture2D::Bind(unsigned short unit) {
-        if (!GPUContext::Get<OpenGLContext>()->BindToContext(GL_TEXTURE0 + unit, m_texID)) {
+        if (!GPUContext::Get<OpenGLContext>()->BindToContext(GL_TEXTURE0 + unit, mTexID)) {
             glActiveTexture(GL_TEXTURE0 + unit);
-            glBindTexture(GL_TEXTURE_2D, m_texID);
-            m_texUnit = unit;
+            glBindTexture(GL_TEXTURE_2D, mTexID);
+            mTexUnit = unit;
         }
     }
 
     void OpenGLTexture2D::Unbind() {
-        glActiveTexture(GL_TEXTURE0 + m_texUnit);
+        glActiveTexture(GL_TEXTURE0 + mTexUnit);
         glBindTexture(GL_TEXTURE_2D, 0);
-        GPUContext::Get<OpenGLContext>()->RegisterBind(GL_TEXTURE0 + m_texUnit, 0);
+        GPUContext::Get<OpenGLContext>()->RegisterBind(GL_TEXTURE0 + mTexUnit, 0);
     }
 
     void OpenGLTexture2D::GenerateMipMaps(const MipmapFiltering filtering) {
         OpenGLTexture2D::Bind(0);
-        if (!m_mipMapsGenerated)
+        if (!mMipMapsGenerated)
             glGenerateMipmap(GL_TEXTURE_2D);
         glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
@@ -81,7 +82,7 @@ namespace GEng {
                                 }
                             }());
 
-        m_mipMapsGenerated = true;
+        mMipMapsGenerated = true;
     }
 
     void OpenGLTexture2D::DeleteMipMaps() {
@@ -92,7 +93,30 @@ namespace GEng {
 
     void OpenGLTexture2D::UpdateData(const Dimension2D offset, const Dimension2D size, const byte *data) {
         OpenGLTexture2D::Bind(0);
-        glTexSubImage2D(GL_TEXTURE_2D, 0, offset.x, offset.y, size.x, size.y, m_pixelFormat.FormatToGL(),
+        glTexSubImage2D(GL_TEXTURE_2D, 0, offset.x, offset.y, size.x, size.y, FormatToGL(mPixelFormat),
                         GL_UNSIGNED_BYTE, (const void *) data);
+    }
+    //
+    GLenum OpenGLTexture2D::FormatToGL(PixelFormat format) noexcept {
+        switch (format) {
+            case PixelFormat::None:
+                return GL_NONE;
+
+            case PixelFormat::RGB:
+                return GL_RGB;
+
+            case PixelFormat::RGBA8:
+                return GL_RGBA;
+
+            case PixelFormat::RG:
+                return GL_RG;
+
+            case PixelFormat::R:
+            case PixelFormat::RED_INTEGER:
+                return GL_RED;
+
+            case PixelFormat::DEPTH24_STENCIL8:
+                return GL_DEPTH24_STENCIL8;
+        }
     }
 }

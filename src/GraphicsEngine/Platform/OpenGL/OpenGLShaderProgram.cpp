@@ -1,11 +1,12 @@
+#include <GL/glew.h>
+#include <glm/gtc/type_ptr.hpp>
+#include <format>
 
 #include "GraphicsEngine/Platform/OpenGL/OpenGLShaderProgram.h"
 #include "GraphicsEngine/Utilities/Assert.h"
-#include "GraphicsEngine/Utilities/StringOperations.h"
 #include "GraphicsEngine/Utilities/IO.h"
 #include "GraphicsEngine/Platform/OpenGL/OpenGLContext.h"
-#include <format>
-#include <glm/gtc/type_ptr.hpp>
+
 //
 //
 

@@ -1,3 +1,6 @@
+#include<GLFW/glfw3.h>
+#include <stdexcept>
+
 #include "GraphicsEngine/Platform/OpenGL/OpenGLContext.h"
 #include "GraphicsEngine/Platform/OpenGL/OpenGLDisplay.h"
 
@@ -5,7 +8,7 @@
 //
 namespace GEng {
     OpenGLDisplay::OpenGLDisplay(GPUContext *ctx, const DisplayProps &properties) {
-        if (ctx->GetContextAPI() != API::OpenGL)
+        if (ctx->GetContextAPI() != GraphicsAPI::OpenGL)
             throw std::runtime_error("Cannot initialise an OpenGL window in a non-OpenGL GPU context");
 
         OpenGLContext *glCtx = reinterpret_cast<OpenGLContext *>(ctx);

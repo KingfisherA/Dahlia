@@ -1,20 +1,21 @@
 #pragma once
 
+#include <glm/glm.hpp>
 #include "GraphicsEngine/GEng_API.h"
 #include "GraphicsEngine/Events/Events.h"
-#include <glm/glm.hpp>
+
 
 namespace GEng
 {
 	// Size vector of dimension 2
 	using svec2 = glm::vec<2, size_t>;
 
-	GENG_API enum class MouseButton
+	GENG_API enum class MouseButton : int
 	{
 		None = -1,
-		Right = GLFW_MOUSE_BUTTON_RIGHT,
-		Centre = GLFW_MOUSE_BUTTON_MIDDLE,
-		Left = GLFW_MOUSE_BUTTON_LEFT
+		Right,
+		Centre,
+		Left
 	};
 
 	GENG_API class MouseButtonPressedEvent : public Event
@@ -27,7 +28,7 @@ namespace GEng
 								 EventCategory::EventCategoryMouse |
 								 EventCategory::EventCategoryMouseButton)
 
-		inline MouseButton GetMouseButton() const { return button; }
+		MouseButton GetMouseButton() const { return button; }
 
 	protected:
 		MouseButton button;
@@ -43,7 +44,7 @@ namespace GEng
 								 EventCategory::EventCategoryMouse |
 								 EventCategory::EventCategoryMouseButton)
 
-		inline MouseButton GetMouseButton() const { return button; }
+		MouseButton GetMouseButton() const { return button; }
 
 	protected:
 		MouseButton button;
@@ -57,12 +58,10 @@ namespace GEng
 		EVENT_CLASS_FUNCTIONS(MouseMove)
 		EVENT_CLASS_CATEGORY_FNS(EventCategory::EventCategoryInput | EventCategory::EventCategoryMouse)
 
-		// MouseButton GetMouseButtonPressed() const { return buttonPressed; }
 		glm::dvec2 GetMousePos() const { return mMousePos; }
 
 	protected:
 		glm::dvec2 mMousePos;
-		// MouseButton buttonPressed;
 	};
 
 	GENG_API class MouseScrollEvent : public Event
@@ -73,8 +72,8 @@ namespace GEng
 		EVENT_CLASS_FUNCTIONS(MouseWheelScroll)
 		EVENT_CLASS_CATEGORY_FNS(EventCategory::EventCategoryInput | EventCategory::EventCategoryMouse)
 
-		inline float GetXOffset() const { return xOffset; }
-		inline float GetYOffset() const { return yOffset; }
+		[[nodiscard]] float GetXOffset() const { return xOffset; }
+		[[nodiscard]] float GetYOffset() const { return yOffset; }
 
 	protected:
 		float xOffset = 0.0f;

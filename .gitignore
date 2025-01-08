@@ -34,6 +34,8 @@
 *.tff
 
 # Excluded Folders
+Old/
+include/
 Python/
 libs/
 .vs/

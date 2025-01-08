@@ -4,7 +4,6 @@
 
 namespace GEng
 {
-
 	GENG_API class AppRender : public Event
 	{
 	public:

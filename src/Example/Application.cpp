@@ -6,11 +6,9 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/norm.hpp>
 
-#include "GraphicsEngine/Events/Events.h"
 #include "GraphicsEngine/Events/KeyEvents.h"
 #include "GraphicsEngine/Events/MouseEvents.h"
 #include "GraphicsEngine/3D/VertexArray.h"
-#include "GraphicsEngine/Platform/Windows/Console.h"
 #include "GraphicsEngine/Platform/GPUContext.h"
 #include "GraphicsEngine/Utilities/Memory.h"
 #include "GraphicsEngine/GUI/Display.h"
@@ -20,19 +18,16 @@
 
 #include "GraphicsEngine/Utilities/IO.h"
 #include "GraphicsEngine/Utilities/PathUtils.h"
-#include "GraphicsEngine/3D/Framebuffer.h"
 #include "GraphicsEngine/Maths/Geometry.h"
-#include "GraphicsEngine/3D/VertexArray.h"
 #include "GraphicsEngine/3D/ShaderProgram.h"
+#include "GraphicsEngine/Utilities/Assert.h"
 
-// #define IMSPINNER_DEMO
-// #include "GUI/ImSpinner.h"
 
 #pragma region Entry Point
 
 int main(int argc, char **argv) {
     Example::Application app;
-    if (!app.Init()) {
+    if (!app.Init(GEng::GraphicsAPI::OpenGL, 4, 6)) {
         GENG_FATAL(main, "Failed to initialise application")
         return 1;
     }
@@ -76,7 +71,7 @@ namespace Example {
     }
 
     void Application::OnViewportResize() {
-        GEng::GraphicsApp::OnViewportResize();
+        GraphicsApp::OnViewportResize();
         UpdateProjectionMatrix();
     }
 
@@ -107,8 +102,9 @@ namespace Example {
                                                     80.0f);
 
         mText = Text::Create();
-        mText->SetScaling(m_Window->GetContentScaling().x * 0.3f);
-        mText->AddText("Example Graphics Engine Application", {{-1.0f, -0.95f, 2.0f}, TextLayoutInfo::Alignment::Left});
+        mText->SetScaling(mWindow->GetContentScaling().x * 0.3f);
+        mText->AddText("Example Graphics Engine Application",
+            {glm::vec3{-1.0f, -0.95f, 2.0f}, TextLayoutInfo::Alignment::Left});
         mText->LayoutText(*mUbuntuLight);
 
         return true;
@@ -123,21 +119,21 @@ namespace Example {
         GraphicsApp::OnDestroy();
     }
 
-    bool Application::OnMouseMove(GEng::MouseMoveEvent &e) {
+    bool Application::OnMouseMove(MouseMoveEvent &e) {
         GraphicsApp::OnMouseMove(e);
 
         if (mIsViewportFocused) {
-            mDeltaMousePos /= glm::vec2(m_Window->GetWidth(), m_Window->GetHeight());
+            mDeltaMousePos /= glm::vec2((float)mWindow->GetWidth(), (float)mWindow->GetHeight());
             mCam.UpdateMovement(mDeltaMousePos,
-                                m_MouseButtonDown,
-                                m_KeyDown,
-                                m_KeyMods);
+                                mMouseButtonDown,
+                                mKeyDown,
+                                mKeyMods);
         }
 
         return true;
     }
 
-    bool Application::OnMouseScroll(GEng::MouseScrollEvent &e) {
+    bool Application::OnMouseScroll(MouseScrollEvent &e) {
         GraphicsApp::OnMouseScroll(e);
 
         if (mIsViewportFocused)
@@ -147,7 +143,7 @@ namespace Example {
     }
 
     void Application::OnRender() {
-        mCam.UpdateCamera((float) m_DeltaTime);
+        mCam.UpdateCamera((float) mDeltaTime);
         mViewportFramebuffer->Bind();
 
         GPUContext::Get()->SetPolygonMode(mPolygonMode);
@@ -214,7 +210,7 @@ namespace Example {
             static int selectedItem = 0;
             ImGui::Combo("Render Style##combo", &selectedItem, items, 2);
 
-            for (Layer *layer: m_LayerStack)
+            for (Layer *layer: mLayerStack)
                 layer->SetRenderStyle((GEng::GPUContext::PolygonMode) selectedItem);
 
             mPolygonMode = (GEng::GPUContext::PolygonMode) selectedItem;
@@ -232,9 +228,9 @@ namespace Example {
         }
 
         if (ImGui::CollapsingHeader("Adaptor Information", ImGuiTreeNodeFlags_DefaultOpen)) {
-            ImGui::Text("Renderer API: %s", m_VersionStr.c_str());
-            ImGui::Text("Vendor: %s", m_VendorStr.c_str());
-            ImGui::Text("Shading Language Version: %s", m_ShadingLanguageStr.c_str());
+            ImGui::Text("Renderer API: %s", mVersionStr.c_str());
+            ImGui::Text("Vendor: %s", mVendorStr.c_str());
+            ImGui::Text("Shading Language Version: %s", mShadingLanguageStr.c_str());
         }
 
         if (ImGui::CollapsingHeader("Frame Information", ImGuiTreeNodeFlags_DefaultOpen)) {

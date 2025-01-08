@@ -11,9 +11,8 @@ namespace GEng
 	{
 		switch (GPUContext::Get()->GetContextAPI())
 		{
-		case API::OpenGL:
+		case GraphicsAPI::OpenGL:
 			return (sRef<Framebuffer>)make<OpenGLFramebuffer>(spec);
-			break;
 		default:
 			return nullptr;
 		}

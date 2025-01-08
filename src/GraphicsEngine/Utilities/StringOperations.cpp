@@ -56,7 +56,7 @@ namespace GEng::StringOperations
 	void FindAll(const std::string_view str, const std::string_view searchPhrase, std::vector<size_t> &results)
 	{
 		size_t offset = 0;
-		while (offset = str.find(searchPhrase, offset) != str.npos)
+		while ((offset = str.find(searchPhrase, offset)) != str.npos)
 		{
 			results.push_back(offset);
 		}

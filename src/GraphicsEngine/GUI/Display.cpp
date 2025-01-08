@@ -11,7 +11,7 @@ namespace GEng {
         switch (ctx->GetContextAPI()) {
 
             default:
-            case API::OpenGL:
+            case GraphicsAPI::OpenGL:
                 return new OpenGLDisplay(ctx, properties);
         }
     }

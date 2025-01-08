@@ -1,10 +1,13 @@
 #include "GraphicsEngine/GUI/ImGuiLayer.h"
 
-#define IMGUI_IMPL_API
+#ifndef  IMGUI_IMPL_API
+    #define IMGUI_IMPL_API
+#endif
 #define IMGUI_IMPL_OPENGL_LOADER_GLEW
 #include "backends/imgui_impl_opengl3.h"
 #include "backends/imgui_impl_glfw.h"
 
+#include<GLFW/glfw3.h>
 #include <ImGui/imgui.h>
 
 #include "GraphicsEngine/Events/MouseEvents.h"
@@ -12,9 +15,9 @@
 #include "GraphicsEngine/Resources/Resources.h"
 
 namespace ImGui {
-    void TextCentered(const char *txt) {
-        ImGui::SetCursorPosX((ImGui::GetWindowWidth() - ImGui::CalcTextSize(txt).x) * 0.5f);
-        ImGui::Text(txt);
+    void TextCentered(const char *fmt) {
+        ImGui::SetCursorPosX((ImGui::GetWindowWidth() - ImGui::CalcTextSize(fmt).x) * 0.5f);
+        ImGui::Text(fmt);
     }
 }
 

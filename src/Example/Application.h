@@ -43,7 +43,7 @@ namespace Example {
         void RenderSceneInformation();
 
         GEng::Camera3D mCam;
-        glm::mat4 projectionMatrix;
+        glm::mat4 projectionMatrix{};
 
         GEng::GPUContext::PolygonMode mPolygonMode = GEng::GPUContext::PolygonMode::Solid;
         sRef<GEng::VertexArray> mVAO;

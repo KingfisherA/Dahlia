@@ -9,6 +9,16 @@
 
 namespace GEng {
     //
+    void GLFWDisplayBase::Show() const { glfwShowWindow(mWindow); }
+    //
+    void GLFWDisplayBase::Hide() const { glfwHideWindow(mWindow); }
+    //
+    void GLFWDisplayBase::Focus() const { glfwFocusWindow(mWindow); }
+    //
+    bool GLFWDisplayBase::CloseRequested() const { return glfwWindowShouldClose(mWindow); }
+    //
+    double GLFWDisplayBase::GetTime() const { return glfwGetTime(); }
+    //
     void GLFWDisplayBase::CreateDisplay(const DisplayProps &props) {
         mWidth = props.width;
         mHeight = props.height;
@@ -52,19 +62,19 @@ namespace GEng {
         GLFWDisplayBase &display = *(GLFWDisplayBase *) glfwGetWindowUserPointer(window);
         switch (action) {
             case GLFW_PRESS: {
-                KeyPressedEvent event(key, mods, 0);
+                KeyPressedEvent event(static_cast<KeyCode>(key), mods, 0);
                 display.mEventCallback(event);
                 break;
             }
 
             case GLFW_RELEASE: {
-                KeyReleasedEvent event(key, mods);
+                KeyReleasedEvent event(static_cast<KeyCode>(key), mods);
                 display.mEventCallback(event);
                 break;
             }
 
             case GLFW_REPEAT: {
-                KeyPressedEvent event(key, mods, 1);
+                KeyPressedEvent event(static_cast<KeyCode>(key), mods, 1);
                 display.mEventCallback(event);
                 break;
             }
@@ -133,6 +143,11 @@ namespace GEng {
     //
     void GLFWDisplayBase::Refresh() {
         glfwPollEvents();
+    }
+
+    //
+    void GLFWDisplayBase::SetSize(size_t width, size_t height) {
+        glfwSetWindowSize(mWindow, (int)width, (int)height);
     }
 
     //

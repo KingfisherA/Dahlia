@@ -31,10 +31,12 @@ namespace GEng {
     glm::vec3 Geometry::CalculateNormalCounterclockwise(const glm::vec3 &v0, const glm::vec3 &v1, const glm::vec3 &v2) {
         return glm::normalize(glm::cross(v1 - v0, v2 - v0));
     }
+
     //
     glm::vec3 Geometry::CalculateNormalClockwise(const glm::vec3 &v0, const glm::vec3 &v1, const glm::vec3 &v2) {
         return glm::normalize(glm::cross(v1 - v0, v1 - v2));
     }
+
     //
     void Geometry::CalculateNormals(const std::vector<float> &vertices, const std::vector<uint32_t> &triangles,
                                     std::vector<float> &normals) {
@@ -273,6 +275,7 @@ namespace GEng {
 
         return icosahedronMesh;
     }
+
     //
     // //
     Mesh_F32 Geometry::CreateIcosphere(float radius, uint32_t subdivisions) {
@@ -454,6 +457,7 @@ namespace GEng {
 
         return cylinderMesh;
     }
+
     //
     Mesh_F32 Geometry::CreateCone(float height, float radius, size_t segments) {
         segments = std::max<size_t>(segments, 3);
@@ -511,10 +515,12 @@ namespace GEng {
 
         return coneMesh;
     }
+
     //
     Mesh_F32 Geometry::CreatePyramid(float size) {
         return CreateCone(1.0f, 1.0f, 4);
     }
+
     //
     Mesh_F32 Geometry::CreateOctahedron(float height, float size) {
         Mesh_F32 octahedronMesh(3, 0, 0, 0, 0);
@@ -548,10 +554,12 @@ namespace GEng {
 
         return octahedronMesh;
     }
+
     //
     Mesh_F32 Geometry::CreateTetrahedron(float size) {
         return CreateCone(1.0f, 1.0f, 3);
     }
+
     //
     Mesh_F32 Geometry::CreateDodecahedron(float size) {
         Mesh_F32 dodecahedronMesh(3, 0, 0, 0, 0);
@@ -637,6 +645,7 @@ namespace GEng {
 
         return quadMesh;
     }
+
     //
     Mesh_F32 Geometry::CreateSquircle(float radius, uint32_t roundness, uint32_t segments) {
         size_t noOfVerts = segments * 2 + 1;
@@ -686,6 +695,7 @@ namespace GEng {
 
         return squircleMesh;
     }
+
     Mesh_F32 Geometry::CreateZSurface(const glm::vec3 scaling, const glm::vec2 axisStart, const glm::vec2 axisEnd,
                                       uint32_t resolution, const std::function<float(float, float)> &func) {
         Mesh_F32 surfaceMesh = CreateGrid(1.0f, resolution, resolution);
@@ -711,6 +721,7 @@ namespace GEng {
 
         return surfaceMesh;
     }
+
     //
     Mesh_F32 Geometry::CreateGrid(float scale, uint32_t slices, uint32_t stacks) {
         uint32_t vertexCount = (slices + 1) * (stacks + 1);
@@ -752,6 +763,7 @@ namespace GEng {
 
         return gridMesh;
     }
+
     //
     // //
     Mesh_F32 Geometry::CreateCube(float size) {
@@ -897,8 +909,9 @@ namespace GEng {
             {0.0f, 0.0f}
         };
 
-        Mesh_F32 cubeMesh(3, sizeof(cubeVerticies) / sizeof(float), sizeof(cubeNormals) / sizeof(float),
-                          sizeof(cubeUV) / sizeof(float), 0);
+        Mesh_F32 cubeMesh(3, 3 * sizeof(cubeVerticies) / sizeof(glm::vec3),
+                          3 * sizeof(cubeNormals) / sizeof(glm::vec3),
+                          2 * sizeof(cubeUV) / sizeof(glm::vec2), 0);
 
         std::memcpy(cubeMesh.GetVertexArray().data(), &cubeVerticies, sizeof(cubeVerticies));
         std::memcpy(cubeMesh.GetNormalsArray().data(), &cubeNormals, sizeof(cubeNormals));
@@ -909,6 +922,7 @@ namespace GEng {
 
         return cubeMesh;
     }
+
     //
     // //
     Mesh_F32 Geometry::CreateCircle(float radius, size_t segments) {
@@ -944,6 +958,7 @@ namespace GEng {
 
         return circleMesh;
     }
+
     //
     // //
     Mesh_F32 Geometry::CreateRings(float innerRadius, float outerRadius, uint32_t segments) {
@@ -990,6 +1005,7 @@ namespace GEng {
 
         return ringMesh;
     }
+
     //
     // //
     Mesh_F32 Geometry::CreateHalfRings(float innerRadius, float outerRadius, uint32_t segments) {
@@ -1026,6 +1042,7 @@ namespace GEng {
 
         return ringMesh;
     }
+
     //
     //
     Mesh_F32 Geometry::CreateTorus(float innerRadius, float outerRadius, float depth, uint32_t sides,
@@ -1095,6 +1112,7 @@ namespace GEng {
 
         return torusMesh;
     }
+
     //
     //
     std::vector<uint32_t> Geometry::DetectSphereWrappedUVCoords(const std::vector<uint32_t> &triangles,
@@ -1119,6 +1137,7 @@ namespace GEng {
 
         return returnIndicies;
     }
+
     //
     // //
     void Geometry::FixSphereWrappedUV(const std::vector<uint32_t> &wrapped, std::vector<float> &verticies,
@@ -1215,6 +1234,7 @@ namespace GEng {
             triangles[i * 3 + 2] = c;
         }
     }
+
     //
     // //
     // void Geometry::FixPoleVerticies(std::vector<glm::vec3> &verticies, std::vector<glm::vec2> &texCoords,

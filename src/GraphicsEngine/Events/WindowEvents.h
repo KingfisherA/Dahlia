@@ -19,16 +19,9 @@ namespace GEng
 		EVENT_CLASS_FUNCTIONS(WindowResize)
 		EVENT_CLASS_CATEGORY_FNS(EventCategory::EventCategoryWindow)
 
-		inline size_t GetWidth() const { return width; }
-		inline size_t GetHeight() const { return height; }
-		inline svec2 GetDimensions() const { return {width, height}; }
-
-		virtual std::string ToString() const override
-		{
-			std::stringstream ss;
-			ss << "Window Resize Event: New Width: " << width << " New Height: " << height << ' ';
-			return ss.str();
-		}
+		size_t GetWidth() const { return width; }
+		size_t GetHeight() const { return height; }
+		svec2 GetDimensions() const { return {width, height}; }
 
 	protected:
 		size_t width = 0, height = 0;
@@ -42,7 +35,7 @@ namespace GEng
 		EVENT_CLASS_FUNCTIONS(WindowMoved)
 		EVENT_CLASS_CATEGORY_FNS(EventCategory::EventCategoryWindow)
 
-		inline svec2 GetPosition() const { return winPos; }
+		svec2 GetPosition() const { return winPos; }
 
 	protected:
 		svec2 winPos = {0, 0};
@@ -56,7 +49,7 @@ namespace GEng
 		EVENT_CLASS_FUNCTIONS(WindowFocus)
 		EVENT_CLASS_CATEGORY_FNS(EventCategory::EventCategoryWindow)
 
-		inline bool DidLoseFocus() const { return lostFocus; }
+		bool DidLoseFocus() const { return lostFocus; }
 
 	protected:
 		bool lostFocus = false;

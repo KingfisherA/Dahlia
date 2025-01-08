@@ -3,8 +3,8 @@
 #include <cstring>
 #include <string>
 #include <unordered_map>
-#include <glm/matrix.hpp>
 #include <vector>
+#include <glm/vec3.hpp>
 
 #include "GraphicsEngine/3D/Texture.h"
 #include "GraphicsEngine/Utilities/Memory.h"

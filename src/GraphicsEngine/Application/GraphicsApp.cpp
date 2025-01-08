@@ -26,22 +26,28 @@ namespace GEng {
         mInitParams->viewportSpec = viewportSpec;
     }
 
-    bool GraphicsApp::Init() {
+    bool GraphicsApp::Init(GraphicsAPI api, uint32_t majorVersion, uint32_t minorVersion) {
         if (mInitParams == nullptr)
             return false;
 
-        GPUContext *ctx = GPUContext::Create(API::OpenGL, 4, 6);
+        GPUContext *ctx = GPUContext::Create(api, majorVersion, minorVersion);
 
-        m_Window.reset(Display::Create(ctx, {mInitParams->displayTitle, mInitParams->width, mInitParams->height}));
-        m_Window->BindEventCallback(BIND_EVENT_FNC(OnEvent));
+        mWindow.reset(Display::Create(ctx, {mInitParams->displayTitle, mInitParams->width, mInitParams->height}));
+        mWindow->BindEventCallback(BIND_EVENT_FNC(OnEvent));
 
-        m_VersionStr = ctx->GetVersionStr();
-        m_VersionStr.insert(0, "OpenGL ");
-        m_VendorStr = ctx->GetVendorStr();
-        m_ShadingLanguageStr = ctx->GetShadingVersionStr();
-        m_ShadingLanguageStr.insert(0, "GLSL ");
+        mVersionStr = ctx->GetVersionStr();
 
-        m_ImGuiLayer = new ImGuiLayer(m_Window.get(), mFont);
+        mVendorStr = ctx->GetVendorStr();
+        mShadingLanguageStr = ctx->GetShadingVersionStr();
+
+        switch (ctx->GetContextAPI()) {
+            case GraphicsAPI::OpenGL:
+                mVersionStr.insert(0, "OpenGL ");
+                mShadingLanguageStr.insert(0, "GLSL ");
+                break;
+        }
+
+        m_ImGuiLayer = new ImGuiLayer(mWindow.get(), mFont);
         PushOverlay(m_ImGuiLayer);
 
         mViewportFramebuffer = Framebuffer::Create(mInitParams->viewportSpec);
@@ -53,23 +59,23 @@ namespace GEng {
     }
 
     void GraphicsApp::Run() {
-        while (m_IsRunning) {
+        while (mIsRunning) {
             {
-                double newTime = m_Window->GetTime();
-                m_DeltaTime = newTime - m_Time;
-                m_Time = newTime;
+                double newTime = mWindow->GetTime();
+                mDeltaTime = newTime - mTime;
+                mTime = newTime;
             }
 
-            if (m_viewPortPanelSize.x != this->m_lastViewportSize.x ||
-                m_viewPortPanelSize.y != this->m_lastViewportSize.y) {
-                if (m_viewPortPanelSize.x > 10 && m_viewPortPanelSize.y > 10)
-                    mViewportFramebuffer->Resize((size_t) m_viewPortPanelSize.x, (size_t) m_viewPortPanelSize.y);
+            if (mViewPortPanelSize.x != this->mLastViewportSize.x ||
+                mViewPortPanelSize.y != this->mLastViewportSize.y) {
+                if (mViewPortPanelSize.x > 10 && mViewPortPanelSize.y > 10)
+                    mViewportFramebuffer->Resize((size_t) mViewPortPanelSize.x, (size_t) mViewPortPanelSize.y);
 
-                for (Layer *layer: m_LayerStack)
-                    layer->Resize((size_t) m_viewPortPanelSize.x, (size_t) m_viewPortPanelSize.y);
+                for (Layer *layer: mLayerStack)
+                    layer->Resize((size_t) mViewPortPanelSize.x, (size_t) mViewPortPanelSize.y);
 
                 OnViewportResize();
-                m_lastViewportSize = m_viewPortPanelSize;
+                mLastViewportSize = mViewPortPanelSize;
             }
 
             GPUContext::Get()->Reset();
@@ -78,7 +84,7 @@ namespace GEng {
 
             m_ImGuiLayer->Begin();
 
-            for (Layer *layer: m_LayerStack)
+            for (Layer *layer: mLayerStack)
                 layer->OnImGuiRender();
 
             if (mRenderViewport)
@@ -87,14 +93,14 @@ namespace GEng {
 
             m_ImGuiLayer->End();
 
-            m_Window->Refresh();
+            mWindow->Refresh();
         }
 
         this->OnDestroy();
     }
 
     void GraphicsApp::OnDestroy() {
-        for (Layer *layer: m_LayerStack) {
+        for (Layer *layer: mLayerStack) {
             layer->OnDestroy();
         }
 
@@ -106,8 +112,8 @@ namespace GEng {
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{0, 0});
         if (ImGui::Begin(mViewportName.c_str(), nullptr)) {
             mIsViewportFocused = ImGui::IsWindowFocused();
-            m_viewPortPanelSize = ImGui::GetContentRegionAvail();
-            ImGui::Image((void *) mViewportFramebuffer->QueryTextureAttachment()->GetRendererID(),
+            mViewPortPanelSize = ImGui::GetContentRegionAvail();
+            ImGui::Image((ImTextureID) (intptr_t) mViewportFramebuffer->QueryTextureAttachment(0)->GetRendererID(),
                          ImVec2{(float) mViewportFramebuffer->GetWidth(), (float) mViewportFramebuffer->GetHeight()},
                          {0, 1}, {1, 0});
         }
@@ -116,11 +122,11 @@ namespace GEng {
     }
 
     void GraphicsApp::PushLayer(Layer *layer) {
-        m_LayerStack.PushLayer(layer);
+        mLayerStack.PushLayer(layer);
     }
 
     void GraphicsApp::PushOverlay(Layer *overlay) {
-        m_LayerStack.PushOverlay(overlay);
+        mLayerStack.PushOverlay(overlay);
     }
 
     void GraphicsApp::OnEvent(Event &e) {
@@ -140,7 +146,7 @@ namespace GEng {
         };
 
         DispatchApplicationEvents();
-        for (auto it = m_LayerStack.rbegin(); it != m_LayerStack.rend(); ++it) {
+        for (auto it = mLayerStack.rbegin(); it != mLayerStack.rend(); ++it) {
             if (e.IsHandled())
                 break;
             (*it)->OnEvent(e);
@@ -154,29 +160,29 @@ namespace GEng {
     }
 
     bool GraphicsApp::OnWindowClose(WindowCloseEvent &e) {
-        m_IsRunning = false;
+        mIsRunning = false;
         return true;
     }
 
     bool GraphicsApp::OnKeyPressed(KeyPressedEvent &e) {
-        m_KeyDown = e.GetKeyCode();
-        m_KeyMods = e.GetModifiers();
+        mKeyDown = e.GetKeyCode();
+        mKeyMods = e.GetModifiers();
         return false;
     }
 
     bool GraphicsApp::OnKeyReleased(KeyReleasedEvent &e) {
-        m_KeyDown = -1;
-        m_KeyMods = 0;
+        mKeyDown = KeyCode::UNKNOWN;
+        mKeyMods = 0;
         return false;
     }
 
     bool GraphicsApp::OnMouseButtonPressed(MouseButtonPressedEvent &e) {
-        m_MouseButtonDown = (int) e.GetMouseButton();
+        mMouseButtonDown = e.GetMouseButton();
         return true;
     }
 
     bool GraphicsApp::OnMouseButtonReleased(MouseButtonReleasedEvent &e) {
-        m_MouseButtonDown = -1;
+        mMouseButtonDown = MouseButton::None;
         return true;
     }
 
@@ -189,7 +195,7 @@ namespace GEng {
     }
 
     bool GraphicsApp::OnMouseScroll(MouseScrollEvent &e) {
-        double currentScrollTime = m_Window->GetTime();
+        double currentScrollTime = mWindow->GetTime();
         mDeltaScroll = glm::max(1.0 / (currentScrollTime - mLastScrollTime), 1.0) * glm::sign(e.GetYOffset());
         mLastScrollTime = currentScrollTime;
 

@@ -17,8 +17,7 @@ namespace GEng
 		virtual void Bind() override;
 		virtual void Unbind() override;
 
-		virtual void SubmitArrays(const Primitive drawMode, size_t instances) override;
-		void SubmitArrays(const GLenum drawMode = GL_TRIANGLES, size_t instances = 1);
+		virtual void SubmitArrays(Primitive drawMode, size_t instances) override;
 
 		virtual Index AddVertexBuffer(const sRef<VertexBuffer> &buffer, const VertexSpecification spec = {3, 0, 0, 0}) override;
 		virtual void AddIndexBuffer(const sRef<IndexBuffer> &buffer) override;

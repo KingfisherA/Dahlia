@@ -1,9 +1,7 @@
-#include "Camera2D.h"
-#include "GLFW/glfw3.h"
-
 #include <algorithm>
-#include <iostream>
 #include <glm/gtx/transform.hpp>
+
+#include "Camera2D.h"
 
 //
 //
@@ -11,9 +9,9 @@ namespace GEng {
     constexpr float CAM_ACCELERATION = 0.2f;
     constexpr float ZOOM_ACCELERATION = 0.01f;
 
-    void Camera2D::UpdateMouse(float mouseDX, float mouseDY, int buttonClicked, int modKeys) {
-        if (buttonClicked == GLFW_MOUSE_BUTTON_LEFT) {
-            mVel -= glm::vec2(mouseDX, mouseDY) * CAM_ACCELERATION;
+    void Camera2D::UpdateMouse(glm::vec2 deltaMouse, MouseButton buttonClicked) {
+        if (buttonClicked == MouseButton::Left) {
+            mVel -= deltaMouse * CAM_ACCELERATION;
         }
     }
 

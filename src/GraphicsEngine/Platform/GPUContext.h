@@ -1,14 +1,12 @@
 #pragma once
 
-#include"GraphicsEngine/GEng_API.h"
-#include "GraphicsEngine/Utilities/Assert.h"
-
-#include<glm/vec4.hpp>
+#include <glm/vec4.hpp>
 #include <string>
 
+#include"GraphicsEngine/GEng_API.h"
 
 namespace GEng {
-    GENG_API enum class API {
+    GENG_API enum class GraphicsAPI {
         OpenGL = 0
     };
 
@@ -27,13 +25,13 @@ namespace GEng {
             Additive
         };
 
-        static GPUContext *Create(const API api, uint32_t major, uint32_t minor);
+        static GPUContext *Create(const GraphicsAPI api, uint32_t major, uint32_t minor);
 
         template<typename T = GPUContext>
         static T *Get() { return reinterpret_cast<T *>(sCurrentContext); }
-        static API GetAPI() { return sCurrentContext->GetContextAPI(); }
+        static GraphicsAPI GetAPI() { return sCurrentContext->GetContextAPI(); }
 
-        virtual API GetContextAPI() const = 0;
+        virtual GraphicsAPI GetContextAPI() const = 0;
         virtual void Reset() =0;
 
         virtual void Clear(const glm::vec4 &clearColour) =0;

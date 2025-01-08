@@ -1,5 +1,6 @@
+#include<GL/glew.h>
+
 #include "GraphicsEngine/Platform/OpenGL/OpenGLVertexArray.h"
-#include "GraphicsEngine/Utilities/Assert.h"
 //
 //
 
@@ -28,36 +29,36 @@ namespace GEng {
     }
 
     void OpenGLVertexArray::SubmitArrays(const Primitive drawMode, size_t instances) {
-        OpenGLVertexArray::SubmitArrays(
-            [drawMode]()-> GLenum {
-                switch (drawMode) {
-                    default:
-                    case Primitive::Triangles:
-                        return GL_TRIANGLES;
-                    case Primitive::Lines:
-                        return GL_LINES;
-                    case Primitive::Points:
-                        return GL_POINTS;
-                    case Primitive::TriangleFan:
-                        return GL_TRIANGLE_FAN;
-                }
-            }()
-            , instances);
-    }
+        GLenum glDrawMode = [drawMode]()-> GLenum {
+            switch (drawMode) {
+                default:
+                case Primitive::Triangles:
+                    return GL_TRIANGLES;
+                case Primitive::Lines:
+                    return GL_LINES;
+                case Primitive::Points:
+                    return GL_POINTS;
+                case Primitive::TriangleFan:
+                    return GL_TRIANGLE_FAN;
+                case Primitive::Quads:
+                    return GL_QUADS;
+                case Primitive::QuadStrip:
+                    return GL_QUAD_STRIP;
+            }
+        }();
 
-    void OpenGLVertexArray::SubmitArrays(const GLenum drawMode, size_t instances) {
         OpenGLVertexArray::Bind();
         if (IsIndexed())
             if (instances > 1)
-                glDrawElementsInstanced(drawMode, GetArrayElementLength(), GL_UNSIGNED_INT, nullptr, instances);
+                glDrawElementsInstanced(glDrawMode, GetArrayElementLength(), GL_UNSIGNED_INT, nullptr, instances);
             else
-                glDrawElements(drawMode, GetArrayElementLength(), GL_UNSIGNED_INT, nullptr);
+                glDrawElements(glDrawMode, GetArrayElementLength(), GL_UNSIGNED_INT, nullptr);
         else if (instances > 1)
-            glDrawArraysInstanced(drawMode, 0, GetArrayElementLength(), instances);
+            glDrawArraysInstanced(glDrawMode, 0, GetArrayElementLength(), instances);
         else
-            glDrawArrays(drawMode, 0, GetArrayElementLength());
+            glDrawArrays(glDrawMode, 0, GetArrayElementLength());
     }
-
+    //
     Index OpenGLVertexArray::AddVertexBuffer(const sRef<VertexBuffer> &buffer, const VertexSpecification spec) {
 #ifdef SM_DEBUG
 		if (std::dynamic_pointer_cast<OpenGLVertexBuffer>(buffer) == nullptr)
@@ -72,8 +73,8 @@ namespace GEng {
 
         m_Buffers.insert({attribArray, glBuffer});
 
-        if (m_elementLength == 0)
-            m_elementLength = glBuffer->GetBufferSize() / spec.vertexSize;
+        if (mElementLength == 0)
+            mElementLength = glBuffer->GetBufferSize() / spec.vertexSize;
 
         auto *ctx = GPUContext::Get<OpenGLContext>();
         glBindVertexArray(m_VAOId);
@@ -107,7 +108,7 @@ namespace GEng {
 #endif
 
         this->m_IndexBuffer = std::static_pointer_cast<OpenGLIndexBuffer>(buffer);
-        m_elementLength = buffer->GetBufferSize();
+        mElementLength = buffer->GetBufferSize();
     }
 
     Index OpenGLVertexArray::QueryBufferIndex(const sRef<VertexBuffer> &buffer) {

@@ -1,20 +1,21 @@
-//
-// Created by charlie on 29/08/24.
-//
+#include <stdexcept>
+
 #include "GraphicsEngine/Platform/GPUContext.h"
 #include "GraphicsEngine/Platform/OpenGL/OpenGLContext.h"
 
+//
+//
 namespace GEng {
     GPUContext *GPUContext::sCurrentContext = nullptr;
 
-    GPUContext *GPUContext::Create(const API api, uint32_t major, uint32_t minor) {
+    GPUContext *GPUContext::Create(const GraphicsAPI api, uint32_t major, uint32_t minor) {
         if (sCurrentContext != nullptr)
             throw std::runtime_error("Cannot create two instances of a GPU context");
 
         switch (api) {
 
             default:
-            case API::OpenGL: {
+            case GraphicsAPI::OpenGL: {
                 sCurrentContext = reinterpret_cast<GPUContext *>(new OpenGLContext(major, minor));
                 return sCurrentContext;
             }

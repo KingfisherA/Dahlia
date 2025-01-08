@@ -30,7 +30,7 @@ namespace GEng {
 
         void Clear(const glm::vec4 &clearColour) override;
 
-        virtual unsigned int GetRenderID() const { return m_FBOID; }
+        virtual unsigned int GetRenderID() const override { return m_FBOID; }
 
     private:
         void ClearAttachments();

@@ -1,3 +1,5 @@
+#include <GL/glew.h>
+
 #include "GraphicsEngine/Platform/OpenGL/OpenGLBuffers.h"
 #include "GraphicsEngine/Platform/OpenGL/OpenGLContext.h"
 #include "GraphicsEngine/Platform/GPUContext.h"

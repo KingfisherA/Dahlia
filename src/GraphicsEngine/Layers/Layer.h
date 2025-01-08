@@ -1,11 +1,12 @@
 #pragma once
 
+#include<glm/mat4x4.hpp>
+
 #include "GraphicsEngine/GEng_API.h"
 #include "GraphicsEngine/Events/Events.h"
 #include "GraphicsEngine/Utilities/Memory.h"
 #include "GraphicsEngine/Platform/OpenGL/OpenGLContext.h"
 
-#include <glm/matrix.hpp>
 
 namespace GEng
 {

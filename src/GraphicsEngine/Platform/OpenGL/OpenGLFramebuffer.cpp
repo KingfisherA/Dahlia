@@ -1,3 +1,5 @@
+#include <GL/glew.h>
+
 #include "GraphicsEngine/Platform/OpenGL/OpenGLFramebuffer.h"
 #include "GraphicsEngine/Platform/OpenGL/OpenGLContext.h"
 #include "GraphicsEngine/Utilities/Assert.h"
@@ -16,7 +18,7 @@ namespace GEng {
 
             glBindTexture(GL_TEXTURE_2D, tex);
             bool isDepth = PixelFormat::IsDepth(format);
-            glTexImage2D(GL_TEXTURE_2D, 0, PixelFormat::FormatToGL(format), width, height, 0,
+            glTexImage2D(GL_TEXTURE_2D, 0, OpenGLTexture2D::FormatToGL(format), width, height, 0,
                          isDepth ? GL_DEPTH_STENCIL : GL_RGB, isDepth ? GL_UNSIGNED_INT_24_8 : GL_UNSIGNED_BYTE,
                          nullptr);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -30,7 +32,7 @@ namespace GEng {
             glGenRenderbuffers(1, &rboID);
 
             glBindRenderbuffer(GL_RENDERBUFFER, rboID);
-            glRenderbufferStorage(GL_RENDERBUFFER, PixelFormat::FormatToGL(format), width, height);
+            glRenderbufferStorage(GL_RENDERBUFFER, OpenGLTexture2D::FormatToGL(format), width, height);
             glBindRenderbuffer(GL_RENDERBUFFER, 0);
 
             return rboID;
@@ -41,7 +43,7 @@ namespace GEng {
             glGenTextures(1, &tex);
 
             glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, tex);
-            glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, samples, PixelFormat::FormatToGL(format), width, height,
+            glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, samples, OpenGLTexture2D::FormatToGL(format), width, height,
                                     GL_TRUE);
             glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
 
@@ -53,7 +55,7 @@ namespace GEng {
             glGenRenderbuffers(1, &rboID);
 
             glBindRenderbuffer(GL_RENDERBUFFER, rboID);
-            glRenderbufferStorageMultisample(GL_RENDERBUFFER, samples, PixelFormat::FormatToGL(format), width, height);
+            glRenderbufferStorageMultisample(GL_RENDERBUFFER, samples, OpenGLTexture2D::FormatToGL(format), width, height);
             glBindRenderbuffer(GL_RENDERBUFFER, 0);
 
             return rboID;

@@ -7,7 +7,7 @@
 #include "GraphicsEngine/Events/MouseEvents.h"
 
 namespace GEng {
-    GENG_API class Camera3D {
+    class GENG_API  Camera3D {
     public:
         explicit Camera3D(float pitchYawAcc = 10100.0f, float posAcc = 5000.0f, float zoomAcc = 5000.0f,
                           float decayFactor = 0.91f);

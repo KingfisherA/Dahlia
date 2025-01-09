@@ -1,14 +1,14 @@
 #pragma once
 
-#include "GraphicsEngine/GEng_API.h"
 #include <unordered_map>
 
+#include "GraphicsEngine/GEng_API.h"
 #include "GraphicsEngine/3D/VertexArray.h"
 #include "GraphicsEngine/Platform/OpenGL/OpenGLBuffers.h"
 
 namespace GEng
 {
-	GENG_API class OpenGLVertexArray : public VertexArray
+	class GENG_API  OpenGLVertexArray : public VertexArray
 	{
 	public:
 		OpenGLVertexArray();
@@ -19,7 +19,7 @@ namespace GEng
 
 		virtual void SubmitArrays(Primitive drawMode, size_t instances) override;
 
-		virtual Index AddVertexBuffer(const sRef<VertexBuffer> &buffer, const VertexSpecification spec = {3, 0, 0, 0}) override;
+		virtual Index AddVertexBuffer(const sRef<VertexBuffer> &buffer, VertexSpecification spec = {3, 0, 0, 0}) override;
 		virtual void AddIndexBuffer(const sRef<IndexBuffer> &buffer) override;
 
 		virtual Index QueryBufferIndex(const sRef<VertexBuffer> &buffer) override;

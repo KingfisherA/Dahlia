@@ -6,7 +6,7 @@
 #include "GraphicsEngine/Utilities/Memory.h"
 
 namespace GEng {
-    GENG_API struct VertexSpecification {
+    struct VertexSpecification {
         unsigned char vertexSize = 3;
         // In floats
         unsigned int vertexStride = 0;
@@ -21,7 +21,7 @@ namespace GEng {
     using Index = unsigned int;
     constexpr Index IndexUndefined = static_cast<Index>(-1);
 
-    GENG_API enum class Primitive {
+    enum class Primitive {
         Triangles = 0,
         Lines,
         Points,
@@ -30,7 +30,7 @@ namespace GEng {
         QuadStrip
     };
 
-    GENG_API class VertexArray {
+    class GENG_API  VertexArray {
     public:
         virtual ~VertexArray() = default;
 

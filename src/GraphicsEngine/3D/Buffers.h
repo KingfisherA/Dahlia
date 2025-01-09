@@ -5,7 +5,7 @@
 
 namespace GEng
 {
-	GENG_API struct VertexLayout
+	struct GENG_API VertexLayout
 	{
 		unsigned char eleSize = 0;
 		size_t offset = 0;
@@ -18,7 +18,7 @@ namespace GEng
 		DynamicUpdate
 	};
 
-	GENG_API class VertexBuffer
+	class GENG_API  VertexBuffer
 	{
 	public:
 		virtual ~VertexBuffer() = default;
@@ -34,7 +34,7 @@ namespace GEng
 		static sRef<VertexBuffer> Create(const float *data, size_t floatCount, BufferUsage usage = BufferUsage::StaticUpdate);
 	};
 
-	GENG_API class IndexBuffer
+	class GENG_API  IndexBuffer
 	{
 	public:
 		virtual ~IndexBuffer() = default;

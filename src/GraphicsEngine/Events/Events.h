@@ -46,8 +46,8 @@ namespace GEng {
 #define EVENT_CLASS_CATEGORY_FNS(cat) \
 	virtual int GetCategoryFlags() const override { return cat; }
 
-    GENG_API class Event {
-        friend GENG_API class EventDispatcher;
+    class GENG_API  Event {
+        friend class GENG_API  EventDispatcher;
 
     public:
         [[nodiscard]] virtual EventType GetEventType() const = 0;
@@ -62,7 +62,7 @@ namespace GEng {
         bool m_Handled = false;
     };
 
-    GENG_API class EventDispatcher {
+    class GENG_API  EventDispatcher {
     private:
         Event &m_Event;
 

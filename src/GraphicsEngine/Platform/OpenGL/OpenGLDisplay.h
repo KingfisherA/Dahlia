@@ -8,7 +8,7 @@
 namespace GEng {
     class GPUContext;
 
-    GENG_API class OpenGLDisplay : public GLFWDisplayBase {
+    class GENG_API  OpenGLDisplay : public GLFWDisplayBase {
     public:
         OpenGLDisplay(GPUContext *ctx, const DisplayProps &properties);
 

@@ -34,6 +34,7 @@
 *.tff
 
 # Excluded Folders
+vcpkg_installed/
 Old/
 include/
 Python/
@@ -44,7 +45,7 @@ bin/
 Fonts/
 Icon/
 Screenshots/
-/build/
+build/
 cmake-build-debug/
 cmake-build-release/
 CMakeFiles/

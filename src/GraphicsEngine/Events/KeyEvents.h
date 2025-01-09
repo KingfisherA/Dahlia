@@ -137,7 +137,7 @@ namespace GEng {
         K_MENU = 348,
     };
 
-    GENG_API class KeyEvent : public Event {
+    class GENG_API  KeyEvent : public Event {
     public:
         KeyEvent(KeyCode keyCodeIn, int modsIn) : mKeyCode(keyCodeIn), mMods(modsIn) {
         }
@@ -152,7 +152,7 @@ namespace GEng {
         int mMods;
     };
 
-    GENG_API class KeyPressedEvent : public KeyEvent {
+    class GENG_API  KeyPressedEvent : public KeyEvent {
     public:
         KeyPressedEvent(KeyCode keyCode, int mods, unsigned int repeatCountIn) : KeyEvent(keyCode, mods),
                                                                              repeatCount(repeatCountIn) {
@@ -166,7 +166,7 @@ namespace GEng {
         uint32_t repeatCount;
     };
 
-    GENG_API class KeyReleasedEvent : public KeyEvent {
+    class GENG_API  KeyReleasedEvent : public KeyEvent {
     public:
         KeyReleasedEvent(KeyCode keyCode, int mods) : KeyEvent(keyCode, mods) {
         }
@@ -174,7 +174,7 @@ namespace GEng {
         EVENT_CLASS_FUNCTIONS(KeyReleased)
     };
 
-    GENG_API class KeyTypedEvent : public Event {
+    class GENG_API  KeyTypedEvent : public Event {
     public:
         KeyTypedEvent(uint32_t charCodeIn) : charCode(charCodeIn) {
         }

@@ -14,7 +14,7 @@
 #include "GraphicsEngine/Utilities/Memory.h"
 
 namespace GEng {
-    GENG_API class ShaderProgram {
+    class GENG_API  ShaderProgram {
     public:
         using ShaderKeyMap = std::unordered_map<std::string, std::string>;
 
@@ -42,7 +42,7 @@ namespace GEng {
         static sRef<ShaderProgram> CreateFromFile(std::string_view combinedShaderFile);
         static sRef<ShaderProgram> CreateFromFile(std::string_view vertexFile, std::string_view fragmentFile);
 
-        GENG_API struct Preprocessor {
+        struct GENG_API Preprocessor {
         public:
             static void PreprocessShaderType(const std::string& combinedSourceCode, std::string *vertexOutput,
                                              std::string *fragmentOutput, std::string *geometryOutput);

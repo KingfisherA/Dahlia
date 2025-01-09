@@ -6,7 +6,7 @@
 
 namespace GEng
 {
-	GENG_API class OpenGLTexture2D : public Texture2D
+	class GENG_API OpenGLTexture2D : public Texture2D
 	{
 	public:
 		using byte = unsigned char;
@@ -15,7 +15,12 @@ namespace GEng
 								 PixelFormat texFormat);
 		explicit OpenGLTexture2D(GLenum texID, const Dimension2D &dimensions,
 								 PixelFormat texFormat);
-		OpenGLTexture2D(const OpenGLTexture2D &) = delete;
+#ifdef WIN32
+		OpenGLTexture2D(const OpenGLTexture2D& tex);
+#else 
+		OpenGLTexture2D(const OpenGLTexture2D&) = delete;
+#endif // WIN32
+
 		OpenGLTexture2D(OpenGLTexture2D &&tex) noexcept;
 
 	private:

@@ -13,7 +13,7 @@ namespace GEng
 	class Framebuffer;
 	class Camera3D;
 
-	GENG_API class Layer
+	class GENG_API  Layer
 	{
 	public:
 		Layer(const std::string_view name = "Layer");

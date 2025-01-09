@@ -4,7 +4,7 @@
 #include <thread>
 
 namespace GEng {
-    GENG_API class Thread {
+    class GENG_API  Thread {
     public:
         Thread() : mThread(), mThreadFinished(false), mThreadStarted(false) {
         }

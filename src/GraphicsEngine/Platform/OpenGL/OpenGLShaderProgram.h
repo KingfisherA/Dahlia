@@ -8,7 +8,7 @@
 #include "GraphicsEngine/3D/ShaderProgram.h"
 
 namespace GEng {
-    GENG_API class OpenGLShaderProgram : public ShaderProgram {
+    class GENG_API  OpenGLShaderProgram : public ShaderProgram {
     public:
         using UniformLocMap = std::unordered_map<std::string_view, int>;
 

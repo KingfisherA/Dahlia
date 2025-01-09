@@ -24,7 +24,7 @@ namespace GEng {
 
     using FontAtlasMap = std::unordered_map<char, AtlasGlyphInfo>;
 
-    class Font {
+    class GENG_API Font {
     public:
         explicit Font(const uint8_t *fontData, size_t fontDataSize)
             : mFontDataPtr(fontData), mFontDataSize(fontDataSize) {
@@ -50,14 +50,14 @@ namespace GEng {
         std::string mFontPath;
     };
 
-    class FontAtlasBase {
+    class GENG_API FontAtlasBase {
     public:
         virtual ~FontAtlasBase() = default;
         [[nodiscard]] virtual const FontAtlasMap &GetAtlasMap() const =0;
         [[nodiscard]] virtual FontAtlasMap &GetAtlasMap() =0;
     };
 
-    class FontAtlasBitmap : public FontAtlasBase {
+    class GENG_API FontAtlasBitmap : public FontAtlasBase {
     public:
         FontAtlasBitmap(): mDimensions(0) {
         }
@@ -121,7 +121,7 @@ namespace GEng {
         Dimension2D mDimensions;
     };
 
-    class FontAtlas : public FontAtlasBase {
+    class GENG_API FontAtlas : public FontAtlasBase {
     public:
         FontAtlas() = default;
 
@@ -148,7 +148,7 @@ namespace GEng {
         sRef<Texture2D> mTexture;
     };
 
-    struct TextLayoutInfo {
+    struct GENG_API TextLayoutInfo {
     public:
         glm::vec3 bounds;
 
@@ -160,7 +160,7 @@ namespace GEng {
         } alignment;
     };
 
-    class FontManager {
+    class GENG_API FontManager {
     public:
         FontManager();
         ~FontManager();
@@ -201,7 +201,7 @@ namespace GEng {
         void* mFontLibrary = nullptr;
     };
 
-    class Text {
+    class GENG_API Text {
     public:
         Text();
         ~Text();

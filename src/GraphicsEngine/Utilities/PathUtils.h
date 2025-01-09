@@ -5,7 +5,7 @@
 
 namespace GEng
 {
-	GENG_API class PathUtils
+	class GENG_API  PathUtils
 	{
 	public:
 		static void Init()

@@ -1,13 +1,13 @@
 #pragma once
 
-#include "GraphicsEngine/GEng_API.h"
 #include <map>
+#include "GraphicsEngine/GEng_API.h"
 #include "GraphicsEngine/3D/Framebuffer.h"
 #include "GraphicsEngine/Platform/OpenGL/OpenGLFramebuffer.h"
 #include "GraphicsEngine/Platform/OpenGL/OpenGLTexture.h"
 
 namespace GEng {
-    GENG_API class OpenGLFramebuffer : public Framebuffer {
+    class GENG_API OpenGLFramebuffer : public Framebuffer {
     public:
         OpenGLFramebuffer(const FramebufferSpecification &spec);
 
@@ -40,7 +40,7 @@ namespace GEng {
         unsigned int m_FBOID = 0;
         FramebufferSpecification specification;
 
-        std::map<unsigned int, OpenGLTexture2D> textureAttachments;
-        std::map<unsigned int, GLuint> renderbufferAttachments;
+        std::map<uint32_t, OpenGLTexture2D> textureAttachments;
+        std::map<uint32_t, GLuint> renderbufferAttachments;
     };
 }

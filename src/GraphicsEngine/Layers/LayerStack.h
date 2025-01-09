@@ -5,7 +5,7 @@
 
 namespace GEng
 {
-	GENG_API class LayerStack
+	class GENG_API  LayerStack
 	{
 	public:
 		using LayerVec = std::vector<Layer *>;

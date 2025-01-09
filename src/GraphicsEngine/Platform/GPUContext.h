@@ -10,7 +10,7 @@ namespace GEng {
         OpenGL = 0
     };
 
-    GENG_API class GPUContext {
+    class GENG_API  GPUContext {
     public:
         virtual ~GPUContext() = default;
 

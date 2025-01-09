@@ -11,7 +11,7 @@ namespace GEng {
     using GLuint = unsigned int;
     using GLint = int;
 
-    GENG_API class OpenGLContext : public GPUContext {
+    class GENG_API  OpenGLContext : public GPUContext {
     public:
         OpenGLContext(uint32_t major, uint32_t minor);
         void InitOpenGLFunctionBindings();

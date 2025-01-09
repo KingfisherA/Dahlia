@@ -4,7 +4,7 @@
 
 namespace GEng
 {
-	GENG_API class AppRender : public Event
+	class GENG_API  AppRender : public Event
 	{
 	public:
 		AppRender(size_t deltaTime) : m_deltaTime(deltaTime) {}

@@ -18,7 +18,7 @@ namespace GEng
 		Left
 	};
 
-	GENG_API class MouseButtonPressedEvent : public Event
+	class GENG_API  MouseButtonPressedEvent : public Event
 	{
 	public:
 		MouseButtonPressedEvent(MouseButton buttonIn) : button(buttonIn) {}
@@ -34,7 +34,7 @@ namespace GEng
 		MouseButton button;
 	};
 
-	GENG_API class MouseButtonReleasedEvent : public Event
+	class GENG_API  MouseButtonReleasedEvent : public Event
 	{
 	public:
 		MouseButtonReleasedEvent(MouseButton buttonIn) : button(buttonIn) {}
@@ -50,7 +50,7 @@ namespace GEng
 		MouseButton button;
 	};
 
-	GENG_API class MouseMoveEvent : public Event
+	class GENG_API  MouseMoveEvent : public Event
 	{
 	public:
 		MouseMoveEvent(glm::dvec2 pos) : mMousePos(pos) {}
@@ -64,7 +64,7 @@ namespace GEng
 		glm::dvec2 mMousePos;
 	};
 
-	GENG_API class MouseScrollEvent : public Event
+	class GENG_API  MouseScrollEvent : public Event
 	{
 	public:
 		MouseScrollEvent(float xOffIn, float yOffIn) : xOffset(xOffIn), yOffset(yOffIn) {}

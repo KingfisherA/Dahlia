@@ -20,6 +20,16 @@ namespace GEng {
                                                               mPixelFormat(texFormat) {
     }
 
+#ifdef WIN32
+    OpenGLTexture2D::OpenGLTexture2D(const OpenGLTexture2D& tex) : mImageDimensions(tex.mImageDimensions),
+        mMipMapsGenerated(tex.mMipMapsGenerated),
+        mPixelFormat(tex.mPixelFormat),
+        mTexID(tex.mTexID),
+        mTexUnit(tex.mTexUnit){
+        const_cast<OpenGLTexture2D&>(tex).mTexID = 0;
+    }
+#endif
+
     OpenGLTexture2D::OpenGLTexture2D(OpenGLTexture2D &&tex) noexcept : mImageDimensions(tex.mImageDimensions),
                                                               mMipMapsGenerated(tex.mMipMapsGenerated),
                                                               mPixelFormat(tex.mPixelFormat),

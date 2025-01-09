@@ -10,7 +10,7 @@ namespace GEng
 	// Size vector of dimension 2
 	using svec2 = glm::vec<2, size_t>;
 
-	GENG_API class WindowResizeEvent : public Event
+	class GENG_API  WindowResizeEvent : public Event
 	{
 	public:
 		WindowResizeEvent(size_t widthIn, size_t heightIn) : width(widthIn),
@@ -27,7 +27,7 @@ namespace GEng
 		size_t width = 0, height = 0;
 	};
 
-	GENG_API class WindowMovedEvent : public Event
+	class GENG_API  WindowMovedEvent : public Event
 	{
 	public:
 		WindowMovedEvent(svec2 newPos) : winPos(newPos) {}
@@ -41,7 +41,7 @@ namespace GEng
 		svec2 winPos = {0, 0};
 	};
 
-	GENG_API class WindowFocusEvent : public Event
+	class GENG_API  WindowFocusEvent : public Event
 	{
 	public:
 		WindowFocusEvent(bool lostFocusIn) : lostFocus(lostFocusIn) {}
@@ -55,7 +55,7 @@ namespace GEng
 		bool lostFocus = false;
 	};
 
-	GENG_API class WindowCloseEvent : public Event
+	class GENG_API  WindowCloseEvent : public Event
 	{
 	public:
 		WindowCloseEvent() {}

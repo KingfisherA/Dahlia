@@ -16,7 +16,7 @@ namespace GEng {
     class Display;
     class Font;
 
-    GENG_API class ImGuiLayer : public Layer {
+    class GENG_API  ImGuiLayer : public Layer {
     public:
         class Context {
         public:

@@ -10,7 +10,7 @@
 
 namespace GEng {
     template<typename FloatType, typename IndexType>
-    GENG_API class Mesh {
+    class Mesh {
     public:
         explicit Mesh(const uint8_t vertexSize): mVertexSize(vertexSize) {
         }
@@ -127,7 +127,7 @@ namespace GEng {
     };
 
     //
-    GENG_API class Geometry final {
+    class GENG_API  Geometry final {
     public:
         using TriangleI = glm::vec<3, uint32_t>;
         using Vertex = glm::vec3;

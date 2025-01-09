@@ -6,7 +6,7 @@
 #include "GraphicsEngine/Events/MouseEvents.h"
 
 namespace GEng {
-    GENG_API class Camera2D {
+    class GENG_API  Camera2D {
     public:
         Camera2D() = default;
 

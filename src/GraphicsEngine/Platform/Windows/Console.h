@@ -25,7 +25,7 @@ namespace GEng
 		BrightYellow = 14
 	};
 
-	GENG_API class Console
+	class GENG_API  Console
 	{
 	public:
 		//

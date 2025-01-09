@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include <ImGui/imgui.h>
+#include <imgui.h>
 #include <glm/glm.hpp>
 
 #include "GraphicsEngine/GEng_API.h"
@@ -34,7 +34,7 @@ namespace GEng {
 #define GRAPHICS_APP_INIT_IMGUI_CTX ImGui::SetCurrentContext(m_ImGuiLayer->GetContext().ctx);\
     ImGui::SetAllocatorFunctions(m_ImGuiLayer->GetContext().allocFunc, m_ImGuiLayer->GetContext().freeFunc, m_ImGuiLayer->GetContext().userData);
 
-    GENG_API class GraphicsApp {
+    class GENG_API  GraphicsApp {
     public:
         GraphicsApp(const char *displayTitle,
                     size_t width, size_t height, const FramebufferSpecification &viewportSpec,
@@ -109,7 +109,7 @@ namespace GEng {
         Font mFont;
 
     private:
-        GENG_API struct InitParams {
+        struct InitParams {
             const char *displayTitle = nullptr;
             size_t width = 0, height = 0;
             FramebufferSpecification viewportSpec;

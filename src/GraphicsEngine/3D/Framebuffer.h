@@ -10,7 +10,7 @@
 namespace GEng
 {
 
-	GENG_API struct FramebufferAttachment
+	struct GENG_API FramebufferAttachment
 	{
 	public:
 		FramebufferAttachment() = default;
@@ -21,14 +21,14 @@ namespace GEng
 		bool Renderbuffer = false;
 	};
 
-	GENG_API struct  FramebufferSpecification
+	struct GENG_API  FramebufferSpecification
 	{
 	public:
 		size_t Width = 0, Height = 0, Samples = 1;
 		std::vector<FramebufferAttachment> Attachments;
 	};
 
-	GENG_API class Framebuffer
+	class GENG_API  Framebuffer
 	{
 	public:
 		virtual ~Framebuffer() = default;

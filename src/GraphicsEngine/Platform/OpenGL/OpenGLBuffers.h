@@ -6,7 +6,7 @@
 
 namespace GEng
 {
-	GENG_API class OpenGLVertexBuffer : public VertexBuffer
+	class GENG_API OpenGLVertexBuffer : public VertexBuffer
 	{
 	public:
 		OpenGLVertexBuffer(BufferUsage usageIn);
@@ -28,7 +28,7 @@ namespace GEng
 		BufferUsage m_Usage;
 	};
 
-	GENG_API class OpenGLIndexBuffer : public IndexBuffer
+	class GENG_API  OpenGLIndexBuffer : public IndexBuffer
 	{
 	public:
 		OpenGLIndexBuffer(BufferUsage usageIn);

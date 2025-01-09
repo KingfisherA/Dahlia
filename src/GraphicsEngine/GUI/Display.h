@@ -7,12 +7,12 @@
 #include "GraphicsEngine/Platform/GPUContext.h"
 
 namespace GEng {
-    GENG_API struct DisplayProps {
+    struct GENG_API DisplayProps {
         std::string title;
         size_t width = 0, height = 0;
     };
 
-    GENG_API class Display {
+    class GENG_API  Display {
     public:
         using EventCallbackFnc = std::function<void(Event &)>;
 

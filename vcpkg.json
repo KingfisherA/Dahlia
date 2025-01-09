@@ -1,0 +1,9 @@
+{
+  "dependencies": [
+    "boost-filesystem",
+    "freetype",
+    "glew",
+    "glfw3",
+    "glm"
+  ]
+}

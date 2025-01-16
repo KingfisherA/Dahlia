@@ -57,9 +57,7 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL MSVC)
         /Od
       )
     elseif(CMAKE_BUILD_TYPE STREQUAL Release)
-      list(APPEND COMPILE_OPTIONS
-        /O2
-      )
+      list(APPEND COMPILE_OPTIONS /O2)
     endif()
 endif()
 
@@ -71,6 +69,7 @@ set_target_properties("Example" PROPERTIES
   CXX_EXTENSIONS NO
   POSITION_INDEPENDENT_CODE True
   INTERPROCEDURAL_OPTIMIZATION False
+  MSVC_RUNTIME_LIBRARY MultiThreaded$<$<CONFIG:Debug>:Debug>DLL
   OUTPUT_NAME "Example")
 
 if(CMAKE_CONFIGURATION_TYPES)

@@ -56,8 +56,7 @@ target_link_libraries("GraphicsEngine" PRIVATE
   glfw
   Boost::filesystem
   OpenGL::GL
-  $<$<PLATFORM_ID:Linux>:GLEW::glew_s>
-  $<$<PLATFORM_ID:Windows>:GLEW::GLEW>
+  $<IF:$<TARGET_EXISTS:GLEW::glew_s>,GLEW::glew_s,GLEW::GLEW>
   Freetype::Freetype
 )
 
@@ -89,12 +88,9 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL MSVC)
         /Od
       )
     elseif(CMAKE_BUILD_TYPE STREQUAL Release)
-      list(APPEND COMPILE_OPTIONS
-        /O2
-      )
+      list(APPEND COMPILE_OPTIONS /O2)
     endif()
 endif()
-
 target_compile_options("GraphicsEngine" PRIVATE ${COMPILE_OPTIONS})
 
 set_target_properties("GraphicsEngine" PROPERTIES
@@ -103,8 +99,9 @@ set_target_properties("GraphicsEngine" PROPERTIES
     CXX_EXTENSIONS NO
     POSITION_INDEPENDENT_CODE True
     INTERPROCEDURAL_OPTIMIZATION False
+    MSVC_RUNTIME_LIBRARY MultiThreaded$<$<CONFIG:Debug>:Debug>DLL
     OUTPUT_NAME "GraphicsEngine")
-
+    
 
 if(CMAKE_CONFIGURATION_TYPES)
   set(DEBUG_BIN_DIR "${GENG_BIN_DIR}")

@@ -5,7 +5,7 @@
 #include "GraphicsEngine/3D/ShaderProgram.h"
 #include "GraphicsEngine/Platform/GPUContext.h"
 #include "GraphicsEngine/Platform/OpenGL/OpenGLShaderProgram.h"
-#include "GraphicsEngine/Utilities/StringOperations.h"
+#include "GraphicsEngine/Tools/Strings.h"
 #include "GraphicsEngine/Utilities/IO.h"
 #include "GraphicsEngine/Utilities/Memory.h"
 #include "GraphicsEngine/Utilities/Assert.h"
@@ -53,7 +53,7 @@ namespace GEng {
                                                  ShaderKeyMap *insertionKeys) {
         std::vector<std::string> onceIncludeHeaders;
 
-        std::vector<std::string> lines = StringOperations::Split(sourceCode, '\n');
+        std::vector<std::string> lines = Strings::Split(sourceCode, '\n');
         sourceCode.clear();
 
         for (std::string &currentLine: lines) {
@@ -149,7 +149,7 @@ namespace GEng {
             }
 
             std::string includePath = currentLine.substr(beginIndex + 1, endIndex - beginIndex - 1);
-            StringOperations::Replace(includePath, "/", "\\");
+            Strings::Replace(includePath, "/", "\\");
             if (includePath.rfind("..\\", 0) == 0) {
                 includePath.insert(0, "..\\");
             }
@@ -177,7 +177,7 @@ namespace GEng {
                     }
                 }
                 if (fileData.find("#include") != std::string::npos || pIndex != std::string::npos) {
-                    std::vector<std::string> fileDataLines = StringOperations::Split(fileData, '\n');
+                    std::vector<std::string> fileDataLines = Strings::Split(fileData, '\n');
                     fileData.clear();
 
                     for (std::string &line: fileDataLines) {

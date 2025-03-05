@@ -6,6 +6,7 @@
 add_dependencies("Example"
     "ImGui"
     "GraphicsEngine"
+    "GraphicsEngineTools"
 )
 target_include_directories("Example" PRIVATE
     ${GENG_SRC_DIR}
@@ -25,6 +26,7 @@ target_compile_definitions("Example" PRIVATE
 target_link_libraries("Example" PRIVATE
   GraphicsEngine
   ImGui
+  GraphicsEngineTools
 )
 
 set(COMPILE_OPTIONS)

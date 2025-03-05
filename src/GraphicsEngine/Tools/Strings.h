@@ -5,7 +5,7 @@
 #include <string>
 #include <string_view>
 
-namespace GEng::StringOperations
+namespace GEng::Strings
 {
 	GENG_API bool Replace(std::string &str, const std::string_view from, const std::string_view to);
 

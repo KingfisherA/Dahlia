@@ -1,8 +1,12 @@
-#include "GraphicsEngine/Utilities/StringOperations.h"
+#include<string>
+#include<vector>
+
+#include "GraphicsEngine/Tools/Strings.h"
+
 //
 //
 
-namespace GEng::StringOperations
+namespace GEng::Strings
 {
 	bool Replace(std::string &str, const std::string_view from, const std::string_view to)
 	{

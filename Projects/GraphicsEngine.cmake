@@ -29,11 +29,11 @@
   "${GENG_SRC_DIR}/GraphicsEngine/Scene/Camera2D.cpp"
   "${GENG_SRC_DIR}/GraphicsEngine/Scene/Camera3D.cpp"
   "${GENG_SRC_DIR}/GraphicsEngine/Utilities/IO.cpp"
-  "${GENG_SRC_DIR}/GraphicsEngine/Utilities/StringOperations.cpp"
 )
 
 add_dependencies("GraphicsEngine"
     "ImGui"
+    "GraphicsEngineTools"
 )
 
 target_include_directories("GraphicsEngine" PRIVATE
@@ -51,6 +51,7 @@ target_compile_definitions("GraphicsEngine" PRIVATE
   $<$<CONFIG:Debug>:CONFIG_DEBUG>
   $<$<CONFIG:Release>:CONFIG_RELEASE>
 )
+
 target_link_libraries("GraphicsEngine" PRIVATE
   ImGui
   glfw
@@ -58,6 +59,7 @@ target_link_libraries("GraphicsEngine" PRIVATE
   OpenGL::GL
   $<IF:$<TARGET_EXISTS:GLEW::glew_s>,GLEW::glew_s,GLEW::GLEW>
   Freetype::Freetype
+  GraphicsEngineTools
 )
 
 set(COMPILE_OPTIONS)

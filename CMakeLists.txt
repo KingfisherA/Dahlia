@@ -49,6 +49,7 @@ if(NOT ${Freetype_FOUND})
     message(NOTICE "Found Freetype with Find.cmake")
 endif()
 
-include(Projects/cmake/GraphicsEngine.cmake)  
-include(Projects/cmake/Example.cmake)
+include(Projects/GraphicsEngineTools.cmake)  
+include(Projects/GraphicsEngine.cmake)
+include(Projects/Example.cmake)
 

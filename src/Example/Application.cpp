@@ -27,7 +27,7 @@
 
 int main(int argc, char **argv) {
     Example::Application app;
-    if (!app.Init(GEng::GraphicsAPI::OpenGL, 4, 6)) {
+    if (!app.Init(GEng::GraphicsAPI::OpenGL, 4, 1)) {
         GENG_FATAL(main, "Failed to initialise application")
         return 1;
     }

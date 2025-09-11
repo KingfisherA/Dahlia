@@ -9,7 +9,7 @@
 namespace GEng {
     static std::unordered_set<GLuint> gPreviousErrorId;
 
-    OpenGLContext::OpenGLContext(uint32_t major, uint32_t minor) :  mMajorVersion(major), mMinorVersion(minor) {
+    OpenGLContext::OpenGLContext(uint32_t major, uint32_t minor) : mMajorVersion(major), mMinorVersion(minor) {
         if (glfwInit() != GLFW_TRUE)
             throw std::runtime_error("Failed to initialize GLFW");
     }
@@ -27,24 +27,26 @@ namespace GEng {
         glEnable(GL_DEPTH_TEST);
 
         glEnable(GL_DEBUG_OUTPUT);
-        glDebugMessageCallback([](
-                           GLenum source,
-                           GLenum type,
-                           GLuint id,
-                           GLenum serverity,
-                           GLsizei length,
-                           const GLchar *message,
-                           const void *userParam) {
-                                   if (gPreviousErrorId.find(id) == gPreviousErrorId.end()) {
-                                       gPreviousErrorId.insert(id);
-                                       if (type == GL_DEBUG_TYPE_ERROR) {
-                                           GENG_FATAL(OpenGL Error, message);
-                                       } else {
-                                           GENG_LOG(Blue, OpenGL Information, message);
+
+        if (mMajorVersion == 4 && mMinorVersion >= 3)
+            glDebugMessageCallback([](
+                               GLenum source,
+                               GLenum type,
+                               GLuint id,
+                               GLenum serverity,
+                               GLsizei length,
+                               const GLchar *message,
+                               const void *userParam) {
+                                       if (gPreviousErrorId.find(id) == gPreviousErrorId.end()) {
+                                           gPreviousErrorId.insert(id);
+                                           if (type == GL_DEBUG_TYPE_ERROR) {
+                                               GENG_FATAL(OpenGL Error, message);
+                                           } else {
+                                               GENG_LOG(Blue, OpenGL Information, message);
+                                           }
                                        }
-                                   }
-                               },
-                               nullptr);
+                                   },
+                                   nullptr);
 
         GENG_LOG(Green, OpenGL GLEW API, "GLEW Intilised OK!");
     }
@@ -176,6 +178,7 @@ namespace GEng {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         OpenGLContext::RegisterBind(GL_FRAMEBUFFER_BINDING, 0);
     }
+
     void OpenGLContext::DestroyContext() {
         glfwTerminate();
         delete this;

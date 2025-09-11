@@ -41,8 +41,10 @@ namespace GEng {
         // io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoMerge;
         io.ConfigWindowsMoveFromTitleBarOnly = true;
 
-        float normalScale = 20.0f * mDisplay->GetContentScaling().x;
-        float largeScale = 48.0f * mDisplay->GetContentScaling().x;
+        //20.0f *
+        float normalScale = 8.0f * mDisplay->GetContentScaling().x;
+        //48.0f *
+        float largeScale = 15.0f * mDisplay->GetContentScaling().x;
 
         // const char* fontPath = "/media/charlie/Data/dev/C++/GraphicsEngine/Assets/Fonts/Ubuntu-Light.ttf";
         // io.FontDefault = io.Fonts->AddFontFromFileTTF(fontPath, normalScale);

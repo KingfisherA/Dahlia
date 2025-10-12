@@ -1,12 +1,12 @@
 # ImGui Custom Build Script
 cmake_minimum_required(VERSION 3.16)
 
-set(GENG_BUILD_TYPES "Debug" "Release")
-if(NOT CMAKE_BUILD_TYPE IN_LIST GENG_BUILD_TYPES)
+set(DH_BUILD_TYPES "Debug" "Release")
+if(NOT CMAKE_BUILD_TYPE IN_LIST DH_BUILD_TYPES)
   message(FATAL_ERROR
     "Invalid build type '${CMAKE_BUILD_TYPE}'.
     CMAKE_BUILD_TYPE must be any one of the possible values:
-    ${GENG_BUILD_TYPES}"
+    ${DH_BUILD_TYPES}"
   )
 endif()
 

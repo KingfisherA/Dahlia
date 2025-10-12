@@ -1,35 +1,34 @@
-﻿#  Build Script for GraphicsEngine
+﻿#  Build Script for Dahlia Graphics Engine
 
 cmake_minimum_required(VERSION 3.16)
 
-set(GENG_BUILD_TYPES "Debug" "Release")
+set(DH_BUILD_TYPES "Debug" "Release")
 if(CMAKE_CONFIGURATION_TYPES)
-#  set(CMAKE_CONFIGURATION_TYPES GENG_BUILD_TYPES)
+#  set(CMAKE_CONFIGURATION_TYPES DH_BUILD_TYPES)
   message(NOTICE "---Multiconfiguration build generator selected---")
-elseif(NOT CMAKE_BUILD_TYPE IN_LIST GENG_BUILD_TYPES)
+elseif(NOT CMAKE_BUILD_TYPE IN_LIST DH_BUILD_TYPES)
   message(FATAL_ERROR
     "Invalid build type '${CMAKE_BUILD_TYPE}'.
     CMAKE_BUILD_TYPE must be any one of the possible values:
-    ${GENG_BUILD_TYPES}"
+    ${DH_BUILD_TYPES}"
   )
 endif()
 
-if(NOT GENG_INCLUDE_IMGUI)
-    set(GENG_INCLUDE_IMGUI true)
+if(NOT DH_INCLUDE_IMGUI)
+    set(DH_INCLUDE_IMGUI true)
 endif()
 
-project("GraphicsEngine"
-        LANGUAGES CXX)
+project("Dahlia" LANGUAGES CXX)
 
-get_filename_component(GENG_DIR ${CMAKE_CURRENT_SOURCE_DIR} ABSOLUTE)
-set(GENG_PLATFORM ${CMAKE_SYSTEM_NAME})
-string(TOLOWER ${GENG_PLATFORM} GENG_PLATFORM)
-set(GENG_SRC_DIR ${GENG_DIR}/src)
-set(GENG_BIN_DIR ${GENG_DIR}/bin/${GENG_PLATFORM})
-set(GENG_LIB_DIR ${GENG_DIR}/Libraries)
+get_filename_component(DH_DIR ${CMAKE_CURRENT_SOURCE_DIR} ABSOLUTE)
+set(DH_PLATFORM ${CMAKE_SYSTEM_NAME})
+string(TOLOWER ${DH_PLATFORM} DH_PLATFORM)
+set(DH_SRC_DIR ${DH_DIR}/src)
+set(DH_BIN_DIR ${DH_DIR}/bin/${DH_PLATFORM})
+set(DH_LIB_DIR ${DH_DIR}/Libraries)
 
-add_subdirectory(${GENG_DIR}/Libraries/ImGui_Build)
-set(IMGUI_DIR ${GENG_LIB_DIR}/ImGui)
+add_subdirectory(${DH_DIR}/Libraries/ImGui_Build)
+set(IMGUI_DIR ${DH_LIB_DIR}/ImGui)
 
 find_package(Boost CONFIG REQUIRED COMPONENTS filesystem)
 find_package(glfw3 CONFIG REQUIRED)
@@ -49,7 +48,7 @@ if(NOT ${Freetype_FOUND})
     message(NOTICE "Found Freetype with Find.cmake")
 endif()
 
-include(Projects/GraphicsEngineTools.cmake)  
-include(Projects/GraphicsEngine.cmake)
-include(Projects/Example.cmake)
+include(Projects/DahliaTools.cmake)  
+include(Projects/Dahlia.cmake)
+include(Projects/DahliaInfo.cmake)
 

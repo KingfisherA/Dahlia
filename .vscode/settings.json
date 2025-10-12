@@ -87,6 +87,8 @@
     "__threading_support": "cpp",
     "__tree": "cpp",
     "ios": "cpp",
-    "queue": "cpp"
+    "queue": "cpp",
+    "__hash_table": "cpp",
+    "any": "cpp"
   }
 }

@@ -1,4 +1,4 @@
-workspace "GraphicsEngine"
+workspace "Dahlia"
 	architecture "x64"
 	configurations
 	{
@@ -14,7 +14,7 @@ filter{"system:windows"}
 	
 outputDir = "%{os.host()}/%{cfg.buildcfg}-x64/"
 
---project "GraphicsEngine"
+--project "Dahlia"
 --	kind "StaticLib"
 --	language "C++"
 --	cppdialect "C++20"
@@ -25,13 +25,13 @@ outputDir = "%{os.host()}/%{cfg.buildcfg}-x64/"
 --	objdir("bin-obj/" .. outputDir)
 --	debugdir("bin/" .. outputDir)
 --
---	defines{"GENG_STATIC","GENG_BUILD"}
+--	defines{"DH_STATIC","DH_BUILD"}
 --
 --	files
 --	{
---		"%{wks.location}/src/GraphicsEngine/**.h",
---		"%{wks.location}/src/GraphicsEngine/**.hpp",
---	  	"%{wks.location}/src/GraphicsEngine/**.cpp",
+--		"%{wks.location}/src/Dahlia/**.h",
+--		"%{wks.location}/src/Dahlia/**.hpp",
+--	  	"%{wks.location}/src/Dahlia/**.cpp",
 --		--"%{wks.location}/src/Resources/**.h",
 --		--"%{wks.location}/src/Resources/**.hpp",
 --		--"%{wks.location}/src/Resources/**.cpp"
@@ -83,7 +83,7 @@ outputDir = "%{os.host()}/%{cfg.buildcfg}-x64/"
 --		symbols "Off"
 --		defines { "CONFIG_RELEASE"}
 
-project "GraphicsEngine"
+project "Dahlia"
 	kind "SharedLib"
 	language "C++"
 	cppdialect "C++20"
@@ -96,12 +96,12 @@ project "GraphicsEngine"
 	
 	files
 	{
-		"%{wks.location}/src/GraphicsEngine/**.h",
-		"%{wks.location}/src/GraphicsEngine/**.cpp",
-		"%{wks.location}/src/GraphicsEngine/**.hpp"
+		"%{wks.location}/src/Dahlia/**.h",
+		"%{wks.location}/src/Dahlia/**.cpp",
+		"%{wks.location}/src/Dahlia/**.hpp"
 	}
 	
-	defines{"GENG_BUILD"}
+	defines{"DH_BUILD"}
 	
 	filter{"system:linux"}
 		includedirs
@@ -175,7 +175,7 @@ project "Example"
 	objdir("bin-obj/" .. outputDir)
 	debugdir("bin/" .. outputDir)
 	
-	defines {"GENG_STATIC"}
+	defines {"DH_STATIC"}
 	
 	files
 	{
@@ -201,7 +201,7 @@ project "Example"
 		{
         	"../../Libraries/ImGui/bin/linux/Release-x64"
 		}
-		links { "GraphicsEngine" }
+		links { "Dahlia" }
 	
 	filter{"system:windows"}
 		defines {"GLEW_STATIC"}
@@ -225,7 +225,7 @@ project "Example"
 			"../../Libraries/glew-2.1.0/lib/Release/x64",
 			"../../Libraries/freetype-2.13.3/build/Release"
 		}
-		links { "opengl32", "GraphicsEngine"}
+		links { "opengl32", "Dahlia"}
 		linkoptions { '/NODEFAULTLIB:"LIBCMTD" /NODEFAULTLIB:"LIBCMT"' }
 
     filter {"configurations:Debug", "system:windows"}

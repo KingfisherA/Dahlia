@@ -1,3 +1,3 @@
-finalPath="./GraphicsEngine-$1/include/GraphicsEngine"
-rclone copy "../src/GraphicsEngine" $finalPath --include "*.h" -P -vv
+finalPath="./Dahlia-$1/include/Dahlia"
+rclone copy "../src/Dahlia" $finalPath --include "*.h" -P -vv
 

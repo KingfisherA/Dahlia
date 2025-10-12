@@ -1,0 +1,57 @@
+#pragma once
+
+#include <glm/vec4.hpp>
+#include <string>
+
+#include "Dahlia/Dahlia-API.h"
+
+namespace DH {
+    DH_API enum class GraphicsAPI {
+        OpenGL = 0
+    };
+
+    class DH_API  GPUContext {
+    public:
+        virtual ~GPUContext() = default;
+
+        DH_API enum class PolygonMode {
+            Solid = 0,
+            Lines,
+            Points
+        };
+
+        DH_API enum class Blending {
+            Alpha = 0,
+            Additive
+        };
+
+        static GPUContext *Create(const GraphicsAPI api, uint32_t major, uint32_t minor);
+
+        template<typename T = GPUContext>
+        static T *Get() { return reinterpret_cast<T *>(sCurrentContext); }
+        static GraphicsAPI GetAPI() { return sCurrentContext->GetContextAPI(); }
+
+        virtual GraphicsAPI GetContextAPI() const = 0;
+        virtual void Reset() =0;
+
+        virtual void Clear(const glm::vec4 &clearColour) =0;
+
+        virtual std::string GetVersionStr() =0;
+        virtual std::string GetVendorStr() =0;
+        virtual std::string GetShadingVersionStr() =0;
+
+        virtual void SetFaceCulling(bool activate) =0;
+        virtual void SetDepthTest(bool activate) =0;
+        virtual void SetPolygonMode(const PolygonMode mode) =0;
+        virtual void SetBlending(bool activate, const Blending mode = Blending::Alpha) =0;
+
+        virtual void SetViewport(const glm::ivec4 &bounds) =0;
+
+        virtual void ActivateDefaultFramebuffer() =0;
+
+        virtual void DestroyContext() =0;
+
+    private:
+        static GPUContext *sCurrentContext;
+    };
+}

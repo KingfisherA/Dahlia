@@ -1,6 +1,8 @@
 ﻿add_executable("DahliaInfo"
   "${DH_SRC_DIR}/DahliaInfo/Application.cpp"
   "${DH_SRC_DIR}/DahliaInfo/Application.h"
+  "${DH_SRC_DIR}/DahliaInfo/MetalApp.h"
+  "${DH_SRC_DIR}/DahliaInfo/MetalApp.cpp"
 )
 
 add_dependencies("DahliaInfo"
@@ -34,7 +36,7 @@ set(COMPILE_OPTIONS)
 if((CMAKE_CXX_COMPILER_ID STREQUAL Clang) OR 
    (CMAKE_CXX_COMPILER_ID STREQUAL GNU))
     list(APPEND COMPILE_OPTIONS
-      -m64
+      -target arm64-apple-darwin
       -fPIC
       -std=c++20
     )

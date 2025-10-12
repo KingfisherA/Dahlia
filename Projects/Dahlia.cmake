@@ -24,6 +24,15 @@
   "${DH_SRC_DIR}/Dahlia/Platform/OpenGL/OpenGLTexture.cpp"
   "${DH_SRC_DIR}/Dahlia/Platform/OpenGL/OpenGLVertexArray.cpp"
   "${DH_SRC_DIR}/Dahlia/Platform/Windows/Console.cpp"
+  #
+   "${DH_SRC_DIR}/Dahlia/Platform/Metal/MetalImpl.cpp"
+  "${DH_SRC_DIR}/Dahlia/Platform/Metal/MetalContext.h"
+  "${DH_SRC_DIR}/Dahlia/Platform/Metal/MetalContext.cpp"
+  "${DH_SRC_DIR}/Dahlia/Platform/Metal/MetalDisplay.h"
+  "${DH_SRC_DIR}/Dahlia/Platform/Metal/MetalDisplay.mm"
+  "${DH_SRC_DIR}/Dahlia/Platform/Metal/MetalBuffer.h"
+  "${DH_SRC_DIR}/Dahlia/Platform/Metal/MetalBuffer.cpp"
+  #
   "${DH_SRC_DIR}/Dahlia/Resources/FontsRes.cpp"
   "${DH_SRC_DIR}/Dahlia/Resources/ShaderSources.cpp"
   "${DH_SRC_DIR}/Dahlia/Scene/Camera2D.cpp"
@@ -38,6 +47,7 @@ add_dependencies("Dahlia"
 
 target_include_directories("Dahlia" PRIVATE
   ${DH_SRC_DIR}
+  "/opt/metal-cpp_macOS26_iOS26-beta"
   ${IMGUI_DIR}
   ${DH_LIB_DIR}
   ${Boost_INCLUDE_DIRS}
@@ -59,16 +69,23 @@ target_link_libraries("Dahlia" PRIVATE
   OpenGL::GL
   $<IF:$<TARGET_EXISTS:GLEW::glew_s>,GLEW::glew_s,GLEW::GLEW>
   Freetype::Freetype
+  #
+  $<LINK_LIBRARY:FRAMEWORK,OpenGL>
+  $<LINK_LIBRARY:FRAMEWORK,Foundation>
+  $<LINK_LIBRARY:FRAMEWORK,QuartzCore>
+  $<LINK_LIBRARY:FRAMEWORK,Metal>
+  #
   DahliaTools
 )
 
-set(COMPILE_OPTIONS)
+set(COMPILE_OPTIONS )
 if((CMAKE_CXX_COMPILER_ID STREQUAL Clang) OR 
    (CMAKE_CXX_COMPILER_ID STREQUAL GNU))
     list(APPEND COMPILE_OPTIONS
-      -m64
       -fPIC
+      -Wno-elaborated-enum-base
       -std=c++20
+      -target arm64-apple-darwin
     )
     if(CMAKE_BUILD_TYPE STREQUAL Debug)
       list(APPEND COMPILE_OPTIONS

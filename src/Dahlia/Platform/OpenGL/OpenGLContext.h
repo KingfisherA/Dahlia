@@ -5,18 +5,24 @@
 #include "Dahlia/Dahlia-API.h"
 #include "Dahlia/Platform/GPUContext.h"
 
-namespace DH {
+namespace DH
+{
     using GLid = unsigned int;
     using GLenum = unsigned int;
     using GLuint = unsigned int;
     using GLint = int;
 
-    class DH_API  OpenGLContext : public GPUContext {
-    public:
+    class DH_API OpenGLContext : public GPUContext
+    {
+      public:
         OpenGLContext(uint32_t major, uint32_t minor);
+        OpenGLContext(const OpenGLContext&) = delete;
+        OpenGLContext(OpenGLContext&&) noexcept = delete;
+
         void InitOpenGLFunctionBindings();
 
         virtual GraphicsAPI GetContextAPI() const override { return GraphicsAPI::OpenGL; }
+        virtual void* GetDevice() override { return nullptr; }
 
         uint32_t GetMajorVersion() const { return mMajorVersion; }
         uint32_t GetMinorVersion() const { return mMinorVersion; }
@@ -26,13 +32,13 @@ namespace DH {
         void UpdateBindings();
         void DeleteBinding(GLenum target);
         void RegisterBind(GLenum target, GLuint id);
-        //Returns whether the OpenGL object was already bound to the context
+        // Returns whether the OpenGL object was already bound to the context
         bool BindToContext(GLenum target, GLuint id);
         GLuint GetBinding(GLenum target);
 
         void Reset() override;
 
-        void Clear(const glm::vec4 &clearColour) override;
+        void Clear(const glm::vec4& clearColour) override;
 
         std::string GetVersionStr() override;
         std::string GetVendorStr() override;
@@ -43,13 +49,13 @@ namespace DH {
         void SetPolygonMode(PolygonMode mode) override;
         void SetBlending(bool activate, Blending mode) override;
 
-        void SetViewport(const glm::ivec4 &bounds) override;
+        void SetViewport(const glm::ivec4& bounds) override;
 
         void ActivateDefaultFramebuffer() override;
 
         void DestroyContext() override;
 
-    private:
+      private:
         std::unordered_map<GLenum, GLuint> bindings;
 
         uint32_t mMajorVersion, mMinorVersion;

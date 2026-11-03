@@ -194,6 +194,14 @@ namespace DH
     }
 
     //
+    Dimension2D GLFWDisplayBase::GetFramebufferSize() const
+    {
+        int width = 0, height = 0;
+        glfwGetFramebufferSize(mWindow, &width, &height);
+        return { (size_t)width, (size_t)height };
+    }
+
+    //
     void GLFWDisplayBase::SetSize(size_t width, size_t height)
     {
         glfwSetWindowSize(mWindow, (int)width, (int)height);

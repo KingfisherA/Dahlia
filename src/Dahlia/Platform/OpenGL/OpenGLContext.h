@@ -1,17 +1,19 @@
 #pragma once
 
-#include <unordered_map>
+#include <cstdint>
 
 #include "Dahlia/Dahlia-API.h"
 #include "Dahlia/Platform/GPUContext.h"
 
 namespace DH
 {
-    using GLid = unsigned int;
     using GLenum = unsigned int;
     using GLuint = unsigned int;
     using GLint = int;
 
+    // Targets OpenGL 4.1 core, the highest version available on macOS. Do not use DSA (4.5),
+    // layout(binding) (4.2), glTexStorage (4.2), vertex attrib binding (4.3), compute/SSBOs (4.3)
+    // or KHR_debug (4.3) anywhere in the OpenGL backend.
     class DH_API OpenGLContext : public GPUContext
     {
       public:
@@ -19,45 +21,33 @@ namespace DH
         OpenGLContext(const OpenGLContext&) = delete;
         OpenGLContext(OpenGLContext&&) noexcept = delete;
 
+        // Called by OpenGLDisplay once the GL context is current
         void InitOpenGLFunctionBindings();
 
-        virtual GraphicsAPI GetContextAPI() const override { return GraphicsAPI::OpenGL; }
-        virtual void* GetDevice() override { return nullptr; }
+        [[nodiscard]] GraphicsAPI GetContextAPI() const override { return GraphicsAPI::OpenGL; }
+        [[nodiscard]] void* GetNativeDevice() override { return nullptr; }
+        [[nodiscard]] const GPULimits& GetLimits() const override { return mLimits; }
 
-        uint32_t GetMajorVersion() const { return mMajorVersion; }
-        uint32_t GetMinorVersion() const { return mMinorVersion; }
-
-        void ClearBindings();
-        void ResetBindings();
-        void UpdateBindings();
-        void DeleteBinding(GLenum target);
-        void RegisterBind(GLenum target, GLuint id);
-        // Returns whether the OpenGL object was already bound to the context
-        bool BindToContext(GLenum target, GLuint id);
-        GLuint GetBinding(GLenum target);
-
-        void Reset() override;
-
-        void Clear(const glm::vec4& clearColour) override;
+        void WaitIdle() override;
 
         std::string GetVersionStr() override;
         std::string GetVendorStr() override;
         std::string GetShadingVersionStr() override;
 
-        void SetFaceCulling(bool activate) override;
-        void SetDepthTest(bool activate) override;
-        void SetPolygonMode(PolygonMode mode) override;
-        void SetBlending(bool activate, Blending mode) override;
-
-        void SetViewport(const glm::ivec4& bounds) override;
-
-        void ActivateDefaultFramebuffer() override;
-
         void DestroyContext() override;
 
-      private:
-        std::unordered_map<GLenum, GLuint> bindings;
+        [[nodiscard]] uint32_t GetMajorVersion() const { return mMajorVersion; }
+        [[nodiscard]] uint32_t GetMinorVersion() const { return mMinorVersion; }
 
+        // Uniform buffer that emulates Vulkan push constants (MAX_PUSH_CONSTANT_SIZE bytes)
+        [[nodiscard]] GLuint GetPushConstantBuffer() const { return mPushConstantBuffer; }
+
+      private:
         uint32_t mMajorVersion, mMinorVersion;
+        GPULimits mLimits;
+        GLuint mPushConstantBuffer = 0;
     };
+
+    // Drains glGetError and reports each error with `where`. Compiled out in release builds.
+    void CheckGLErrors(const char* where);
 }

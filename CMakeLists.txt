@@ -30,6 +30,23 @@ set(DH_LIB_DIR ${DH_DIR}/Libraries)
 add_subdirectory(${DH_DIR}/Libraries/ImGui_Build)
 set(IMGUI_DIR ${DH_LIB_DIR}/ImGui)
 
+# SPIRV-Cross: translates SPIR-V shaders to GLSL 410 (OpenGL) and MSL (Metal) at runtime.
+# Built static and position independent so it can be linked into the Dahlia shared library.
+set(SPIRV_CROSS_CLI OFF CACHE BOOL "" FORCE)
+set(SPIRV_CROSS_ENABLE_TESTS OFF CACHE BOOL "" FORCE)
+set(SPIRV_CROSS_ENABLE_GLSL ON CACHE BOOL "" FORCE)
+set(SPIRV_CROSS_ENABLE_MSL ON CACHE BOOL "" FORCE)
+set(SPIRV_CROSS_ENABLE_HLSL OFF CACHE BOOL "" FORCE)
+set(SPIRV_CROSS_ENABLE_CPP OFF CACHE BOOL "" FORCE)
+set(SPIRV_CROSS_ENABLE_REFLECT OFF CACHE BOOL "" FORCE)
+set(SPIRV_CROSS_ENABLE_C_API OFF CACHE BOOL "" FORCE)
+set(SPIRV_CROSS_ENABLE_UTIL OFF CACHE BOOL "" FORCE)
+set(SPIRV_CROSS_SHARED OFF CACHE BOOL "" FORCE)
+set(SPIRV_CROSS_STATIC ON CACHE BOOL "" FORCE)
+set(SPIRV_CROSS_SKIP_INSTALL ON CACHE BOOL "" FORCE)
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+add_subdirectory(${DH_LIB_DIR}/SPIRV-Cross EXCLUDE_FROM_ALL)
+
 find_package(Boost CONFIG REQUIRED COMPONENTS filesystem)
 find_package(glfw3 CONFIG REQUIRED)
 find_package(glm CONFIG REQUIRED)
@@ -48,7 +65,8 @@ if(NOT ${Freetype_FOUND})
     message(NOTICE "Found Freetype with Find.cmake")
 endif()
 
-include(Projects/DahliaTools.cmake)  
+include(Projects/DahliaTools.cmake)
+include(Projects/DahliaShaders.cmake)
 include(Projects/Dahlia.cmake)
 include(Projects/DahliaInfo.cmake)
 

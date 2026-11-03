@@ -1,77 +1,51 @@
-// Metal Buffer.cpp
-
-#include "MetalBuffer.h"
-#include "Dahlia/Platform/GPUContext.h"
-#include "Dahlia/Platform/Metal/MetalContext.h"
-#include "Metal/MTLBuffer.hpp"
-#include "Metal/MTLResource.hpp"
-#include <cstddef>
+#include <algorithm>
 #include <cstring>
 #include <stdexcept>
 
-#include <Metal/Metal.hpp>
+#include "Dahlia/Platform/Metal/MetalBuffer.h"
+#include "Dahlia/Platform/Metal/MetalCommon.h"
+#include "Dahlia/Platform/Metal/MetalContext.h"
 
 namespace DH
 {
-    MTL::ResourceOptions ToMTLResourceStorageMode(BufferStorageMode mode)
+    MetalBuffer::MetalBuffer(const BufferDesc& desc, const void* initialData)
+      : mDesc(desc)
     {
-        switch (mode)
-        {
-            case BufferStorageMode::Shared:
-                return MTL::ResourceStorageModeShared;
-        }
+        Allocate(initialData);
     }
-    //
-    MetalBuffer::MetalBuffer(GPUContext* ctx)
-    {
-        if (ctx->GetContextAPI() != GraphicsAPI::Metal)
-            throw std::runtime_error("a");
 
-        MetalGPUContext* mtlCtx = reinterpret_cast<MetalGPUContext*>(ctx);
-        mDevice = mtlCtx->GetMetalDevice();
-    }
-    //
     MetalBuffer::~MetalBuffer()
     {
-        Destroy();
-    }
-    //
-    void MetalBuffer::Store(const void* data, std::size_t length, BufferStorageMode mode)
-    {
-        if (mtlBuffer != nullptr)
-            mtlBuffer->release();
-        mtlBuffer = mDevice->newBuffer(data, length, ToMTLResourceStorageMode(mode));
-        mBufferSize = length;
-    }
-    //
-    void MetalBuffer::Update(const void* data, std::size_t length, std::size_t offset)
-    {
-        if (length + offset > mBufferSize)
-            throw std::runtime_error("Update would exceed length of metal buffer. Resize first");
-        memcpy(reinterpret_cast<char*>(mtlBuffer->contents()) + offset, data, length);
-    }
-    //
-    void MetalBuffer::Resize(std::size_t length, BufferStorageMode mode)
-    {
-        if (mtlBuffer == nullptr)
-            throw std::runtime_error("Cannot resize a null metal buffer");
-
-        MTL::Buffer* newBuffer = mDevice->newBuffer(length, ToMTLResourceStorageMode(mode));
-
-        if (length >= mBufferSize)
-            memcpy(newBuffer->contents(), mtlBuffer->contents(), mBufferSize);
-
-        mtlBuffer->release();
-        mtlBuffer = newBuffer;
-        mBufferSize = length;
-    }
-    //
-    void MetalBuffer::Destroy()
-    {
-        if (mtlBuffer)
-            mtlBuffer->release();
-        mtlBuffer = nullptr;
-        mBufferSize = 0;
+        if (mBuffer != nullptr)
+            mBuffer->release();
     }
 
+    void MetalBuffer::Allocate(const void* data)
+    {
+        MTL::Device* device = GPUContext::Get<MetalGPUContext>()->GetMetalDevice();
+        const size_t size = std::max<size_t>(mDesc.size, 4);
+        const MTL::ResourceOptions options = MTLConv::CPUWriteStorage(device);
+
+        mBuffer = data != nullptr ? device->newBuffer(data, size, options)
+                                  : device->newBuffer(size, options);
+    }
+
+    void MetalBuffer::Update(const void* data, size_t size, size_t offset)
+    {
+        if (offset + size > mDesc.size)
+            throw std::out_of_range("MetalBuffer::Update writes past the end of the buffer");
+
+        // Frames in flight may still read this memory
+        GPUContext::Get<MetalGPUContext>()->WaitIdle();
+        std::memcpy(static_cast<uint8_t*>(mBuffer->contents()) + offset, data, size);
+        if (mBuffer->storageMode() == MTL::StorageModeManaged)
+            mBuffer->didModifyRange(NS::Range::Make(offset, size));
+    }
+
+    void MetalBuffer::Resize(size_t newSize, const void* data)
+    {
+        mBuffer->release();
+        mDesc.size = newSize;
+        Allocate(data);
+    }
 }

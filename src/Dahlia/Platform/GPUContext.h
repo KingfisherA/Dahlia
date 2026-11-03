@@ -1,52 +1,56 @@
 #pragma once
 
-#include <glm/vec4.hpp>
+#include <cstdint>
 #include <string>
 
 #include "Dahlia/Dahlia-API.h"
 
 namespace DH
 {
-    DH_API enum class GraphicsAPI { OpenGL = 0, Metal = 2 };
+    DH_API enum class GraphicsAPI { OpenGL = 0, Vulkan = 1, Metal = 2 };
 
+    struct DH_API GPULimits
+    {
+        uint32_t maxTextureSize = 0;
+        uint32_t maxColourAttachments = 0;
+        uint32_t maxBindGroups = 4;
+        uint32_t maxPushConstantSize = 128;
+
+        // True if row 0 of a rendered texture is the bottom of the image (OpenGL). Flip V when
+        // displaying render target textures (e.g. with ImGui::Image).
+        bool textureOriginBottomLeft = false;
+    };
+
+    // The device. Owns API level state (instance/device/queues, or the GL context) but no render
+    // state: fixed function state lives in GraphicsPipeline objects and drawing goes through a
+    // CommandList obtained from Display::BeginFrame.
     class DH_API GPUContext
     {
       public:
         GPUContext();
         virtual ~GPUContext() = default;
 
-        DH_API enum class PolygonMode { Solid = 0, Lines, Points };
-
-        DH_API enum class Blending { Alpha = 0, Additive };
-
         static GPUContext* Create(const GraphicsAPI api, uint32_t major, uint32_t minor);
 
         template<typename T = GPUContext>
         static T* Get()
         {
-            return reinterpret_cast<T*>(sCurrentContext);
+            return static_cast<T*>(sCurrentContext);
         }
         static GraphicsAPI GetAPI() { return sCurrentContext->GetContextAPI(); }
 
-        virtual GraphicsAPI GetContextAPI() const = 0;
-        virtual void Reset() = 0;
+        [[nodiscard]] virtual GraphicsAPI GetContextAPI() const = 0;
 
-        virtual void* GetDevice() = 0;
+        // OpenGL: nullptr, Vulkan: VkDevice, Metal: MTL::Device*
+        [[nodiscard]] virtual void* GetNativeDevice() = 0;
+        [[nodiscard]] virtual const GPULimits& GetLimits() const = 0;
 
-        virtual void Clear(const glm::vec4& clearColour) = 0;
+        // Block until the GPU has finished all submitted work
+        virtual void WaitIdle() = 0;
 
         virtual std::string GetVersionStr() = 0;
         virtual std::string GetVendorStr() = 0;
         virtual std::string GetShadingVersionStr() = 0;
-
-        virtual void SetFaceCulling(bool activate) = 0;
-        virtual void SetDepthTest(bool activate) = 0;
-        virtual void SetPolygonMode(const PolygonMode mode) = 0;
-        virtual void SetBlending(bool activate, const Blending mode = Blending::Alpha) = 0;
-
-        virtual void SetViewport(const glm::ivec4& bounds) = 0;
-
-        virtual void ActivateDefaultFramebuffer() = 0;
 
         virtual void DestroyContext() = 0;
 

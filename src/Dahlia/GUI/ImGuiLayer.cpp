@@ -1,14 +1,8 @@
 #include "Dahlia/GUI/ImGuiLayer.h"
 
-#ifndef  IMGUI_IMPL_API
-    #define IMGUI_IMPL_API
-#endif
-#define IMGUI_IMPL_OPENGL_LOADER_GLEW
-#include "backends/imgui_impl_opengl3.h"
-#include "backends/imgui_impl_glfw.h"
-
-#include<GLFW/glfw3.h>
 #include <ImGui/imgui.h>
+
+#include "Dahlia/GUI/ImGuiRenderer.h"
 
 #include "Dahlia/Events/MouseEvents.h"
 #include "Dahlia/GUI/Display.h"
@@ -26,6 +20,8 @@ namespace DH {
                                                                            mDisplay(mainDisplay),
                                                                            mFont(font) {
     }
+
+    ImGuiLayer::~ImGuiLayer() = default;
 
     void ImGuiLayer::OnInit() {
         // Setup Dear ImGui context
@@ -88,19 +84,15 @@ namespace DH {
 
         this->SetDarkThemeColors();
 
-        GLFWwindow *window = static_cast<GLFWwindow *>(mDisplay->GetAPIDisplay());
-
-        // Setup Platform/Renderer bindings
-        ImGui_ImplGlfw_InitForOpenGL(window, true);
-        ImGui_ImplOpenGL3_Init("#version 410");
+        // Setup Platform/Renderer bindings for the active graphics API
+        mRenderer = ImGuiRenderer::Create(*mDisplay);
     }
 
     void ImGuiLayer::OnDestroy() {
         ImGui::SetCurrentContext(mContext.ctx);
         ImGui::SetAllocatorFunctions(mContext.allocFunc, mContext.freeFunc, mContext.userData);
 
-        ImGui_ImplOpenGL3_Shutdown();
-        ImGui_ImplGlfw_Shutdown();
+        mRenderer.reset();
         ImGui::DestroyContext();
     }
 
@@ -163,15 +155,14 @@ namespace DH {
         }
     }
 
-    void ImGuiLayer::Begin() {
-        ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
+    void ImGuiLayer::Begin(CommandList &cmd) {
+        mRenderer->NewFrame(cmd);
         ImGui::NewFrame();
 
         RenderDockspace();
     }
 
-    void ImGuiLayer::End() {
+    void ImGuiLayer::End(CommandList &cmd) {
         ImGui::End();
 
         ImGuiIO &io = (ImGuiIO &) ImGui::GetIO();
@@ -179,14 +170,10 @@ namespace DH {
 
         // Rendering
         ImGui::Render();
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+        mRenderer->Render(ImGui::GetDrawData(), cmd);
 
-        if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable) {
-            GLFWwindow *backup_current_context = glfwGetCurrentContext();
-            ImGui::UpdatePlatformWindows();
-            ImGui::RenderPlatformWindowsDefault();
-            glfwMakeContextCurrent(backup_current_context);
-        }
+        if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+            mRenderer->RenderPlatformWindows();
     }
 
     void ImGuiLayer::SetDarkThemeColors() {

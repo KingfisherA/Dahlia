@@ -1,8 +1,9 @@
 #include "Dahlia/Application/GraphicsApp.h"
-#include "Dahlia/Platform/OpenGL/OpenGLContext.h"
 #include "Dahlia/Platform/GPUContext.h"
 
-#include "Dahlia/3D/Framebuffer.h"
+#include "Dahlia/Graphics/CommandList.h"
+#include "Dahlia/Graphics/Framebuffer.h"
+#include "Dahlia/Graphics/Texture.h"
 #include "Dahlia/GUI/Display.h"
 #include "Dahlia/GUI/ImGuiLayer.h"
 #include "Dahlia/GUI/Text.h"
@@ -45,14 +46,20 @@ namespace DH {
                 mVersionStr.insert(0, "OpenGL ");
                 mShadingLanguageStr.insert(0, "GLSL ");
                 break;
+            case GraphicsAPI::Vulkan:
+                mVersionStr.insert(0, "Vulkan ");
+                break;
+            case GraphicsAPI::Metal:
+                mVersionStr.insert(0, "Metal ");
+                break;
+            default:
+                break;
         }
 
         m_ImGuiLayer = new ImGuiLayer(mWindow.get(), mFont);
         PushOverlay(m_ImGuiLayer);
 
         mViewportFramebuffer = Framebuffer::Create(mInitParams->viewportSpec);
-        mViewportFramebuffer->Clear({0.0f, 0.0f, 0.0f, 1.0f});
-        ctx->ActivateDefaultFramebuffer();
 
         mInitParams.reset();
         return this->OnInit();
@@ -78,20 +85,27 @@ namespace DH {
                 mLastViewportSize = mViewPortPanelSize;
             }
 
-            GPUContext::Get()->Reset();
-            OnRender();
-            GPUContext::Get()->ActivateDefaultFramebuffer();
+            if (CommandList *cmd = mWindow->BeginFrame()) {
+                OnRender(*cmd);
 
-            m_ImGuiLayer->Begin();
+                RenderPassDesc displayPass;
+                displayPass.clearColour = {0.0f, 0.0f, 0.0f, 1.0f};
+                cmd->BeginRenderPass(displayPass);
 
-            for (Layer *layer: mLayerStack)
-                layer->OnImGuiRender();
+                m_ImGuiLayer->Begin(*cmd);
 
-            if (mRenderViewport)
-                this->RenderViewport();
-            this->OnImGuiRender();
+                for (Layer *layer: mLayerStack)
+                    layer->OnImGuiRender();
 
-            m_ImGuiLayer->End();
+                if (mRenderViewport)
+                    this->RenderViewport();
+                this->OnImGuiRender();
+
+                m_ImGuiLayer->End(*cmd);
+
+                cmd->EndRenderPass();
+                mWindow->EndFrame();
+            }
 
             mWindow->Refresh();
         }
@@ -104,6 +118,10 @@ namespace DH {
             layer->OnDestroy();
         }
 
+        // GPU resources and the display (swapchain/surface) must go before the device
+        GPUContext::Get()->WaitIdle();
+        mViewportFramebuffer.reset();
+        mWindow.reset();
         GPUContext::Get()->DestroyContext();
     }
 
@@ -113,9 +131,11 @@ namespace DH {
         if (ImGui::Begin(mViewportName.c_str(), nullptr)) {
             mIsViewportFocused = ImGui::IsWindowFocused();
             mViewPortPanelSize = ImGui::GetContentRegionAvail();
-            ImGui::Image((ImTextureID) (intptr_t) mViewportFramebuffer->QueryTextureAttachment(0)->GetRendererID(),
+            // Render target textures are stored bottom-up on OpenGL, so flip V there
+            const bool flipV = GPUContext::Get()->GetLimits().textureOriginBottomLeft;
+            ImGui::Image((ImTextureID) mViewportFramebuffer->GetAttachmentTexture(0)->GetImGuiID(),
                          ImVec2{(float) mViewportFramebuffer->GetWidth(), (float) mViewportFramebuffer->GetHeight()},
-                         {0, 1}, {1, 0});
+                         {0, flipV ? 1.0f : 0.0f}, {1, flipV ? 0.0f : 1.0f});
         }
         ImGui::End();
         ImGui::PopStyleVar();
@@ -154,8 +174,7 @@ namespace DH {
     }
 
     bool GraphicsApp::OnWindowResized(WindowResizeEvent &e) {
-        GPUContext::Get()->SetViewport({0, 0, e.GetWidth(), e.GetHeight()});
-
+        // The display render pass sizes its viewport from the back buffer each frame
         return true;
     }
 

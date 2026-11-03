@@ -13,8 +13,11 @@ namespace ImGui {
 }
 
 namespace DH {
+    class CommandList;
+
     class Display;
     class Font;
+    class ImGuiRenderer;
 
     class DH_API  ImGuiLayer : public Layer {
     public:
@@ -33,7 +36,7 @@ namespace DH {
         };
 
         ImGuiLayer(const Display *mainDisplay, const Font &font);
-        ~ImGuiLayer() override = default;
+        ~ImGuiLayer() override;
 
         void OnInit() override;
         void OnDestroy() override;
@@ -46,8 +49,10 @@ namespace DH {
 
         [[nodiscard]] Context &GetContext() { return mContext; }
 
-        void Begin();
-        void End();
+        // Begin/End bracket the ImGui frame. Both must be called inside the display render pass;
+        // the OpenGL renderer draws directly, Vulkan/Metal record into `cmd`.
+        void Begin(CommandList &cmd);
+        void End(CommandList &cmd);
 
     private:
         void SetDarkThemeColors();
@@ -56,5 +61,6 @@ namespace DH {
         Context mContext;
 
         const Display *mDisplay;
+        uRef<ImGuiRenderer> mRenderer;
     };
 }

@@ -1,15 +1,22 @@
 #pragma once
 
+#include <functional>
+
+#include "Dahlia/Dahlia-API.h"
 #include "Dahlia/Platform/GPUContext.h"
 
 namespace MTL
 {
     class Device;
+    class CommandQueue;
+    class CommandBuffer;
+    class BlitCommandEncoder;
 }
 
 namespace DH
 {
-    //
+    // Metal retains every resource a command buffer references, so resources can be released at
+    // any time without deferred destruction.
     class DH_API MetalGPUContext : public GPUContext
     {
       public:
@@ -17,31 +24,32 @@ namespace DH
         MetalGPUContext(const MetalGPUContext&) = delete;
         MetalGPUContext(MetalGPUContext&&) noexcept = delete;
 
-        virtual GraphicsAPI GetContextAPI() const override { return GraphicsAPI::Metal; }
-        virtual void Reset() override {}
+        [[nodiscard]] GraphicsAPI GetContextAPI() const override { return GraphicsAPI::Metal; }
 
-        virtual void* GetDevice() override { return reinterpret_cast<void*>(mtlDevice); }
-        MTL::Device* GetMetalDevice() { return mtlDevice; }
+        [[nodiscard]] void* GetNativeDevice() override { return reinterpret_cast<void*>(mDevice); }
+        [[nodiscard]] MTL::Device* GetMetalDevice() const { return mDevice; }
+        [[nodiscard]] MTL::CommandQueue* GetCommandQueue() const { return mQueue; }
+        [[nodiscard]] const GPULimits& GetLimits() const override { return mLimits; }
 
-        virtual void Clear(const glm::vec4& clearColour) override;
+        // Waits for the most recently committed command buffer (and so all earlier ones)
+        void WaitIdle() override;
 
-        virtual std::string GetVersionStr() override { return {}; }
-        virtual std::string GetVendorStr() override { return {}; }
-        virtual std::string GetShadingVersionStr() override { return {}; }
+        std::string GetVersionStr() override;
+        std::string GetVendorStr() override;
+        std::string GetShadingVersionStr() override;
 
-        virtual void SetFaceCulling(bool activate) override {}
-        virtual void SetDepthTest(bool activate) override {}
-        virtual void SetPolygonMode(const PolygonMode mode) override {}
-        virtual void SetBlending(bool activate, const Blending mode = Blending::Alpha) override {}
+        void DestroyContext() override;
 
-        virtual void SetViewport(const glm::ivec4& bounds) override {}
+        // Called by the display when a frame's command buffer is committed
+        void SetLastCommandBuffer(MTL::CommandBuffer* commandBuffer);
 
-        virtual void ActivateDefaultFramebuffer() override {}
-
-        virtual void DestroyContext() override;
+        // Encodes blit work in a one-off command buffer and waits for it to finish
+        void SubmitBlit(const std::function<void(MTL::BlitCommandEncoder*)>& encode);
 
       private:
-        MTL::Device* mtlDevice = nullptr;
+        MTL::Device* mDevice = nullptr;
+        MTL::CommandQueue* mQueue = nullptr;
+        MTL::CommandBuffer* mLastCommandBuffer = nullptr;
+        GPULimits mLimits;
     };
-    //
-} // namespace DH
+}

@@ -1,8 +1,6 @@
 ﻿add_executable("DahliaInfo"
   "${DH_SRC_DIR}/DahliaInfo/Application.cpp"
   "${DH_SRC_DIR}/DahliaInfo/Application.h"
-  "${DH_SRC_DIR}/DahliaInfo/MetalApp.h"
-  "${DH_SRC_DIR}/DahliaInfo/MetalApp.cpp"
 )
 
 add_dependencies("DahliaInfo"

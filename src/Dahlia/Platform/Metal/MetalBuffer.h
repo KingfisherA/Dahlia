@@ -1,39 +1,40 @@
 #pragma once
 
-#include <cstddef>
+#include "Dahlia/Dahlia-API.h"
+#include "Dahlia/Graphics/Buffer.h"
+
 namespace MTL
 {
-    class Device;
     class Buffer;
 }
 
 namespace DH
 {
-    class GPUContext;
-
-    enum class BufferStorageMode
-    {
-        Shared = 0
-    };
-
-    class MetalBuffer
+    // CPU writable buffer (shared storage on unified memory, managed otherwise) for both Static
+    // and Dynamic memory.
+    //
+    // Update/Resize wait for submitted GPU work to finish before writing. As with Vulkan, an
+    // Update made while a frame is being recorded is seen by the whole frame.
+    class DH_API MetalBuffer : public Buffer
     {
       public:
-        MetalBuffer(GPUContext* ctx);
-        ~MetalBuffer();
+        MetalBuffer(const BufferDesc& desc, const void* initialData);
+        MetalBuffer(const MetalBuffer&) = delete;
+        ~MetalBuffer() override;
 
-        void Store(const void* data, std::size_t length, BufferStorageMode mode);
-        void Update(const void* data, std::size_t length, std::size_t offset);
-        void Resize(std::size_t length, BufferStorageMode mode);
-        //
-        void Destroy();
+        void Update(const void* data, size_t size, size_t offset = 0) override;
+        void Resize(size_t newSize, const void* data = nullptr) override;
 
-        const std::size_t GetBufferSize() const { return mBufferSize; }
-        MTL::Buffer* GetMetalBuffer() { return mtlBuffer; }
+        [[nodiscard]] size_t GetSize() const override { return mDesc.size; }
+        [[nodiscard]] const BufferDesc& GetDesc() const override { return mDesc; }
+        [[nodiscard]] void* GetNativeHandle() const override { return mBuffer; }
+
+        [[nodiscard]] MTL::Buffer* GetMetalBuffer() const { return mBuffer; }
 
       private:
-        MTL::Device* mDevice = nullptr;
-        MTL::Buffer* mtlBuffer = nullptr;
-        std::size_t mBufferSize = 0;
+        void Allocate(const void* data);
+
+        BufferDesc mDesc;
+        MTL::Buffer* mBuffer = nullptr;
     };
 }

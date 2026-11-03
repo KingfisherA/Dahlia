@@ -3,19 +3,21 @@
 //
 
 #include "Dahlia/GUI/Text.h"
-#include "Dahlia/3D/VertexArray.h"
-#include "Dahlia/3D/Buffers.h"
-#include "Dahlia/3D/ShaderProgram.h"
+#include "Dahlia/Graphics/BindGroup.h"
+#include "Dahlia/Graphics/Buffer.h"
+#include "Dahlia/Graphics/CommandList.h"
+#include "Dahlia/Graphics/GraphicsPipeline.h"
+#include "Dahlia/Graphics/ShaderModule.h"
+#include "Dahlia/Graphics/Texture.h"
 #include "Dahlia/Maths/Geometry.h"
+#include "Dahlia/Resources/Resources.h"
 #include "Dahlia/Utilities/Assert.h"
-#include "Dahlia/3D/Texture.h"
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
 #include <glm/gtx/transform.hpp>
 
-#include "Dahlia/Platform/OpenGL/OpenGLShaderProgram.h"
 
 
 namespace DH {
@@ -195,80 +197,56 @@ namespace DH {
         return {width, height};
     }
 
-    sRef<ShaderProgram> Text::mShader = nullptr;
+    namespace {
+        struct TextPushConstants {
+            glm::mat4 pvMatrix;
+            float scaling;
+        };
 
-    constexpr const char *TEXT_SHADER_SOURCE = R"(#version 460
-
-#begin(vShader)
-
-layout(location = 0) in vec2 aVertex;
-layout(location = 1) in vec4 aGlyph;
-layout(location = 2) in vec2 aPosition;
-//
-uniform mat4 uPVMatrix;
-uniform float uTxtScaling = 1.0f;
-//
-out vec2 texCoords;
-
-void main()
-{
-    texCoords = ((aVertex + vec2(1.0f)) * 0.5f);
-
-    gl_Position = uPVMatrix * vec4((vec2(texCoords.x * aGlyph.x, texCoords.y * aGlyph.y) + aPosition) * uTxtScaling, -1.0f, 1.0f);
-    texCoords = vec2(texCoords.x * aGlyph.x, texCoords.y * aGlyph.y) + aGlyph.zw;
-}
-
-#end(vShader)
-#begin(fShader)
-
-in vec2 texCoords;
-//
-uniform sampler2D uFontAtlas;
-//
-out vec4 fragColour;
-
-const float glyphWidth = 0.5f;
-const float glyphEdge = 0.1f;
-
-void SignedDistance()
-{
-    float glyphDistance = texture(uFontAtlas, texCoords).r;
-    fragColour = vec4(1.0f);
-    fragColour.a = smoothstep(glyphWidth, glyphWidth + glyphEdge, glyphDistance);
-}
-
-void Bitmap()
-{
-    fragColour = vec4(1.0f);
-    fragColour.a = texture(uFontAtlas, texCoords).r;
-}
-
-void main()
-{
-    Bitmap();
-}
-
-#end(fShader))";
-
-    Text::Text() {
-        if (mShader == nullptr) {
-            mShader = ShaderProgram::Create(TEXT_SHADER_SOURCE);
-            mShader->UploadI("uFontAtlas", 0);
-        }
-
-        mTextVA = VertexArray::Create(Mesh_F32::RemoveIndexing(Geometry::CreateQuad()));
-        mTextBuffer = VertexBuffer::Create(BufferUsage::DynamicUpdate);
-        mTextVA->AddVertexBuffer(mTextBuffer, {4, 6, 0, 1});
-        mTextVA->AddVertexBuffer(mTextBuffer, {2, 6, 4, 1});
+        // Per instance glyph data written by LayoutText: vec4 glyph (size.xy, atlas offset.zw)
+        // followed by vec2 position
+        constexpr uint32_t GLYPH_FLOATS = 6;
+        constexpr uint32_t QUAD_BINDING = 0;
+        constexpr uint32_t GLYPH_BINDING = 1;
     }
 
-    Text::~Text() {
-        mShader.reset();
-        mTextVA.reset();
+    Text::Text(const RenderTargetLayout &targetLayout) {
+        const Mesh_F32 quad = Mesh_F32::RemoveIndexing(Geometry::CreateQuad());
+        mQuadVertexCount = (uint32_t) (quad.GetVertexFloatCount() / quad.GetVertexSize());
+        mQuadBuffer = Buffer::Create({quad.GetVertexFloatCount() * sizeof(float), BufferUsage::Vertex},
+                                     quad.GetVertexArray().data());
+
+        mAtlasSampler = Sampler::Create({Filter::Linear, Filter::Linear});
+        mAtlasLayout = BindGroupLayout::Create({
+            {0, ShaderResourceType::CombinedTextureSampler, ShaderStage::Fragment}
+        });
+
+        GraphicsPipelineDesc desc;
+        desc.vertexShader = ShaderModule::Create(ShaderStage::Vertex, Res::ShaderSources::GetTextVert());
+        desc.fragmentShader = ShaderModule::Create(ShaderStage::Fragment, Res::ShaderSources::GetTextFrag());
+        desc.vertexBindings = {
+            {QUAD_BINDING, quad.GetVertexSize() * (uint32_t) sizeof(float), false},
+            {GLYPH_BINDING, GLYPH_FLOATS * sizeof(float), true},
+        };
+        desc.vertexAttributes = {
+            {0, QUAD_BINDING, Format::RG32F, 0},
+            {1, GLYPH_BINDING, Format::RGBA32F, 0},
+            {2, GLYPH_BINDING, Format::RG32F, 4 * sizeof(float)},
+        };
+        desc.depth.testEnabled = false;
+        desc.depth.writeEnabled = false;
+        desc.blend = BlendPreset::Alpha;
+        desc.targetLayout = targetLayout;
+        desc.bindGroupLayouts = {mAtlasLayout};
+        desc.pushConstantSize = sizeof(TextPushConstants);
+
+        mPipeline = GraphicsPipeline::Create(desc);
     }
 
-    sRef<Text> Text::Create() {
-        return std::make_shared<Text>();
+    Text::~Text() = default;
+
+    sRef<Text> Text::Create(const RenderTargetLayout &targetLayout) {
+        return std::make_shared<Text>(targetLayout);
     }
 
     void Text::AddText(const std::string_view text, const TextLayoutInfo &layoutInfo) {
@@ -322,28 +300,35 @@ void main()
             }
         }
 
-        mNoOfGlyphs = k / 6;
+        mNoOfGlyphs = k / GLYPH_FLOATS;
 
-        mTextBuffer->StoreData(packedData, k);
+        const size_t byteSize = k * sizeof(float);
+        if (byteSize > 0) {
+            if (!mGlyphBuffer)
+                mGlyphBuffer = Buffer::Create({byteSize, BufferUsage::Vertex, BufferMemory::Dynamic}, packedData);
+            else if (mGlyphBuffer->GetSize() < byteSize)
+                mGlyphBuffer->Resize(byteSize, packedData);
+            else
+                mGlyphBuffer->Update(packedData, byteSize);
+        }
 
         delete[] packedData;
 
-        mFontAtlasTex = atlas.GetTexture();
+        mAtlasGroup = BindGroup::Create(mAtlasLayout, {
+                                            BindGroupEntry::TextureSampler(0, atlas.GetTexture(), mAtlasSampler)
+                                        });
     }
 
-    void Text::DrawText(const glm::mat4 &pvMatrix) const {
-        GPUContext *ctx = GPUContext::Get<GPUContext>();
-        ctx->SetBlending(true);
-        ctx->SetDepthTest(false);
+    void Text::DrawText(CommandList &cmd, const glm::mat4 &pvMatrix) const {
+        if (mNoOfGlyphs == 0 || !mAtlasGroup)
+            return;
 
-        mShader->Bind();
-        mShader->UploadMatF("uPVMatrix", pvMatrix);
-        mShader->UploadF("uTxtScaling", mScaling);
+        cmd.BindPipeline(*mPipeline);
+        cmd.BindVertexBuffer(QUAD_BINDING, *mQuadBuffer);
+        cmd.BindVertexBuffer(GLYPH_BINDING, *mGlyphBuffer);
+        cmd.BindGroup(0, *mAtlasGroup);
+        cmd.PushConstants(TextPushConstants{pvMatrix, mScaling});
 
-        mFontAtlasTex->Bind(0);
-
-        mTextVA->SubmitArrays(Primitive::Triangles, mNoOfGlyphs);
-
-        ctx->SetDepthTest(true);
+        cmd.Draw(mQuadVertexCount, (uint32_t) mNoOfGlyphs);
     }
 } // GEng

@@ -1,151 +1,59 @@
+// Engine shaders, compiled from Shaders/*.vert|frag to SPIR-V at build time by
+// Projects/DahliaShaders.cmake (glslc -mfmt=c emits each module as a C initializer list).
+
 #include "Resources.h"
 
-namespace DH::Res {
-        static const char * COLOUR_DIFFUSE_GLSL = R"(#version 410
-
-    #pragma remove
-    #include "GLSL Language Specification.h.glsl"
-    #pragma endremove
-
-    #begin(vShader)
-
-    layout(location = 0) in vec3 aVertex;
-    //
-    uniform mat4 uTransformMatrix;
-    uniform mat4 uPVMatrix;
-    //
-    out vec3 vNormal;
-
-    void main()
+namespace DH::Res
+{
+    namespace
     {
-        vec4 transformedV = uTransformMatrix * vec4(aVertex, 1.0f);
-        vNormal = normalize(transformedV.xyz);
-        gl_Position = uPVMatrix * transformedV;
+        constexpr uint32_t COLOUR_DIFFUSE_VERT[] =
+#include "ColourDiffuse.vert.inc"
+          ;
+        constexpr uint32_t COLOUR_DIFFUSE_FRAG[] =
+#include "ColourDiffuse.frag.inc"
+          ;
+        constexpr uint32_t SOLID_COLOUR_VERT[] =
+#include "SolidColour.vert.inc"
+          ;
+        constexpr uint32_t SOLID_COLOUR_FRAG[] =
+#include "SolidColour.frag.inc"
+          ;
+        constexpr uint32_t TEXT_VERT[] =
+#include "Text.vert.inc"
+          ;
+        constexpr uint32_t TEXT_FRAG[] =
+#include "Text.frag.inc"
+          ;
     }
 
-    #end(vShader)
-    #begin(fShader)
-
-    in vec3 vNormal;
-    //
-    out vec4 fragColour;
-
-    uniform vec3 uLightPos = vec3(10.0f, 10.0f, 10.0f);
-    uniform vec3 uColour = vec3(1.0f, 1.0f, 1.0f);
-    uniform float uOpacity = 1.0f;
-
-    void main()
+    std::span<const uint32_t> ShaderSources::GetColourDiffuseVert()
     {
-        vec3 unitLightVector = normalize(uLightPos);
-        float diffuseAmount = clamp(dot(unitLightVector, vNormal), 0.1f, 1.0f);
-
-        fragColour = vec4(uColour * diffuseAmount, uOpacity);
+        return COLOUR_DIFFUSE_VERT;
     }
-    #end(fShader))";
 
-         static const char *SOLID_COLOUR_GLSL = R"(#version 410
-
-    #pragma remove
-    #include "GLSL Language Specification.h.glsl"
-    #pragma endremove
-
-    #begin(vShader)
-
-    layout(location = 0) in vec2 aVertex;
-    //
-    uniform mat4 uTransformMatrix;
-    uniform mat4 uPVMatrix;
-    //
-
-    void main()
+    std::span<const uint32_t> ShaderSources::GetColourDiffuseFrag()
     {
-        gl_Position = uPVMatrix * uTransformMatrix * vec4(aVertex, 0.0f, 1.0f);
+        return COLOUR_DIFFUSE_FRAG;
     }
 
-    #end(vShader)
-    #begin(fShader)
-
-    //
-    out vec4 fragColour;
-
-    uniform vec3 uColour = vec3(1.0f, 1.0f, 1.0f);
-    uniform float uOpacity = 1.0f;
-
-    void main()
+    std::span<const uint32_t> ShaderSources::GetSolidColourVert()
     {
-        fragColour = vec4(uColour, uOpacity);
+        return SOLID_COLOUR_VERT;
     }
-    #end(fShader))";
 
-        static const char * TEXT_GLSL = R"(#version 410
-
-    #pragma remove
-    #include "GLSL Language Specification.h.glsl"
-    #pragma endremove
-
-    #begin(vShader)
-
-    layout(location = 0) in vec2 aVertex;
-    layout(location = 1) in vec4 aGlyph;
-    layout(location = 2) in vec2 aPosition;
-    //
-    uniform mat4 uPVMatrix;
-    // uniform vec4 uGlyph;
-    // uniform vec2 uPosition;
-    uniform float uTxtScaling = 1.0f;
-    //
-    out vec2 texCoords;
-
-    void main()
+    std::span<const uint32_t> ShaderSources::GetSolidColourFrag()
     {
-        texCoords = ((aVertex + vec2(1.0f)) * 0.5f);
-
-        // gl_Position = uPVMatrix * vec4(aVertex, 0.0f, 1.0f);
-        gl_Position = uPVMatrix * vec4((vec2(texCoords.x * aGlyph.x, texCoords.y * aGlyph.y) + aPosition) * uTxtScaling, 0.0f, 1.0f);
-        texCoords = vec2(texCoords.x * aGlyph.x, texCoords.y * aGlyph.y) + aGlyph.zw;
+        return SOLID_COLOUR_FRAG;
     }
 
-    #end(vShader)
-    #begin(fShader)
-
-    in vec2 texCoords;
-    //
-    uniform sampler2D uFontAtlas;
-    //
-    out vec4 fragColour;
-
-    const float glyphWidth = 0.5f;
-    const float glyphEdge = 0.1f;
-
-    void SignedDistance()
+    std::span<const uint32_t> ShaderSources::GetTextVert()
     {
-        float glyphDistance = texture(uFontAtlas, texCoords).r;
-        fragColour = vec4(1.0f);
-        fragColour.a = smoothstep(glyphWidth, glyphWidth + glyphEdge, glyphDistance);
+        return TEXT_VERT;
     }
 
-    void Bitmap()
+    std::span<const uint32_t> ShaderSources::GetTextFrag()
     {
-        fragColour = vec4(1.0f);
-        fragColour.a = texture(uFontAtlas, texCoords).r;
-    }
-
-    void main()
-    {
-        Bitmap();
-    }
-
-    #end(fShader))";
-
-    const char *ShaderSources::GetColourDiffuseGLSL() {
-        return COLOUR_DIFFUSE_GLSL;
-    }
-
-    const char *ShaderSources::GetSolidColourGLSL() {
-        return SOLID_COLOUR_GLSL;
-    }
-
-    const char *ShaderSources::GetTextGLSL() {
-        return TEXT_GLSL;
+        return TEXT_FRAG;
     }
 }

@@ -11,8 +11,10 @@
 #include "Dahlia/GUI/Text.h"
 
 namespace DH {
-    class VertexArray;
-    class ShaderProgram;
+    class BindGroup;
+    class Buffer;
+    class GraphicsPipeline;
+    class GPUMesh;
 }
 
 namespace DH::InfoApplication {
@@ -29,7 +31,7 @@ namespace DH::InfoApplication {
         DH::Camera3D &GetCamera() { return mCam; }
 
     protected:
-        virtual void OnRender() override;
+        virtual void OnRender(DH::CommandList &cmd) override;
         virtual void OnImGuiRender() override;
         virtual void OnViewportResize() override;
         virtual bool OnInit() override;
@@ -45,9 +47,13 @@ namespace DH::InfoApplication {
         DH::Camera3D mCam;
         glm::mat4 projectionMatrix{};
 
-        DH::GPUContext::PolygonMode mPolygonMode = DH::GPUContext::PolygonMode::Solid;
-        sRef<DH::VertexArray> mVAO;
-        sRef<DH::ShaderProgram> mShader;
+        DH::PolygonMode mPolygonMode = DH::PolygonMode::Solid;
+        sRef<DH::GPUMesh> mSurfaceMesh;
+        // Polygon mode is pipeline state, so wireframe is a second pipeline
+        sRef<DH::GraphicsPipeline> mSolidPipeline;
+        sRef<DH::GraphicsPipeline> mWireframePipeline;
+        sRef<DH::Buffer> mMaterialBuffer;
+        sRef<DH::BindGroup> mMaterialGroup;
 
         DH::FontManager mFontManager;
         sRef<DH::FontAtlas> mUbuntuLight;

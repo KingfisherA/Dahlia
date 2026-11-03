@@ -4,15 +4,20 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
+#include <glm/mat4x4.hpp>
 #include <glm/vec3.hpp>
 
-#include "Dahlia/3D/Texture.h"
+#include "Dahlia/Graphics/GraphicsTypes.h"
+#include "Dahlia/Graphics/Texture.h"
 #include "Dahlia/Utilities/Memory.h"
 
 namespace DH {
-    class VertexBuffer;
-    class VertexArray;
-    class ShaderProgram;
+    class Buffer;
+    class BindGroup;
+    class BindGroupLayout;
+    class CommandList;
+    class GraphicsPipeline;
+    class Sampler;
     class Texture2D;
 
     struct AtlasGlyphInfo {
@@ -126,17 +131,17 @@ namespace DH {
         FontAtlas() = default;
 
         explicit FontAtlas(const FontAtlasBitmap &bmp): mAtlasMap(bmp.GetAtlasMap()) {
-            mTexture = Texture2D::Create(bmp.GetDimensions(), bmp.GetBitmap(), PixelFormat::R);
+            mTexture = Texture2D::Create(bmp.GetDimensions(), bmp.GetBitmap(), Format::R8);
         }
 
         FontAtlas(const unsigned char *bitmap, Dimension2D dimensions, const FontAtlasMap &map)
             : mAtlasMap(map) {
-            mTexture = Texture2D::Create(dimensions, bitmap, PixelFormat::R);
+            mTexture = Texture2D::Create(dimensions, bitmap, Format::R8);
         }
 
         FontAtlas(move_construct_t, const unsigned char *bitmap, Dimension2D dimensions, FontAtlasMap &&map)
             : mAtlasMap(std::move(map)) {
-            mTexture = Texture2D::Create(dimensions, bitmap, PixelFormat::R);
+            mTexture = Texture2D::Create(dimensions, bitmap, Format::R8);
         }
 
         virtual const FontAtlasMap &GetAtlasMap() const override { return mAtlasMap; }
@@ -201,28 +206,34 @@ namespace DH {
         void* mFontLibrary = nullptr;
     };
 
+    // Draws laid out text as one instanced draw (one instance per glyph). Owns a pipeline built
+    // for the render target layout it is created with; draw it inside a render pass on a target
+    // with that layout.
     class DH_API Text {
     public:
-        Text();
+        explicit Text(const RenderTargetLayout &targetLayout);
         ~Text();
 
-        static sRef<Text> Create();
+        static sRef<Text> Create(const RenderTargetLayout &targetLayout);
 
         void SetScaling(const float scaling) { mScaling = scaling; }
         void AddText(const std::string_view text, const TextLayoutInfo &layoutInfo);
         void ClearText();
         void LayoutText(const FontAtlas &atlas);
-        void DrawText(const glm::mat4 &pvMatrix) const;
+        void DrawText(CommandList &cmd, const glm::mat4 &pvMatrix) const;
 
     private:
         std::vector<std::pair<std::string, TextLayoutInfo> > mTextStrings;
 
         size_t mNoOfGlyphs = 0;
+        uint32_t mQuadVertexCount = 0;
         float mScaling = 0.8f;
 
-        sRef<Texture2D> mFontAtlasTex;
-        sRef<VertexBuffer> mTextBuffer;
-        sRef<VertexArray> mTextVA;
-        static sRef<ShaderProgram> mShader;
+        sRef<Buffer> mQuadBuffer;
+        sRef<Buffer> mGlyphBuffer;
+        sRef<Sampler> mAtlasSampler;
+        sRef<BindGroupLayout> mAtlasLayout;
+        sRef<BindGroup> mAtlasGroup;
+        sRef<GraphicsPipeline> mPipeline;
     };
 }

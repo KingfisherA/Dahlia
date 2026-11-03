@@ -1,186 +1,110 @@
 #include <GL/glew.h>
-#include<GLFW/glfw3.h>
+#include <GLFW/glfw3.h>
 
+#include "Dahlia/Graphics/GraphicsPipeline.h"
 #include "Dahlia/Platform/OpenGL/OpenGLContext.h"
 #include "Dahlia/Utilities/Assert.h"
 
-#include<unordered_set>
-
-namespace DH {
-    static std::unordered_set<GLuint> gPreviousErrorId;
-
-    OpenGLContext::OpenGLContext(uint32_t major, uint32_t minor) : mMajorVersion(major), mMinorVersion(minor) {
-        if (glfwInit() != GLFW_TRUE)
-            throw std::runtime_error("Failed to initialize GLFW");
+namespace DH
+{
+    OpenGLContext::OpenGLContext(uint32_t major, uint32_t minor)
+      : mMajorVersion(major)
+      , mMinorVersion(minor)
+    {
+        // Vulkan/Metal render targets have their origin at the top left; OpenGL's is bottom left
+        mLimits.textureOriginBottomLeft = true;
     }
 
-    void OpenGLContext::InitOpenGLFunctionBindings() {
+    void OpenGLContext::InitOpenGLFunctionBindings()
+    {
+        glewExperimental = GL_TRUE;
         GLenum glewError = glewInit();
-        if (glewError != GLEW_OK) {
-            DH_FATAL(DH::OpenGLContext, (const char *) glewGetErrorString(glewError));
+        if (glewError != GLEW_OK)
+        {
+            DH_FATAL(DH::OpenGLContext, (const char*)glewGetErrorString(glewError));
             return;
         }
-
-        glEnable(GL_ALPHA);
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glEnable(GL_DEPTH_TEST);
-
-        glEnable(GL_DEBUG_OUTPUT);
-
-        if (mMajorVersion == 4 && mMinorVersion >= 3)
-            glDebugMessageCallback([](
-                               GLenum source,
-                               GLenum type,
-                               GLuint id,
-                               GLenum serverity,
-                               GLsizei length,
-                               const GLchar *message,
-                               const void *userParam) {
-                                       if (gPreviousErrorId.find(id) == gPreviousErrorId.end()) {
-                                           gPreviousErrorId.insert(id);
-                                           if (type == GL_DEBUG_TYPE_ERROR) {
-                                               DH_FATAL(OpenGL Error, message);
-                                           } else {
-                                               DH_LOG(Blue, OpenGL Information, message);
-                                           }
-                                       }
-                                   },
-                                   nullptr);
-
-        DH_LOG(Green, OpenGL GLEW API, "GLEW Intilised OK!");
-    }
-
-    void OpenGLContext::ClearBindings() {
-        bindings.clear();
-    }
-
-    void OpenGLContext::ResetBindings() {
-        for (auto &itPair: bindings) {
-            itPair.second = 0;
-        }
-    }
-
-    void OpenGLContext::UpdateBindings() {
-        for (auto &itPair: bindings) {
-            int binding = -1;
-            glGetIntegerv(itPair.first, &binding);
-            itPair.second = (GLuint) binding;
-        }
-    }
-
-    void OpenGLContext::DeleteBinding(GLenum target) {
-        bindings.erase(target);
-    }
-
-    void OpenGLContext::RegisterBind(GLenum target, GLuint id) {
-        bindings[target] = id;
-    }
-
-    bool OpenGLContext::BindToContext(GLenum target, GLuint id) {
-        auto it = bindings.find(target);
-        if (it == bindings.end()) {
-            bindings.insert({target, id});
-            return false;
+        // glewInit can raise a spurious GL_INVALID_ENUM on core profiles
+        while (glGetError() != GL_NO_ERROR)
+        {
         }
 
-        if (it->second == id)
-            return true;
+        GLint value = 0;
+        glGetIntegerv(GL_MAX_TEXTURE_SIZE, &value);
+        mLimits.maxTextureSize = (uint32_t)value;
+        glGetIntegerv(GL_MAX_COLOR_ATTACHMENTS, &value);
+        mLimits.maxColourAttachments = (uint32_t)value;
+        mLimits.maxBindGroups = MAX_BIND_GROUPS;
+        mLimits.maxPushConstantSize = MAX_PUSH_CONSTANT_SIZE;
 
-        it->second = id;
+        glGenBuffers(1, &mPushConstantBuffer);
+        glBindBuffer(GL_COPY_WRITE_BUFFER, mPushConstantBuffer);
+        glBufferData(GL_COPY_WRITE_BUFFER, MAX_PUSH_CONSTANT_SIZE, nullptr, GL_STREAM_DRAW);
+        glBindBuffer(GL_COPY_WRITE_BUFFER, 0);
 
-        return false;
+        CheckGLErrors("OpenGLContext::InitOpenGLFunctionBindings");
+        DH_LOG(Green, OpenGL GLEW API, "GLEW Initialised OK!");
     }
 
-    GLuint OpenGLContext::GetBinding(GLenum target) {
-        auto it = bindings.find(target);
-
-        if (it != bindings.end())
-            return it->second;
-
-        return 0;
+    void OpenGLContext::WaitIdle()
+    {
+        glFinish();
     }
 
-    void OpenGLContext::Reset() {
-        //ClearBindings();
-        ResetBindings();
+    std::string OpenGLContext::GetVersionStr()
+    {
+        return { (const char*)glGetString(GL_VERSION) };
     }
 
-    void OpenGLContext::Clear(const glm::vec4 &clearColour) {
-        glClearColor(clearColour.x, clearColour.y, clearColour.z, clearColour.w);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    std::string OpenGLContext::GetVendorStr()
+    {
+        return { (const char*)glGetString(GL_VENDOR) };
     }
 
-    std::string OpenGLContext::GetVersionStr() {
-        return {(const char *) glGetString(GL_VERSION)};
+    std::string OpenGLContext::GetShadingVersionStr()
+    {
+        return { (const char*)glGetString(GL_SHADING_LANGUAGE_VERSION) };
     }
 
-    std::string OpenGLContext::GetVendorStr() {
-        return {(const char *) glGetString(GL_VENDOR)};
-    }
+    void OpenGLContext::DestroyContext()
+    {
+        // The window (and with it the GL context) may already be destroyed, which frees every GL
+        // object; only delete explicitly while a context is still current
+        if (mPushConstantBuffer != 0 && glfwGetCurrentContext() != nullptr)
+            glDeleteBuffers(1, &mPushConstantBuffer);
+        mPushConstantBuffer = 0;
 
-    std::string OpenGLContext::GetShadingVersionStr() {
-        return {(const char *) glGetString(GL_SHADING_LANGUAGE_VERSION)};
-    }
-
-    void OpenGLContext::SetFaceCulling(bool activate) {
-        if (activate)
-            glEnable(GL_CULL_FACE);
-        else
-            glDisable(GL_CULL_FACE);
-    }
-
-    void OpenGLContext::SetDepthTest(bool activate) {
-        if (!activate)
-            glDisable(GL_DEPTH_TEST);
-
-        glEnable(GL_DEPTH_TEST);
-        glDepthFunc(GL_LESS);
-    }
-
-    void OpenGLContext::SetPolygonMode(const PolygonMode mode) {
-        glPolygonMode(GL_FRONT_AND_BACK, [mode]()-> GLenum {
-            switch (mode) {
-                case PolygonMode::Points:
-                    return GL_POINT;
-
-                case PolygonMode::Lines:
-                    return GL_LINE;
-
-                default:
-                case PolygonMode::Solid:
-                    return GL_FILL;
-            }
-        }());
-    }
-
-    void OpenGLContext::SetBlending(bool activate, const Blending mode) {
-        if (!activate)
-            glDisable(GL_BLEND);
-
-        glEnable(GL_BLEND);
-
-        switch (mode) {
-            case Blending::Alpha:
-                glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-                break;
-            case Blending::Additive:
-                glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-                break;
-        }
-    }
-
-    void OpenGLContext::SetViewport(const glm::ivec4 &bounds) {
-        glViewport(bounds.x, bounds.y, bounds.z, bounds.w);
-    }
-
-    void OpenGLContext::ActivateDefaultFramebuffer() {
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        OpenGLContext::RegisterBind(GL_FRAMEBUFFER_BINDING, 0);
-    }
-
-    void OpenGLContext::DestroyContext() {
         glfwTerminate();
         delete this;
+    }
+
+    void CheckGLErrors(const char* where)
+    {
+#ifdef CONFIG_DEBUG
+        for (GLenum error = glGetError(); error != GL_NO_ERROR; error = glGetError())
+        {
+            const char* name = [error]()
+            {
+                switch (error)
+                {
+                    case GL_INVALID_ENUM:
+                        return "GL_INVALID_ENUM";
+                    case GL_INVALID_VALUE:
+                        return "GL_INVALID_VALUE";
+                    case GL_INVALID_OPERATION:
+                        return "GL_INVALID_OPERATION";
+                    case GL_INVALID_FRAMEBUFFER_OPERATION:
+                        return "GL_INVALID_FRAMEBUFFER_OPERATION";
+                    case GL_OUT_OF_MEMORY:
+                        return "GL_OUT_OF_MEMORY";
+                    default:
+                        return "Unknown GL error";
+                }
+            }();
+            DH_FATAL(OpenGL Error, name << " in " << where);
+        }
+#else
+        (void)where;
+#endif
     }
 }

@@ -5,7 +5,7 @@
 #include "Dahlia/Dahlia-API.h"
 #include "Dahlia/Events/Events.h"
 #include "Dahlia/Utilities/Memory.h"
-#include "Dahlia/Platform/OpenGL/OpenGLContext.h"
+#include "Dahlia/Graphics/GraphicsTypes.h"
 
 
 namespace DH
@@ -28,15 +28,15 @@ namespace DH
 		virtual void OnImGuiRender() {}
 		virtual void OnEvent(Event &e) {}
 
-		void SetRenderStyle(const GPUContext::PolygonMode renderMode) { mPolygonMode = renderMode; }
-		[[nodiscard]] GPUContext::PolygonMode GetRenderStyle() const { return mPolygonMode; }
+		void SetRenderStyle(const PolygonMode renderMode) { mPolygonMode = renderMode; }
+		[[nodiscard]] PolygonMode GetRenderStyle() const { return mPolygonMode; }
 
 		virtual void Resize(unsigned int width, unsigned int height) {};
 
 		inline const std::string &GetName() const { return m_Name; }
 
 	protected:
-		GPUContext::PolygonMode mPolygonMode = GPUContext::PolygonMode::Solid;
+		PolygonMode mPolygonMode = PolygonMode::Solid;
 		std::string m_Name;
 	};
 }

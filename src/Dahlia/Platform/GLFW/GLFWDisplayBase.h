@@ -19,6 +19,7 @@ namespace DH {
         [[nodiscard]] size_t GetHeight() const override { return mHeight; }
         void SetSize(size_t width, size_t height) override;
         [[nodiscard]] glm::vec2 GetContentScaling() const override;
+        [[nodiscard]] Dimension2D GetFramebufferSize() const override;
 
         void BindEventCallback(const EventCallbackFnc &callback) override {
             mEventCallback = callback;

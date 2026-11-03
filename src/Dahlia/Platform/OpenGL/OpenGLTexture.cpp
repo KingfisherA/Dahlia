@@ -1,132 +1,108 @@
-#include <GL/glew.h>
-
-#include "Dahlia/Platform/OpenGL/OpenGLContext.h"
 #include "Dahlia/Platform/OpenGL/OpenGLTexture.h"
-#include "OpenGLShaderProgram.h"
+#include "Dahlia/Platform/OpenGL/OpenGLTypes.h"
 
-//
-//
+namespace DH
+{
+    // Texture uploads bind to GL_TEXTURE0. The OpenGL command list rebinds textures on every
+    // draw, so this does not need to be restored.
+    OpenGLTexture2D::OpenGLTexture2D(const Dimension2D& dimensions,
+                                     const byte* textureData,
+                                     Format format)
+      : mDimensions(dimensions)
+      , mFormat(format)
+      , mTarget(GL_TEXTURE_2D)
+    {
+        const GL::TextureFormat glFormat = GL::ToTextureFormat(format);
 
-namespace DH {
-    OpenGLTexture2D::OpenGLTexture2D(const Dimension2D &dimensions,
-                                     const byte *textureData, PixelFormat texFormat) : mImageDimensions(dimensions),
-        mPixelFormat(texFormat) {
-        CreateTexture(dimensions, textureData, texFormat);
-    }
-
-    OpenGLTexture2D::OpenGLTexture2D(GLenum texID, const Dimension2D &dimensions,
-                                     PixelFormat texFormat) : mTexID(texID),
-                                                              mImageDimensions(dimensions),
-                                                              mPixelFormat(texFormat) {
-    }
-
-#ifdef WIN32
-    OpenGLTexture2D::OpenGLTexture2D(const OpenGLTexture2D& tex) : mImageDimensions(tex.mImageDimensions),
-        mMipMapsGenerated(tex.mMipMapsGenerated),
-        mPixelFormat(tex.mPixelFormat),
-        mTexID(tex.mTexID),
-        mTexUnit(tex.mTexUnit){
-        const_cast<OpenGLTexture2D&>(tex).mTexID = 0;
-    }
-#endif
-
-    OpenGLTexture2D::OpenGLTexture2D(OpenGLTexture2D &&tex) noexcept : mImageDimensions(tex.mImageDimensions),
-                                                              mMipMapsGenerated(tex.mMipMapsGenerated),
-                                                              mPixelFormat(tex.mPixelFormat),
-                                                              mTexID(tex.mTexID),
-                                                              mTexUnit(tex.mTexUnit) {
-        tex.mTexID = 0;
-    }
-
-    void OpenGLTexture2D::CreateTexture(const Dimension2D &dimensions, const byte *textureData,
-                                        PixelFormat texFormat) {
-        if (mTexID != 0) {
-            glDeleteTextures(1, &mTexID);
-        }
-
-        glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
         glGenTextures(1, &mTexID);
-
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, mTexID);
-        glTexImage2D(GL_TEXTURE_2D, 0, FormatToGL(texFormat), dimensions.x, dimensions.y,
-                     0, FormatToGL(texFormat), GL_UNSIGNED_BYTE, (const void *) textureData);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+        glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+        glTexImage2D(GL_TEXTURE_2D,
+                     0,
+                     (GLint)glFormat.internalFormat,
+                     (GLsizei)dimensions.x,
+                     (GLsizei)dimensions.y,
+                     0,
+                     glFormat.pixelFormat,
+                     glFormat.pixelType,
+                     textureData);
+
+        // Defaults for when no sampler object is bound. Only the base level exists until
+        // GenerateMipMaps is called.
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
+
         glBindTexture(GL_TEXTURE_2D, 0);
-        GPUContext::Get<OpenGLContext>()->RegisterBind(GL_TEXTURE0, 0);
     }
 
-    OpenGLTexture2D::~OpenGLTexture2D() {
+    OpenGLTexture2D::OpenGLTexture2D(GLuint texID,
+                                     GLenum target,
+                                     const Dimension2D& dimensions,
+                                     Format format)
+      : mDimensions(dimensions)
+      , mFormat(format)
+      , mTexID(texID)
+      , mTarget(target)
+    {
+    }
+
+    OpenGLTexture2D::~OpenGLTexture2D()
+    {
         glDeleteTextures(1, &mTexID);
         mTexID = 0;
     }
 
-    void OpenGLTexture2D::Bind(unsigned short unit) {
-        if (!GPUContext::Get<OpenGLContext>()->BindToContext(GL_TEXTURE0 + unit, mTexID)) {
-            glActiveTexture(GL_TEXTURE0 + unit);
-            glBindTexture(GL_TEXTURE_2D, mTexID);
-            mTexUnit = unit;
-        }
-    }
-
-    void OpenGLTexture2D::Unbind() {
-        glActiveTexture(GL_TEXTURE0 + mTexUnit);
+    void OpenGLTexture2D::GenerateMipMaps()
+    {
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, mTexID);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 1000);
+        glGenerateMipmap(GL_TEXTURE_2D);
         glBindTexture(GL_TEXTURE_2D, 0);
-        GPUContext::Get<OpenGLContext>()->RegisterBind(GL_TEXTURE0 + mTexUnit, 0);
     }
 
-    void OpenGLTexture2D::GenerateMipMaps(const MipmapFiltering filtering) {
-        OpenGLTexture2D::Bind(0);
-        if (!mMipMapsGenerated)
-            glGenerateMipmap(GL_TEXTURE_2D);
-        glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
-                            [filtering]() {
-                                switch (filtering) {
-                                    default:
-                                    case MipmapFiltering::Bilinear:
-                                        return GL_LINEAR_MIPMAP_NEAREST;
-                                    case MipmapFiltering::Trilinear:
-                                        return GL_LINEAR_MIPMAP_LINEAR;
-                                }
-                            }());
+    void OpenGLTexture2D::UpdateData(Dimension2D offset, Dimension2D size, const byte* data)
+    {
+        const GL::TextureFormat glFormat = GL::ToTextureFormat(mFormat);
 
-        mMipMapsGenerated = true;
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, mTexID);
+        glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+        glTexSubImage2D(GL_TEXTURE_2D,
+                        0,
+                        (GLint)offset.x,
+                        (GLint)offset.y,
+                        (GLsizei)size.x,
+                        (GLsizei)size.y,
+                        glFormat.pixelFormat,
+                        glFormat.pixelType,
+                        data);
+        glBindTexture(GL_TEXTURE_2D, 0);
     }
 
-    void OpenGLTexture2D::DeleteMipMaps() {
-        OpenGLTexture2D::Bind(0);
-        glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    void* OpenGLTexture2D::GetNativeHandle() const
+    {
+        return GL::NameToHandle(mTexID);
     }
 
-    void OpenGLTexture2D::UpdateData(const Dimension2D offset, const Dimension2D size, const byte *data) {
-        OpenGLTexture2D::Bind(0);
-        glTexSubImage2D(GL_TEXTURE_2D, 0, offset.x, offset.y, size.x, size.y, FormatToGL(mPixelFormat),
-                        GL_UNSIGNED_BYTE, (const void *) data);
-    }
     //
-    GLenum OpenGLTexture2D::FormatToGL(PixelFormat format) noexcept {
-        switch (format) {
-            case PixelFormat::None:
-                return GL_NONE;
+    OpenGLSampler::OpenGLSampler(const SamplerDesc& desc)
+      : mDesc(desc)
+    {
+        glGenSamplers(1, &mID);
+        glSamplerParameteri(
+          mID, GL_TEXTURE_MIN_FILTER, (GLint)GL::ToMinFilter(desc.minFilter, desc.mipmapMode));
+        glSamplerParameteri(mID, GL_TEXTURE_MAG_FILTER, (GLint)GL::ToMagFilter(desc.magFilter));
+        glSamplerParameteri(mID, GL_TEXTURE_WRAP_S, (GLint)GL::ToAddressMode(desc.addressU));
+        glSamplerParameteri(mID, GL_TEXTURE_WRAP_T, (GLint)GL::ToAddressMode(desc.addressV));
+    }
 
-            case PixelFormat::RGB:
-                return GL_RGB;
-
-            case PixelFormat::RGBA8:
-                return GL_RGBA;
-
-            case PixelFormat::RG:
-                return GL_RG;
-
-            case PixelFormat::R:
-            case PixelFormat::RED_INTEGER:
-                return GL_RED;
-
-            case PixelFormat::DEPTH24_STENCIL8:
-                return GL_DEPTH24_STENCIL8;
-        }
+    OpenGLSampler::~OpenGLSampler()
+    {
+        glDeleteSamplers(1, &mID);
+        mID = 0;
     }
 }

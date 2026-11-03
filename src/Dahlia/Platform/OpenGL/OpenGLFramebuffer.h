@@ -1,46 +1,43 @@
 #pragma once
 
 #include <map>
+
 #include "Dahlia/Dahlia-API.h"
-#include "Dahlia/3D/Framebuffer.h"
-#include "Dahlia/Platform/OpenGL/OpenGLFramebuffer.h"
-#include "Dahlia/Platform/OpenGL/OpenGLTexture.h"
+#include "Dahlia/Graphics/Framebuffer.h"
+#include "Dahlia/Platform/OpenGL/OpenGLContext.h"
 
-namespace DH {
-    class DH_API OpenGLFramebuffer : public Framebuffer {
-    public:
-        OpenGLFramebuffer(const FramebufferSpecification &spec);
+namespace DH
+{
+    class OpenGLTexture2D;
 
-    private:
+    class DH_API OpenGLFramebuffer : public Framebuffer
+    {
+      public:
+        explicit OpenGLFramebuffer(const FramebufferSpecification& spec);
+        OpenGLFramebuffer(const OpenGLFramebuffer&) = delete;
+        ~OpenGLFramebuffer() override;
+
+        void Resize(size_t newWidth, size_t newHeight) override;
+
+        [[nodiscard]] sRef<Texture2D> GetAttachmentTexture(size_t index = 0) const override;
+        [[nodiscard]] const FramebufferSpecification& GetSpecification() const override
+        {
+            return mSpecification;
+        }
+
+        [[nodiscard]] GLuint GetID() const { return mFBO; }
+        [[nodiscard]] bool HasDepth() const { return mHasDepth; }
+        [[nodiscard]] bool HasStencil() const { return mHasStencil; }
+
+      private:
         void CreateFramebuffer();
+        void DestroyAttachments();
 
-    public:
-        virtual ~OpenGLFramebuffer();
+        FramebufferSpecification mSpecification;
+        GLuint mFBO = 0;
+        bool mHasDepth = false, mHasStencil = false;
 
-        virtual void Bind() override;
-        virtual void Unbind() override;
-
-        virtual void Resize(size_t newWidth, size_t newHeight) override;
-
-        virtual FramebufferAttachment *QueryAttachment(size_t index = 0) override;
-        virtual Texture2D *QueryTextureAttachment(size_t index = 0) override;
-
-        virtual const FramebufferSpecification &GetSpecification() const override { return specification; }
-        virtual FramebufferSpecification &GetSpecification() override { return specification; }
-
-        void Clear(const glm::vec4 &clearColour) override;
-
-        virtual unsigned int GetRenderID() const override { return m_FBOID; }
-
-    private:
-        void ClearAttachments();
-
-        bool mHasDepth = false;
-
-        unsigned int m_FBOID = 0;
-        FramebufferSpecification specification;
-
-        std::map<uint32_t, OpenGLTexture2D> textureAttachments;
-        std::map<uint32_t, GLuint> renderbufferAttachments;
+        std::map<size_t, sRef<OpenGLTexture2D>> mTextureAttachments;
+        std::map<size_t, GLuint> mRenderbufferAttachments;
     };
 }

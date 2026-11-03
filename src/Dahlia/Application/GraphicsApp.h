@@ -8,7 +8,8 @@
 #include "Dahlia/Utilities/Memory.h"
 #include "Dahlia/Layers/LayerStack.h"
 #include "Dahlia/GUI/Display.h"
-#include "Dahlia/3D/Framebuffer.h"
+#include "Dahlia/Graphics/CommandList.h"
+#include "Dahlia/Graphics/Framebuffer.h"
 #include "Dahlia/Events/KeyEvents.h"
 #include "Dahlia/Events/MouseEvents.h"
 #include "Dahlia/GUI/ImGuiLayer.h"
@@ -58,7 +59,9 @@ namespace DH {
         virtual void OnViewportResize() {
         }
 
-        virtual void OnRender() {
+        // Record this frame's off-screen rendering (e.g. into the viewport framebuffer). The
+        // display render pass for ImGui is begun after this returns.
+        virtual void OnRender(CommandList &cmd) {
         }
 
         virtual void OnImGuiRender() {

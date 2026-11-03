@@ -1,238 +1,197 @@
-#include <GL/glew.h>
+#include <stdexcept>
+#include <string>
 
 #include "Dahlia/Platform/OpenGL/OpenGLFramebuffer.h"
-#include "Dahlia/Platform/OpenGL/OpenGLContext.h"
+#include "Dahlia/Platform/OpenGL/OpenGLTexture.h"
+#include "Dahlia/Platform/OpenGL/OpenGLTypes.h"
 #include "Dahlia/Utilities/Assert.h"
-//
-//
 
-namespace DH {
-	OpenGLFramebuffer::OpenGLFramebuffer(const FramebufferSpecification& spec) : specification(spec) {
-		this->CreateFramebuffer();
-	}
+namespace DH
+{
+    static const char* FramebufferErrorToStr(GLenum errorCode)
+    {
+        switch (errorCode)
+        {
+            case GL_FRAMEBUFFER_UNDEFINED:
+                return "Default framebuffer is not available.";
+            case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
+                return "An attachment point to the framebuffer is incomplete";
+            case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
+                return "The framebuffer has no attachments. Add at least one attachment.";
+            case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER:
+                return "GL_FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE is GL_NONE for a colour attachment "
+                       "named by GL_DRAW_BUFFERi";
+            case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER:
+                return "GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER";
+            case GL_FRAMEBUFFER_UNSUPPORTED:
+                return "Combination of attachment internal formats is not supported by the "
+                       "OpenGL driver.";
+            case GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE:
+                return "Multisampled attachments do not all use the same number of samples.";
+            case GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS:
+                return "GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS";
+            default:
+                return "Unknown framebuffer error";
+        }
+    }
 
-	void OpenGLFramebuffer::CreateFramebuffer() {
-		auto CreateTex2D = [](size_t width, size_t height, PixelFormat format) -> unsigned int {
-			GLuint tex;
-			glGenTextures(1, &tex);
+    OpenGLFramebuffer::OpenGLFramebuffer(const FramebufferSpecification& spec)
+      : mSpecification(spec)
+    {
+        CreateFramebuffer();
+    }
 
-			glBindTexture(GL_TEXTURE_2D, tex);
-			bool isDepth = PixelFormat::IsDepth(format);
-			glTexImage2D(GL_TEXTURE_2D, 0, OpenGLTexture2D::FormatToGL(format), width, height, 0,
-				isDepth ? GL_DEPTH_STENCIL : GL_RGB, isDepth ? GL_UNSIGNED_INT_24_8 : GL_UNSIGNED_BYTE,
-				nullptr);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-			glBindTexture(GL_TEXTURE_2D, 0);
+    OpenGLFramebuffer::~OpenGLFramebuffer()
+    {
+        DestroyAttachments();
+        glDeleteFramebuffers(1, &mFBO);
+        mFBO = 0;
+    }
 
-			return tex;
-			};
-		auto CreateRenderbuffer = [](size_t width, size_t height, PixelFormat format) -> unsigned int {
-			GLuint rboID;
-			glGenRenderbuffers(1, &rboID);
+    void OpenGLFramebuffer::CreateFramebuffer()
+    {
+        if (mFBO != 0)
+        {
+            DestroyAttachments();
+            glDeleteFramebuffers(1, &mFBO);
+            mFBO = 0;
+        }
 
-			glBindRenderbuffer(GL_RENDERBUFFER, rboID);
-			glRenderbufferStorage(GL_RENDERBUFFER, OpenGLTexture2D::FormatToGL(format), width, height);
-			glBindRenderbuffer(GL_RENDERBUFFER, 0);
+        const auto width = (GLsizei)mSpecification.width;
+        const auto height = (GLsizei)mSpecification.height;
+        const auto samples = (GLsizei)mSpecification.samples;
+        const bool multisampled = samples > 1;
 
-			return rboID;
-			};
-		auto CreateMultisampledTex2D = [](size_t width, size_t height, PixelFormat format,
-			unsigned int samples) -> unsigned int {
-				GLuint tex;
-				glGenTextures(1, &tex);
+        GLint previousFBO = 0;
+        glGetIntegerv(GL_FRAMEBUFFER_BINDING, &previousFBO);
 
-				glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, tex);
-				glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, samples, OpenGLTexture2D::FormatToGL(format), width, height,
-					GL_TRUE);
-				glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
+        glGenFramebuffers(1, &mFBO);
+        glBindFramebuffer(GL_FRAMEBUFFER, mFBO);
 
-				return tex;
-			};
-		auto CreateMultisampledRenderbuffer = [](size_t width, size_t height, PixelFormat format,
-			unsigned int samples) -> unsigned int {
-				GLuint rboID;
-				glGenRenderbuffers(1, &rboID);
+        mHasDepth = false;
+        mHasStencil = false;
+        GLenum colourIndex = 0;
+        std::vector<GLenum> drawBuffers;
 
-				glBindRenderbuffer(GL_RENDERBUFFER, rboID);
-				glRenderbufferStorageMultisample(GL_RENDERBUFFER, samples, OpenGLTexture2D::FormatToGL(format), width, height);
-				glBindRenderbuffer(GL_RENDERBUFFER, 0);
+        for (size_t i = 0; i < mSpecification.attachments.size(); i++)
+        {
+            const FramebufferAttachment& attachment = mSpecification.attachments[i];
+            const bool isDepth = IsDepthFormat(attachment.format);
+            const GL::TextureFormat glFormat = GL::ToTextureFormat(attachment.format);
 
-				return rboID;
-			};
+            if (isDepth && mHasDepth)
+                throw std::runtime_error("An OpenGL framebuffer can only have one depth attachment");
 
-		if (m_FBOID != 0) {
-			ClearAttachments();
-			glDeleteFramebuffers(1, &m_FBOID);
-		}
+            GLenum attachPoint;
+            if (isDepth)
+            {
+                attachPoint = DH::HasStencil(attachment.format) ? GL_DEPTH_STENCIL_ATTACHMENT
+                                                            : GL_DEPTH_ATTACHMENT;
+                mHasDepth = true;
+                mHasStencil = DH::HasStencil(attachment.format);
+            }
+            else
+            {
+                attachPoint = GL_COLOR_ATTACHMENT0 + colourIndex++;
+                drawBuffers.push_back(attachPoint);
+            }
 
-		glGenFramebuffers(1, &m_FBOID);
-		glBindFramebuffer(GL_FRAMEBUFFER, m_FBOID);
+            if (attachment.renderbuffer)
+            {
+                GLuint rbo = 0;
+                glGenRenderbuffers(1, &rbo);
+                glBindRenderbuffer(GL_RENDERBUFFER, rbo);
+                if (multisampled)
+                    glRenderbufferStorageMultisample(
+                      GL_RENDERBUFFER, samples, glFormat.internalFormat, width, height);
+                else
+                    glRenderbufferStorage(GL_RENDERBUFFER, glFormat.internalFormat, width, height);
+                glBindRenderbuffer(GL_RENDERBUFFER, 0);
 
-		mHasDepth = false;
-		unsigned int colourIndex = 0;
-		for (size_t i = 0; i < specification.Attachments.size(); i++) {
-			FramebufferAttachment currentAttach = specification.Attachments[i];
-			unsigned int fboAttachment = 0;
-			if (PixelFormat::IsDepth(currentAttach.mPixelFormat)) {
-				fboAttachment = GL_DEPTH_STENCIL_ATTACHMENT;
-			}
-			else {
-				fboAttachment = GL_COLOR_ATTACHMENT0 + colourIndex;
-				colourIndex++;
-			}
-			DH_ASSERT(mHasDepth && PixelFormat::IsDepth(currentAttach.mPixelFormat),
-				DH::OpenGLFramebuffer::CreateFramebuffer,
-				"Cannot have more than one depth attachment to an OpenGL framebuffer.");
+                glFramebufferRenderbuffer(GL_FRAMEBUFFER, attachPoint, GL_RENDERBUFFER, rbo);
+                mRenderbufferAttachments.emplace(i, rbo);
+                continue;
+            }
 
-			if (specification.Samples > 1) {
-				if (currentAttach.Renderbuffer) {
-					GLuint rboID = CreateMultisampledRenderbuffer(specification.Width, specification.Height,
-						currentAttach.mPixelFormat,
-						specification.Samples);
+            GLuint tex = 0;
+            glGenTextures(1, &tex);
+            const GLenum target = multisampled ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;
+            glBindTexture(target, tex);
+            if (multisampled)
+            {
+                glTexImage2DMultisample(
+                  target, samples, glFormat.internalFormat, width, height, GL_TRUE);
+            }
+            else
+            {
+                glTexImage2D(target,
+                             0,
+                             (GLint)glFormat.internalFormat,
+                             width,
+                             height,
+                             0,
+                             glFormat.pixelFormat,
+                             glFormat.pixelType,
+                             nullptr);
+                glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+                glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+                glTexParameteri(target, GL_TEXTURE_MAX_LEVEL, 0);
+            }
+            glBindTexture(target, 0);
 
-					glFramebufferRenderbuffer(GL_FRAMEBUFFER, fboAttachment, GL_RENDERBUFFER, rboID);
-					renderbufferAttachments.insert({ (unsigned int)i, rboID });
-				}
-				else {
-					GLuint texID = CreateMultisampledTex2D(specification.Width, specification.Height,
-						currentAttach.mPixelFormat, specification.Samples);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, attachPoint, target, tex, 0);
+            mTextureAttachments.emplace(
+              i,
+              make<OpenGLTexture2D>(tex,
+                                    target,
+                                    Dimension2D{ mSpecification.width, mSpecification.height },
+                                    attachment.format));
+        }
 
-					glFramebufferTexture2D(GL_FRAMEBUFFER, fboAttachment, GL_TEXTURE_2D_MULTISAMPLE, texID, 0);
-					// textureAttachments.insert({ (unsigned int)i,  texID });
-					textureAttachments.try_emplace((uint32_t)i,
-							texID, Dimension2D{ specification.Width, specification.Height },
-							currentAttach.mPixelFormat);
-				}
-			}
-			else {
-				if (currentAttach.Renderbuffer) {
-					GLuint rboID = CreateRenderbuffer(specification.Width, specification.Height,
-						currentAttach.mPixelFormat);
+        if (drawBuffers.empty())
+            glDrawBuffer(GL_NONE);
+        else
+            glDrawBuffers((GLsizei)drawBuffers.size(), drawBuffers.data());
 
-					glFramebufferRenderbuffer(GL_FRAMEBUFFER, fboAttachment, GL_RENDERBUFFER, rboID);
-					renderbufferAttachments.insert({ (unsigned int)i, rboID });
-				}
-				else {
-					GLuint texID = CreateTex2D(specification.Width, specification.Height, currentAttach.mPixelFormat);
+        const GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+        glBindFramebuffer(GL_FRAMEBUFFER, (GLuint)previousFBO);
 
-					glFramebufferTexture2D(GL_FRAMEBUFFER, fboAttachment, GL_TEXTURE_2D, texID, 0);
-					// textureAttachments.insert({ (unsigned int)i, texID });
-					textureAttachments.try_emplace((uint32_t)i,
-							texID, Dimension2D{ specification.Width, specification.Height },
-							currentAttach.mPixelFormat);
-				}
-			}
+        if (status != GL_FRAMEBUFFER_COMPLETE)
+        {
+            DestroyAttachments();
+            glDeleteFramebuffers(1, &mFBO);
+            mFBO = 0;
 
-			mHasDepth |= PixelFormat::IsDepth(currentAttach.mPixelFormat);
-		}
+            DH_FATAL(DH::OpenGLFramebuffer::CreateFramebuffer,
+                     "Framebuffer creation failed: " << FramebufferErrorToStr(status));
+        }
 
-		GLenum error = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		if (error != GL_FRAMEBUFFER_COMPLETE) {
-			ClearAttachments();
-			glDeleteFramebuffers(1, &m_FBOID);
-			m_FBOID = 0;
+        CheckGLErrors("OpenGLFramebuffer::CreateFramebuffer");
+    }
 
-			auto FramebufferErrorToStr = [](GLenum errorCode) -> const char* {
-				switch (errorCode) {
-				case GL_FRAMEBUFFER_UNDEFINED:
-					return "Default framebuffer is not available.";
-				case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
-					return "An attachment point to the framebuffer is incomplete";
-				case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
-					return
-						"The framebuffer has an inadequate amount of attachments to be functional. Ensure at least one attachment is added to the framebuffer before creating it.";
-				case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER:
-					return
-						"Framebuffer violation; A GL_FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE is GL_NONE for a color attachment point(s) named by GL_DRAW_BUFFERi";
-				case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER:
-					return "GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER";
-				case GL_FRAMEBUFFER_UNSUPPORTED:
-					return "Combination of attachment internal formats is disallowed on the current OpenGL driver.";
-				case GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE:
-					return
-						"The number of samples for each multisampled attachment is not the same. Please ensure that each multisampled attachment used the same number of samples.";
-				case GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS:
-					return "GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS";
-				default:
-					return "Unknown framebuffer error occured";
-				}
-				};
+    void OpenGLFramebuffer::DestroyAttachments()
+    {
+        for (auto& [index, rbo] : mRenderbufferAttachments)
+            glDeleteRenderbuffers(1, &rbo);
 
-			DH_FATAL(DH::OpenGLFramebuffer::CreateFramebuffer, "Framebuffer specification is invalid and"
-				"hence framebuffer creation has failed.Change specification and recreate framebuffer. Error Message: "
-				+
-				std::string(FramebufferErrorToStr(error)));
-			return;
-		}
+        // Textures are deleted when the last reference (e.g. a BindGroup) is released
+        mTextureAttachments.clear();
+        mRenderbufferAttachments.clear();
+    }
 
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	}
+    void OpenGLFramebuffer::Resize(size_t newWidth, size_t newHeight)
+    {
+        mSpecification.width = newWidth;
+        mSpecification.height = newHeight;
 
-	//
-	OpenGLFramebuffer::~OpenGLFramebuffer() {
-		ClearAttachments();
+        CreateFramebuffer();
+    }
 
-		glDeleteFramebuffers(1, &m_FBOID);
-		m_FBOID = 0;
-	}
+    sRef<Texture2D> OpenGLFramebuffer::GetAttachmentTexture(size_t index) const
+    {
+        if (auto it = mTextureAttachments.find(index); it != mTextureAttachments.end())
+            return it->second;
 
-	//
-	void OpenGLFramebuffer::Bind() {
-		if (!GPUContext::Get<OpenGLContext>()->BindToContext(GL_FRAMEBUFFER_BINDING, m_FBOID)) {
-			glBindFramebuffer(GL_FRAMEBUFFER, m_FBOID);
-			glViewport(0, 0, specification.Width, specification.Height);
-		}
-	}
-
-	void OpenGLFramebuffer::Unbind() {
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		GPUContext::Get<OpenGLContext>()->RegisterBind(GL_FRAMEBUFFER_BINDING, 0);
-	}
-
-	//
-	void OpenGLFramebuffer::Resize(size_t newWidth, size_t newHeight) {
-		specification.Width = newWidth;
-		specification.Height = newHeight;
-
-		this->CreateFramebuffer();
-	}
-
-	//
-	FramebufferAttachment* OpenGLFramebuffer::QueryAttachment(size_t index) {
-		if (index + 1 > specification.Attachments.size())
-			return nullptr;
-
-		return &specification.Attachments[index];
-	}
-
-	Texture2D* OpenGLFramebuffer::QueryTextureAttachment(size_t index) {
-		if (auto texIt = textureAttachments.find(index); texIt != textureAttachments.end()) {
-			return (Texture2D*)&(*texIt).second;
-		}
-
-		return nullptr;
-	}
-
-	void OpenGLFramebuffer::Clear(const glm::vec4& clearColour) {
-		OpenGLFramebuffer::Bind();
-		GLenum bufferBits = GL_COLOR_BUFFER_BIT;
-		if (mHasDepth)
-			bufferBits |= GL_DEPTH_BUFFER_BIT;
-
-		glClearColor(clearColour.x, clearColour.y, clearColour.z, clearColour.w);
-		glClear(bufferBits);
-	}
-
-	void OpenGLFramebuffer::ClearAttachments() {
-		for (auto& kvPair : renderbufferAttachments) {
-			glDeleteRenderbuffers(1, &kvPair.second);
-		}
-
-		textureAttachments.clear();
-		renderbufferAttachments.clear();
-	}
-
-	//
+        return nullptr;
+    }
 }

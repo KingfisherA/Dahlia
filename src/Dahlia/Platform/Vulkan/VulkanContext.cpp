@@ -3,6 +3,7 @@
 #include <iostream>
 #include <optional>
 #include <set>
+#include <string_view>
 
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
@@ -42,13 +43,14 @@ namespace DH
                                                      const VkDebugUtilsMessengerCallbackDataEXT* data,
                                                      void*)
         {
+            const char* id = data->pMessageIdName != nullptr ? data->pMessageIdName : "";
             if (severity >= VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT)
             {
-                DH_FATAL(Vulkan Validation, data->pMessage);
+                DH_FATAL(Vulkan Validation, "[error] " << id << ": " << data->pMessage);
             }
             else if (severity >= VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT)
             {
-                DH_WARN(Vulkan Validation, data->pMessage);
+                DH_WARN(Vulkan Validation, "[warning] " << id << ": " << data->pMessage);
             }
             return VK_FALSE;
         }
@@ -143,7 +145,28 @@ namespace DH
             createInfo.pNext = &debugInfo;
         }
 
-        DH_VK_CHECK(vkCreateInstance(&createInfo, nullptr, &mInstance), "vkCreateInstance");
+        VkResult result = vkCreateInstance(&createInfo, nullptr, &mInstance);
+        if (result == VK_ERROR_LAYER_NOT_PRESENT && mValidationEnabled)
+        {
+            // The layer's manifest was found but its library could not be loaded. Homebrew's
+            // manifest names the dylib without a path, and /opt/homebrew/lib is not searched.
+            DH_WARN(DH::VulkanGPUContext,
+                    "The Vulkan validation layer is installed but could not be loaded; running "
+                    "without validation. On macOS with Homebrew, launch with "
+                    "DYLD_FALLBACK_LIBRARY_PATH=/opt/homebrew/lib to enable it.");
+            mValidationEnabled = false;
+            extensions.erase(std::remove(extensions.begin(),
+                                         extensions.end(),
+                                         std::string_view(VK_EXT_DEBUG_UTILS_EXTENSION_NAME)),
+                             extensions.end());
+            createInfo.enabledExtensionCount = (uint32_t)extensions.size();
+            createInfo.ppEnabledExtensionNames = extensions.data();
+            createInfo.enabledLayerCount = 0;
+            createInfo.ppEnabledLayerNames = nullptr;
+            createInfo.pNext = nullptr;
+            result = vkCreateInstance(&createInfo, nullptr, &mInstance);
+        }
+        DH_VK_CHECK(result, "vkCreateInstance");
 
         if (mValidationEnabled)
         {

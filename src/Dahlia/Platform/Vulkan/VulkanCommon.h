@@ -172,8 +172,29 @@ namespace DH::VK
         }
     }
 
-    // Full pipeline barrier transition. Deliberately conservative (all commands, all memory) to
-    // keep the backend simple and correct.
+    // Accesses an image in `layout` can be used for
+    inline VkAccessFlags AccessForLayout(VkImageLayout layout) noexcept
+    {
+        switch (layout)
+        {
+            case VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL:
+                return VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+            case VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL:
+                return VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT |
+                       VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
+            case VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL:
+                return VK_ACCESS_SHADER_READ_BIT;
+            case VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL:
+                return VK_ACCESS_TRANSFER_READ_BIT;
+            case VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL:
+                return VK_ACCESS_TRANSFER_WRITE_BIT;
+            default: // UNDEFINED, PRESENT_SRC: no access to wait on or make available
+                return 0;
+        }
+    }
+
+    // Layout transition with access masks matched to the layouts. Stages stay conservative
+    // (all commands) to keep the backend simple and correct.
     inline void TransitionImage(VkCommandBuffer cmd,
                                 VkImage image,
                                 VkImageAspectFlags aspect,
@@ -184,8 +205,8 @@ namespace DH::VK
     {
         VkImageMemoryBarrier barrier{};
         barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-        barrier.srcAccessMask = VK_ACCESS_MEMORY_WRITE_BIT;
-        barrier.dstAccessMask = VK_ACCESS_MEMORY_READ_BIT | VK_ACCESS_MEMORY_WRITE_BIT;
+        barrier.srcAccessMask = AccessForLayout(oldLayout);
+        barrier.dstAccessMask = AccessForLayout(newLayout);
         barrier.oldLayout = oldLayout;
         barrier.newLayout = newLayout;
         barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;

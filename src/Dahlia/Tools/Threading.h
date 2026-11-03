@@ -61,10 +61,10 @@ namespace DH {
             }
         }
 
+        // Called from inside the worker, so it must not join (a thread cannot join itself); the owner joins in
+        // Stop(), Join(), Start() or the destructor
         void MarkAsFinished() {
             mThreadFinished.store(true);
-            if(mThread.joinable())
-                mThread.join();
         }
 
         [[nodiscard]] bool ShouldStop() const { return mThreadRequestStop.load(); }

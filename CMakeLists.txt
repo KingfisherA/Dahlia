@@ -35,7 +35,7 @@ find_package(glfw3 CONFIG REQUIRED)
 find_package(glm CONFIG REQUIRED)
 find_package(OpenGL REQUIRED)
 
-set(GLEW_USE_STATIC_LIBS true)
+#set(GLEW_USE_STATIC_LIBS true)
 find_package(GLEW CONFIG)
 if(NOT GLEW_FOUND)
     find_package(GLEW REQUIRED)

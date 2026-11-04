@@ -31,6 +31,11 @@ namespace DH
             throw std::invalid_argument("pushConstantSize exceeds MAX_PUSH_CONSTANT_SIZE");
         if (mDesc.bindGroupLayouts.size() > MAX_BIND_GROUPS)
             throw std::invalid_argument("Too many bind group layouts");
+        if (mDesc.blend.size() > 1 &&
+            mDesc.blend.size() != mDesc.targetLayout.colourFormats.size())
+            throw std::invalid_argument(
+              "GraphicsPipelineDesc::blend must have 0, 1 or one entry per colour attachment in "
+              "targetLayout");
 
         for (const sRef<ShaderModule>& module : { mDesc.vertexShader, mDesc.fragmentShader })
         {

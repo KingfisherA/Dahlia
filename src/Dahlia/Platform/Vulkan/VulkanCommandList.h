@@ -13,7 +13,7 @@ namespace DH
 {
     class VulkanDisplay;
     class VulkanGraphicsPipeline;
-    class VulkanTexture2D;
+    class VulkanImage;
 
     // Records into the display's per-frame command buffer using dynamic rendering.
     //
@@ -61,7 +61,7 @@ namespace DH
 
         bool mInPass = false;
         VkExtent2D mTargetExtent{};
-        std::vector<VulkanTexture2D*> mPassColourTargets; // Offscreen targets to make sampleable
+        std::vector<VulkanImage*> mPassColourTargets; // Offscreen targets to make sampleable
 
         const VulkanGraphicsPipeline* mPipeline = nullptr;
         std::array<const DH::BindGroup*, MAX_BIND_GROUPS> mBindGroups{};

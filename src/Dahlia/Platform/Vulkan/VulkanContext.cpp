@@ -7,6 +7,8 @@
 
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
+// VkPhysicalDevicePortabilitySubsetFeaturesKHR (VK_KHR_portability_subset is a beta extension)
+#include <vulkan/vulkan_beta.h>
 
 #include "Dahlia/Graphics/FormatConversion.h"
 #include "Dahlia/Graphics/GraphicsPipeline.h"
@@ -20,6 +22,9 @@ namespace DH
     {
         constexpr const char* VALIDATION_LAYER = "VK_LAYER_KHRONOS_validation";
         constexpr const char* PORTABILITY_SUBSET_EXTENSION = "VK_KHR_portability_subset";
+        // VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PORTABILITY_SUBSET_FEATURES_KHR, which vulkan_core.h
+        // only declares under VK_ENABLE_BETA_EXTENSIONS
+        constexpr auto PORTABILITY_SUBSET_FEATURES_STYPE = (VkStructureType)1000163000;
 
         bool HasExtension(const std::vector<VkExtensionProperties>& available, const char* name)
         {
@@ -251,7 +256,20 @@ namespace DH
                 mQueueFamily = *family;
                 mDeviceProperties = props;
                 mFillModeNonSolid = features.features.fillModeNonSolid == VK_TRUE;
+                mIndependentBlend = features.features.independentBlend == VK_TRUE;
                 mPortabilitySubset = HasExtension(extensions, PORTABILITY_SUBSET_EXTENSION);
+                mImageView2DOn3D = true;
+                if (mPortabilitySubset)
+                {
+                    VkPhysicalDevicePortabilitySubsetFeaturesKHR portability{};
+                    portability.sType =
+                      PORTABILITY_SUBSET_FEATURES_STYPE;
+                    VkPhysicalDeviceFeatures2 portabilityQuery{};
+                    portabilityQuery.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2;
+                    portabilityQuery.pNext = &portability;
+                    vkGetPhysicalDeviceFeatures2(device, &portabilityQuery);
+                    mImageView2DOn3D = portability.imageView2DOn3DImage == VK_TRUE;
+                }
             }
         }
 
@@ -277,8 +295,14 @@ namespace DH
         if (mPortabilitySubset)
             extensions.push_back(PORTABILITY_SUBSET_EXTENSION);
 
+        // Portability subset features that are used must be enabled explicitly
+        VkPhysicalDevicePortabilitySubsetFeaturesKHR portability{};
+        portability.sType = PORTABILITY_SUBSET_FEATURES_STYPE;
+        portability.imageView2DOn3DImage = mImageView2DOn3D ? VK_TRUE : VK_FALSE;
+
         VkPhysicalDeviceDepthClipControlFeaturesEXT clipControl{};
         clipControl.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DEPTH_CLIP_CONTROL_FEATURES_EXT;
+        clipControl.pNext = mPortabilitySubset ? &portability : nullptr;
         clipControl.depthClipControl = VK_TRUE;
         VkPhysicalDeviceVulkan13Features features13{};
         features13.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_3_FEATURES;
@@ -288,6 +312,7 @@ namespace DH
         features.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2;
         features.pNext = &features13;
         features.features.fillModeNonSolid = mFillModeNonSolid ? VK_TRUE : VK_FALSE;
+        features.features.independentBlend = mIndependentBlend ? VK_TRUE : VK_FALSE;
 
         VkDeviceCreateInfo createInfo{};
         createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
@@ -388,6 +413,8 @@ namespace DH
                 return VK_FORMAT_R32G32_SFLOAT;
             case Format::RGBA32F:
                 return VK_FORMAT_R32G32B32A32_SFLOAT;
+            case Format::RGBA16F:
+                return VK_FORMAT_R16G16B16A16_SFLOAT;
             case Format::D24S8:
                 return mDepthStencilFormat;
             case Format::D32F:
@@ -405,6 +432,13 @@ namespace DH
                                             VK_FORMAT_FEATURE_BLIT_DST_BIT |
                                             VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT;
         return (props.optimalTilingFeatures & needed) == needed;
+    }
+
+    bool VulkanGPUContext::SupportsLinearFilter(VkFormat format) const
+    {
+        VkFormatProperties props;
+        vkGetPhysicalDeviceFormatProperties(mPhysicalDevice, format, &props);
+        return (props.optimalTilingFeatures & VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT) != 0;
     }
 
     void VulkanGPUContext::SubmitImmediate(const std::function<void(VkCommandBuffer)>& record)

@@ -7,17 +7,17 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/norm.hpp>
 
-#include "Dahlia/Graphics/BindGroup.h"
-#include "Dahlia/Graphics/Buffer.h"
-#include "Dahlia/Graphics/CommandList.h"
-#include "Dahlia/Graphics/Framebuffer.h"
-#include "Dahlia/Graphics/GraphicsPipeline.h"
-#include "Dahlia/Graphics/GPUMesh.h"
-#include "Dahlia/Graphics/ShaderModule.h"
 #include "Dahlia/Events/KeyEvents.h"
 #include "Dahlia/Events/MouseEvents.h"
 #include "Dahlia/GUI/Display.h"
 #include "Dahlia/GUI/ImGuiLayer.h"
+#include "Dahlia/Graphics/BindGroup.h"
+#include "Dahlia/Graphics/Buffer.h"
+#include "Dahlia/Graphics/CommandList.h"
+#include "Dahlia/Graphics/Framebuffer.h"
+#include "Dahlia/Graphics/GPUMesh.h"
+#include "Dahlia/Graphics/GraphicsPipeline.h"
+#include "Dahlia/Graphics/ShaderModule.h"
 #include "Dahlia/Platform/GPUContext.h"
 #include "Dahlia/Utilities/Memory.h"
 
@@ -91,15 +91,14 @@ namespace DH::InfoApplication
 #define BIND_EVENT_FNC(x) std::bind(&Application::x, this, std::placeholders::_1)
 
     Application::Application()
-      : GraphicsApp(
-          "Dahlia Engine",
-          800,
-          600,
-          FramebufferSpecification{ 800,
-                                    600,
-                                    1,
-                                    { FramebufferAttachment(Format::RGBA8),
-                                      FramebufferAttachment(Format::D24S8) } })
+      : GraphicsApp("Dahlia Engine",
+                    800,
+                    600,
+                    FramebufferSpecification{ 800,
+                                              600,
+                                              1,
+                                              { FramebufferAttachment(Format::RGBA8),
+                                                FramebufferAttachment(Format::D24S8) } })
     {
     }
 
@@ -157,8 +156,8 @@ namespace DH::InfoApplication
           Buffer::Create({ sizeof(MaterialUniforms), BufferUsage::Uniform }, &material);
         sRef<BindGroupLayout> materialLayout = BindGroupLayout::Create(
           { { 0, ShaderResourceType::UniformBuffer, ShaderStage::Fragment } });
-        mMaterialGroup = BindGroup::Create(
-          materialLayout, { BindGroupEntry::UniformBuffer(0, mMaterialBuffer) });
+        mMaterialGroup =
+          BindGroup::Create(materialLayout, { BindGroupEntry::UniformBuffer(0, mMaterialBuffer) });
 
         GraphicsPipelineDesc desc;
         desc.vertexShader =

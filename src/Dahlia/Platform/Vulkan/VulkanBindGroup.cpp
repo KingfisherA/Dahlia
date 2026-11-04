@@ -93,7 +93,7 @@ namespace DH
             }
             else
             {
-                const auto& texture = static_cast<const VulkanTexture2D&>(*entry.texture);
+                const VulkanImage& texture = AsVulkanImage(*entry.texture);
                 const auto& sampler = static_cast<const VulkanSampler&>(*entry.sampler);
                 imageInfos.push_back({ sampler.GetSampler(),
                                        texture.GetView(),

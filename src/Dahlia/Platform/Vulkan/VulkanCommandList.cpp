@@ -55,16 +55,16 @@ namespace DH
                                         desc.clearColour.a } };
             return info;
         };
-        auto setDepth = [&](VulkanTexture2D& texture)
+        auto setDepth = [&](VulkanImage& image, VkImageView view, Format format)
         {
-            texture.TransitionTo(mCmd, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
-            depthAttachment.imageView = texture.GetView();
+            image.TransitionTo(mCmd, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
+            depthAttachment.imageView = view;
             depthAttachment.imageLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
             depthAttachment.loadOp = VK::ToLoadOp(desc.depthLoadOp);
             depthAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
             depthAttachment.clearValue.depthStencil = { desc.clearDepth, desc.clearStencil };
             hasDepth = true;
-            hasStencil = HasStencil(texture.GetFormat());
+            hasStencil = HasStencil(format);
         };
 
         mPassColourTargets.clear();
@@ -72,14 +72,14 @@ namespace DH
         {
             auto* framebuffer = static_cast<VulkanFramebuffer*>(desc.target);
             mTargetExtent = { (uint32_t)framebuffer->GetWidth(), (uint32_t)framebuffer->GetHeight() };
-            for (const sRef<VulkanTexture2D>& texture : framebuffer->GetColourAttachments())
+            for (const VulkanFramebuffer::Attachment& attachment : framebuffer->GetColourAttachments())
             {
-                texture->TransitionTo(mCmd, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
-                colourAttachments.push_back(colourInfo(texture->GetView()));
-                mPassColourTargets.push_back(texture.get());
+                attachment.image->TransitionTo(mCmd, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
+                colourAttachments.push_back(colourInfo(attachment.view));
+                mPassColourTargets.push_back(attachment.image);
             }
-            if (framebuffer->GetDepthAttachment())
-                setDepth(*framebuffer->GetDepthAttachment());
+            if (const auto& depth = framebuffer->GetDepthAttachment())
+                setDepth(*depth->image, depth->view, depth->format);
         }
         else
         {
@@ -95,7 +95,8 @@ namespace DH
                                 VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
             layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
             colourAttachments.push_back(colourInfo(swapChain.GetView(image)));
-            setDepth(swapChain.GetDepth());
+            VulkanTexture2D& depth = swapChain.GetDepth();
+            setDepth(depth, depth.GetAttachmentView(0, 0), depth.GetFormat());
         }
 
         VkRenderingInfo renderingInfo{};
@@ -124,8 +125,8 @@ namespace DH
         mInPass = false;
 
         // Offscreen colour targets rest in SHADER_READ_ONLY so they can be sampled
-        for (VulkanTexture2D* texture : mPassColourTargets)
-            texture->TransitionTo(mCmd, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+        for (VulkanImage* image : mPassColourTargets)
+            image->TransitionTo(mCmd, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
         mPassColourTargets.clear();
     }
 

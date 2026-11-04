@@ -2,6 +2,7 @@
 
 #include <array>
 #include <cstdint>
+#include <vector>
 
 #include "Dahlia/Dahlia-API.h"
 #include "Dahlia/Graphics/CommandList.h"
@@ -61,7 +62,7 @@ namespace DH
             bool valid = false;
             RasterState raster;
             DepthState depth;
-            BlendPreset blend = BlendPreset::None;
+            BlendDesc blend;
         };
 
         void ResetDrawState();

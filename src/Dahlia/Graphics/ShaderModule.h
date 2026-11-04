@@ -18,13 +18,20 @@ namespace DH
     //
     // Authoring rules imposed by OpenGL 4.1:
     //   * Uniform and push_constant blocks must be std140 compatible (no scalar/vec2 arrays).
-    //   * Use combined image samplers (sampler2D), not separate texture/sampler objects.
+    //   * Use combined image samplers (sampler2D/sampler3D), not separate texture/sampler objects.
     //   * No storage buffers, images or compute.
     enum class ShaderResourceType : uint8_t
     {
         UniformBuffer = 0,
-        CombinedTextureSampler
+        CombinedTextureSampler,  // sampler2D, bound to a Texture2D
+        CombinedTextureSampler3D // sampler3D, bound to a Texture3D
     };
+
+    [[nodiscard]] constexpr bool IsTextureResource(ShaderResourceType type) noexcept
+    {
+        return type == ShaderResourceType::CombinedTextureSampler ||
+               type == ShaderResourceType::CombinedTextureSampler3D;
+    }
 
     struct DH_API ShaderResource
     {

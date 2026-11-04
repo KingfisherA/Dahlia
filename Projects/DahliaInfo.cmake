@@ -34,7 +34,6 @@ set(COMPILE_OPTIONS)
 if((CMAKE_CXX_COMPILER_ID STREQUAL Clang) OR 
    (CMAKE_CXX_COMPILER_ID STREQUAL GNU))
     list(APPEND COMPILE_OPTIONS
-      -target arm64-apple-darwin
       -fPIC
       -std=c++20
     )

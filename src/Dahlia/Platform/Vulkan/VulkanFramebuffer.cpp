@@ -6,9 +6,9 @@
 namespace DH
 {
     VulkanFramebuffer::VulkanFramebuffer(const FramebufferSpecification& spec)
-      : mSpecification(spec)
+      : mSpecification(Prepare(spec))
     {
-        if (spec.samples > 1)
+        if (mSpecification.samples > 1)
             throw std::invalid_argument(
               "Multisampled framebuffers are not supported by the Vulkan backend yet");
         CreateAttachments();
@@ -16,31 +16,44 @@ namespace DH
 
     void VulkanFramebuffer::CreateAttachments()
     {
-        mAttachments.clear();
+        mOwned.clear();
         mColourAttachments.clear();
         mDepth.reset();
 
         const Dimension2D size{ mSpecification.width, mSpecification.height };
-        for (const FramebufferAttachment& attachment : mSpecification.attachments)
+        for (const FramebufferAttachment& spec : mSpecification.attachments)
         {
-            auto texture = make<VulkanTexture2D>(size, attachment.format, true);
-            mAttachments.push_back(texture);
+            Attachment attachment;
+            attachment.format = spec.format;
 
-            if (IsDepthFormat(attachment.format))
+            if (spec.IsExisting())
             {
-                if (mDepth)
-                    throw std::invalid_argument("A framebuffer can only have one depth attachment");
-                mDepth = texture;
+                attachment.texture = spec.texture;
+                attachment.image = &AsVulkanImage(*spec.texture);
+                attachment.view = attachment.image->GetAttachmentView(spec.mipLevel, spec.layer);
+                mOwned.push_back(nullptr);
             }
             else
             {
-                mColourAttachments.push_back(texture);
+                auto texture = make<VulkanTexture2D>(size, spec.format, true);
+                attachment.texture = texture;
+                attachment.image = texture.get();
+                attachment.view = texture->GetAttachmentView(0, 0);
+                mOwned.push_back(texture);
             }
+
+            if (IsDepthFormat(spec.format))
+                mDepth = attachment;
+            else
+                mColourAttachments.push_back(attachment);
         }
     }
 
     void VulkanFramebuffer::Resize(size_t newWidth, size_t newHeight)
     {
+        if (HasExistingAttachments())
+            throw std::logic_error(
+              "Framebuffers with existing attachments cannot be resized; create a new one");
         mSpecification.width = newWidth;
         mSpecification.height = newHeight;
         CreateAttachments(); // Old textures are destroyed once no frame in flight uses them
@@ -48,8 +61,10 @@ namespace DH
 
     sRef<Texture2D> VulkanFramebuffer::GetAttachmentTexture(size_t index) const
     {
-        if (index >= mAttachments.size() || mSpecification.attachments[index].renderbuffer)
+        if (index >= mOwned.size() || mSpecification.attachments[index].renderbuffer)
             return nullptr;
-        return mAttachments[index];
+        if (mOwned[index])
+            return mOwned[index];
+        return GetExistingTexture2D(index);
     }
 }

@@ -273,6 +273,9 @@ CMAKE_TAPI:FILEPATH=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeD
 // Studio IDE projects all commands are done without /nologo.
 CMAKE_VERBOSE_MAKEFILE:BOOL=FALSE
 
+//Build the DahliaInfo demo application
+DH_BUILD_INFO_APP:BOOL=ON
+
 //Build the Metal backend (Apple only)
 DH_ENABLE_METAL:BOOL=ON
 
@@ -414,7 +417,7 @@ SPIRV_CROSS_STATIC:BOOL=ON
 SPIRV_CROSS_WERROR:BOOL=OFF
 
 //Path to a program.
-Vulkan_GLSLANG_VALIDATOR_EXECUTABLE:FILEPATH=Vulkan_GLSLANG_VALIDATOR_EXECUTABLE-NOTFOUND
+Vulkan_GLSLANG_VALIDATOR_EXECUTABLE:FILEPATH=/opt/homebrew/bin/glslangValidator
 
 //Path to a program.
 Vulkan_GLSLC_EXECUTABLE:FILEPATH=/opt/homebrew/bin/glslc

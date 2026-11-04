@@ -38,6 +38,8 @@ namespace DH::GL
                 return { GL_RGB32F, GL_RGB, GL_FLOAT };
             case Format::RGBA32F:
                 return { GL_RGBA32F, GL_RGBA, GL_FLOAT };
+            case Format::RGBA16F:
+                return { GL_RGBA16F, GL_RGBA, GL_HALF_FLOAT };
             case Format::D24S8:
                 return { GL_DEPTH24_STENCIL8, GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8 };
             case Format::D32F:
@@ -63,6 +65,8 @@ namespace DH::GL
             case Format::RGB32F:
             case Format::RGBA32F:
                 return { (GLint)FormatComponentCount(format), GL_FLOAT, GL_FALSE };
+            case Format::RGBA16F:
+                return { 4, GL_HALF_FLOAT, GL_FALSE };
             case Format::R8:
             case Format::RG8:
             case Format::RGB8:
@@ -152,6 +156,73 @@ namespace DH::GL
                 return GL_MIRRORED_REPEAT;
             case AddressMode::ClampToEdge:
                 return GL_CLAMP_TO_EDGE;
+            case AddressMode::ClampToBorder:
+                return GL_CLAMP_TO_BORDER;
+        }
+    }
+
+    struct BorderColourValue
+    {
+        GLfloat rgba[4];
+    };
+
+    inline BorderColourValue ToBorderColour(BorderColour colour) noexcept
+    {
+        switch (colour)
+        {
+            default:
+            case BorderColour::TransparentBlack:
+                return { { 0.0f, 0.0f, 0.0f, 0.0f } };
+            case BorderColour::OpaqueBlack:
+                return { { 0.0f, 0.0f, 0.0f, 1.0f } };
+            case BorderColour::OpaqueWhite:
+                return { { 1.0f, 1.0f, 1.0f, 1.0f } };
+        }
+    }
+
+    inline GLenum ToBlendFactor(BlendFactor factor) noexcept
+    {
+        switch (factor)
+        {
+            case BlendFactor::Zero:
+                return GL_ZERO;
+            default:
+            case BlendFactor::One:
+                return GL_ONE;
+            case BlendFactor::SrcColour:
+                return GL_SRC_COLOR;
+            case BlendFactor::OneMinusSrcColour:
+                return GL_ONE_MINUS_SRC_COLOR;
+            case BlendFactor::DstColour:
+                return GL_DST_COLOR;
+            case BlendFactor::OneMinusDstColour:
+                return GL_ONE_MINUS_DST_COLOR;
+            case BlendFactor::SrcAlpha:
+                return GL_SRC_ALPHA;
+            case BlendFactor::OneMinusSrcAlpha:
+                return GL_ONE_MINUS_SRC_ALPHA;
+            case BlendFactor::DstAlpha:
+                return GL_DST_ALPHA;
+            case BlendFactor::OneMinusDstAlpha:
+                return GL_ONE_MINUS_DST_ALPHA;
+        }
+    }
+
+    inline GLenum ToBlendOp(BlendOp op) noexcept
+    {
+        switch (op)
+        {
+            default:
+            case BlendOp::Add:
+                return GL_FUNC_ADD;
+            case BlendOp::Subtract:
+                return GL_FUNC_SUBTRACT;
+            case BlendOp::ReverseSubtract:
+                return GL_FUNC_REVERSE_SUBTRACT;
+            case BlendOp::Min:
+                return GL_MIN;
+            case BlendOp::Max:
+                return GL_MAX;
         }
     }
 

@@ -78,12 +78,6 @@ build /Users/charlie/dev/C++/Dahlia/bin/darwin/Debug/libDahliaTools.a: CXX_STATI
   TARGET_PDB = DahliaTools.a.dbg
   TARGET_SUPPORT_DIR = CMakeFiles/DahliaTools.dir
 
-
-#############################################
-# Utility command for DahliaShaders
-
-build DahliaShaders: phony CMakeFiles/DahliaShaders GeneratedShaders/ColourDiffuse.frag.inc GeneratedShaders/ColourDiffuse.vert.inc GeneratedShaders/SolidColour.frag.inc GeneratedShaders/SolidColour.vert.inc GeneratedShaders/Text.frag.inc GeneratedShaders/Text.vert.inc
-
 # =============================================================================
 # Object build statements for SHARED_LIBRARY target Dahlia
 
@@ -98,7 +92,7 @@ build CMakeFiles/Dahlia.dir/src/Dahlia/Graphics/BindGroup.cpp.o: CXX_COMPILER__D
   DEFINES = -DBOOST_ATOMIC_DYN_LINK -DBOOST_ATOMIC_NO_LIB -DBOOST_FILESYSTEM_DYN_LINK -DBOOST_FILESYSTEM_NO_LIB -DCONFIG_DEBUG -DDH_BUILD -DDH_METAL_ENABLED -DDH_VULKAN_ENABLED -DDahlia_EXPORTS -DGLM_ENABLE_EXPERIMENTAL
   DEP_FILE = CMakeFiles/Dahlia.dir/src/Dahlia/Graphics/BindGroup.cpp.o.d
   FLAGS = -g -std=c++20 -arch arm64 -fPIC -F/Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/System/Library/Frameworks
-  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
+  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
   OBJECT_DIR = CMakeFiles/Dahlia.dir
   OBJECT_FILE_DIR = CMakeFiles/Dahlia.dir/src/Dahlia/Graphics
   TARGET_SUPPORT_DIR = CMakeFiles/Dahlia.dir
@@ -108,7 +102,7 @@ build CMakeFiles/Dahlia.dir/src/Dahlia/Graphics/Buffer.cpp.o: CXX_COMPILER__Dahl
   DEFINES = -DBOOST_ATOMIC_DYN_LINK -DBOOST_ATOMIC_NO_LIB -DBOOST_FILESYSTEM_DYN_LINK -DBOOST_FILESYSTEM_NO_LIB -DCONFIG_DEBUG -DDH_BUILD -DDH_METAL_ENABLED -DDH_VULKAN_ENABLED -DDahlia_EXPORTS -DGLM_ENABLE_EXPERIMENTAL
   DEP_FILE = CMakeFiles/Dahlia.dir/src/Dahlia/Graphics/Buffer.cpp.o.d
   FLAGS = -g -std=c++20 -arch arm64 -fPIC -F/Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/System/Library/Frameworks
-  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
+  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
   OBJECT_DIR = CMakeFiles/Dahlia.dir
   OBJECT_FILE_DIR = CMakeFiles/Dahlia.dir/src/Dahlia/Graphics
   TARGET_SUPPORT_DIR = CMakeFiles/Dahlia.dir
@@ -118,7 +112,7 @@ build CMakeFiles/Dahlia.dir/src/Dahlia/Graphics/Framebuffer.cpp.o: CXX_COMPILER_
   DEFINES = -DBOOST_ATOMIC_DYN_LINK -DBOOST_ATOMIC_NO_LIB -DBOOST_FILESYSTEM_DYN_LINK -DBOOST_FILESYSTEM_NO_LIB -DCONFIG_DEBUG -DDH_BUILD -DDH_METAL_ENABLED -DDH_VULKAN_ENABLED -DDahlia_EXPORTS -DGLM_ENABLE_EXPERIMENTAL
   DEP_FILE = CMakeFiles/Dahlia.dir/src/Dahlia/Graphics/Framebuffer.cpp.o.d
   FLAGS = -g -std=c++20 -arch arm64 -fPIC -F/Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/System/Library/Frameworks
-  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
+  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
   OBJECT_DIR = CMakeFiles/Dahlia.dir
   OBJECT_FILE_DIR = CMakeFiles/Dahlia.dir/src/Dahlia/Graphics
   TARGET_SUPPORT_DIR = CMakeFiles/Dahlia.dir
@@ -128,7 +122,7 @@ build CMakeFiles/Dahlia.dir/src/Dahlia/Graphics/GraphicsPipeline.cpp.o: CXX_COMP
   DEFINES = -DBOOST_ATOMIC_DYN_LINK -DBOOST_ATOMIC_NO_LIB -DBOOST_FILESYSTEM_DYN_LINK -DBOOST_FILESYSTEM_NO_LIB -DCONFIG_DEBUG -DDH_BUILD -DDH_METAL_ENABLED -DDH_VULKAN_ENABLED -DDahlia_EXPORTS -DGLM_ENABLE_EXPERIMENTAL
   DEP_FILE = CMakeFiles/Dahlia.dir/src/Dahlia/Graphics/GraphicsPipeline.cpp.o.d
   FLAGS = -g -std=c++20 -arch arm64 -fPIC -F/Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/System/Library/Frameworks
-  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
+  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
   OBJECT_DIR = CMakeFiles/Dahlia.dir
   OBJECT_FILE_DIR = CMakeFiles/Dahlia.dir/src/Dahlia/Graphics
   TARGET_SUPPORT_DIR = CMakeFiles/Dahlia.dir
@@ -138,7 +132,7 @@ build CMakeFiles/Dahlia.dir/src/Dahlia/Graphics/GPUMesh.cpp.o: CXX_COMPILER__Dah
   DEFINES = -DBOOST_ATOMIC_DYN_LINK -DBOOST_ATOMIC_NO_LIB -DBOOST_FILESYSTEM_DYN_LINK -DBOOST_FILESYSTEM_NO_LIB -DCONFIG_DEBUG -DDH_BUILD -DDH_METAL_ENABLED -DDH_VULKAN_ENABLED -DDahlia_EXPORTS -DGLM_ENABLE_EXPERIMENTAL
   DEP_FILE = CMakeFiles/Dahlia.dir/src/Dahlia/Graphics/GPUMesh.cpp.o.d
   FLAGS = -g -std=c++20 -arch arm64 -fPIC -F/Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/System/Library/Frameworks
-  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
+  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
   OBJECT_DIR = CMakeFiles/Dahlia.dir
   OBJECT_FILE_DIR = CMakeFiles/Dahlia.dir/src/Dahlia/Graphics
   TARGET_SUPPORT_DIR = CMakeFiles/Dahlia.dir
@@ -148,7 +142,7 @@ build CMakeFiles/Dahlia.dir/src/Dahlia/Graphics/ShaderModule.cpp.o: CXX_COMPILER
   DEFINES = -DBOOST_ATOMIC_DYN_LINK -DBOOST_ATOMIC_NO_LIB -DBOOST_FILESYSTEM_DYN_LINK -DBOOST_FILESYSTEM_NO_LIB -DCONFIG_DEBUG -DDH_BUILD -DDH_METAL_ENABLED -DDH_VULKAN_ENABLED -DDahlia_EXPORTS -DGLM_ENABLE_EXPERIMENTAL
   DEP_FILE = CMakeFiles/Dahlia.dir/src/Dahlia/Graphics/ShaderModule.cpp.o.d
   FLAGS = -g -std=c++20 -arch arm64 -fPIC -F/Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/System/Library/Frameworks
-  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
+  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
   OBJECT_DIR = CMakeFiles/Dahlia.dir
   OBJECT_FILE_DIR = CMakeFiles/Dahlia.dir/src/Dahlia/Graphics
   TARGET_SUPPORT_DIR = CMakeFiles/Dahlia.dir
@@ -158,7 +152,7 @@ build CMakeFiles/Dahlia.dir/src/Dahlia/Graphics/Texture.cpp.o: CXX_COMPILER__Dah
   DEFINES = -DBOOST_ATOMIC_DYN_LINK -DBOOST_ATOMIC_NO_LIB -DBOOST_FILESYSTEM_DYN_LINK -DBOOST_FILESYSTEM_NO_LIB -DCONFIG_DEBUG -DDH_BUILD -DDH_METAL_ENABLED -DDH_VULKAN_ENABLED -DDahlia_EXPORTS -DGLM_ENABLE_EXPERIMENTAL
   DEP_FILE = CMakeFiles/Dahlia.dir/src/Dahlia/Graphics/Texture.cpp.o.d
   FLAGS = -g -std=c++20 -arch arm64 -fPIC -F/Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/System/Library/Frameworks
-  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
+  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
   OBJECT_DIR = CMakeFiles/Dahlia.dir
   OBJECT_FILE_DIR = CMakeFiles/Dahlia.dir/src/Dahlia/Graphics
   TARGET_SUPPORT_DIR = CMakeFiles/Dahlia.dir
@@ -168,7 +162,7 @@ build CMakeFiles/Dahlia.dir/src/Dahlia/Graphics/stb/stb_image.cpp.o: CXX_COMPILE
   DEFINES = -DBOOST_ATOMIC_DYN_LINK -DBOOST_ATOMIC_NO_LIB -DBOOST_FILESYSTEM_DYN_LINK -DBOOST_FILESYSTEM_NO_LIB -DCONFIG_DEBUG -DDH_BUILD -DDH_METAL_ENABLED -DDH_VULKAN_ENABLED -DDahlia_EXPORTS -DGLM_ENABLE_EXPERIMENTAL
   DEP_FILE = CMakeFiles/Dahlia.dir/src/Dahlia/Graphics/stb/stb_image.cpp.o.d
   FLAGS = -g -std=c++20 -arch arm64 -fPIC -F/Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/System/Library/Frameworks
-  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
+  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
   OBJECT_DIR = CMakeFiles/Dahlia.dir
   OBJECT_FILE_DIR = CMakeFiles/Dahlia.dir/src/Dahlia/Graphics/stb
   TARGET_SUPPORT_DIR = CMakeFiles/Dahlia.dir
@@ -178,7 +172,7 @@ build CMakeFiles/Dahlia.dir/src/Dahlia/Application/GraphicsApp.cpp.o: CXX_COMPIL
   DEFINES = -DBOOST_ATOMIC_DYN_LINK -DBOOST_ATOMIC_NO_LIB -DBOOST_FILESYSTEM_DYN_LINK -DBOOST_FILESYSTEM_NO_LIB -DCONFIG_DEBUG -DDH_BUILD -DDH_METAL_ENABLED -DDH_VULKAN_ENABLED -DDahlia_EXPORTS -DGLM_ENABLE_EXPERIMENTAL
   DEP_FILE = CMakeFiles/Dahlia.dir/src/Dahlia/Application/GraphicsApp.cpp.o.d
   FLAGS = -g -std=c++20 -arch arm64 -fPIC -F/Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/System/Library/Frameworks
-  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
+  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
   OBJECT_DIR = CMakeFiles/Dahlia.dir
   OBJECT_FILE_DIR = CMakeFiles/Dahlia.dir/src/Dahlia/Application
   TARGET_SUPPORT_DIR = CMakeFiles/Dahlia.dir
@@ -188,7 +182,7 @@ build CMakeFiles/Dahlia.dir/src/Dahlia/GUI/Display.cpp.o: CXX_COMPILER__Dahlia_u
   DEFINES = -DBOOST_ATOMIC_DYN_LINK -DBOOST_ATOMIC_NO_LIB -DBOOST_FILESYSTEM_DYN_LINK -DBOOST_FILESYSTEM_NO_LIB -DCONFIG_DEBUG -DDH_BUILD -DDH_METAL_ENABLED -DDH_VULKAN_ENABLED -DDahlia_EXPORTS -DGLM_ENABLE_EXPERIMENTAL
   DEP_FILE = CMakeFiles/Dahlia.dir/src/Dahlia/GUI/Display.cpp.o.d
   FLAGS = -g -std=c++20 -arch arm64 -fPIC -F/Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/System/Library/Frameworks
-  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
+  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
   OBJECT_DIR = CMakeFiles/Dahlia.dir
   OBJECT_FILE_DIR = CMakeFiles/Dahlia.dir/src/Dahlia/GUI
   TARGET_SUPPORT_DIR = CMakeFiles/Dahlia.dir
@@ -198,7 +192,7 @@ build CMakeFiles/Dahlia.dir/src/Dahlia/GUI/ImGuiBuild.cpp.o: CXX_COMPILER__Dahli
   DEFINES = -DBOOST_ATOMIC_DYN_LINK -DBOOST_ATOMIC_NO_LIB -DBOOST_FILESYSTEM_DYN_LINK -DBOOST_FILESYSTEM_NO_LIB -DCONFIG_DEBUG -DDH_BUILD -DDH_METAL_ENABLED -DDH_VULKAN_ENABLED -DDahlia_EXPORTS -DGLM_ENABLE_EXPERIMENTAL
   DEP_FILE = CMakeFiles/Dahlia.dir/src/Dahlia/GUI/ImGuiBuild.cpp.o.d
   FLAGS = -g -std=c++20 -arch arm64 -fPIC -F/Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/System/Library/Frameworks
-  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
+  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
   OBJECT_DIR = CMakeFiles/Dahlia.dir
   OBJECT_FILE_DIR = CMakeFiles/Dahlia.dir/src/Dahlia/GUI
   TARGET_SUPPORT_DIR = CMakeFiles/Dahlia.dir
@@ -208,7 +202,7 @@ build CMakeFiles/Dahlia.dir/src/Dahlia/GUI/ImGuiLayer.cpp.o: CXX_COMPILER__Dahli
   DEFINES = -DBOOST_ATOMIC_DYN_LINK -DBOOST_ATOMIC_NO_LIB -DBOOST_FILESYSTEM_DYN_LINK -DBOOST_FILESYSTEM_NO_LIB -DCONFIG_DEBUG -DDH_BUILD -DDH_METAL_ENABLED -DDH_VULKAN_ENABLED -DDahlia_EXPORTS -DGLM_ENABLE_EXPERIMENTAL
   DEP_FILE = CMakeFiles/Dahlia.dir/src/Dahlia/GUI/ImGuiLayer.cpp.o.d
   FLAGS = -g -std=c++20 -arch arm64 -fPIC -F/Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/System/Library/Frameworks
-  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
+  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
   OBJECT_DIR = CMakeFiles/Dahlia.dir
   OBJECT_FILE_DIR = CMakeFiles/Dahlia.dir/src/Dahlia/GUI
   TARGET_SUPPORT_DIR = CMakeFiles/Dahlia.dir
@@ -218,7 +212,7 @@ build CMakeFiles/Dahlia.dir/src/Dahlia/GUI/ImGuiRenderer.cpp.o: CXX_COMPILER__Da
   DEFINES = -DBOOST_ATOMIC_DYN_LINK -DBOOST_ATOMIC_NO_LIB -DBOOST_FILESYSTEM_DYN_LINK -DBOOST_FILESYSTEM_NO_LIB -DCONFIG_DEBUG -DDH_BUILD -DDH_METAL_ENABLED -DDH_VULKAN_ENABLED -DDahlia_EXPORTS -DGLM_ENABLE_EXPERIMENTAL
   DEP_FILE = CMakeFiles/Dahlia.dir/src/Dahlia/GUI/ImGuiRenderer.cpp.o.d
   FLAGS = -g -std=c++20 -arch arm64 -fPIC -F/Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/System/Library/Frameworks
-  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
+  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
   OBJECT_DIR = CMakeFiles/Dahlia.dir
   OBJECT_FILE_DIR = CMakeFiles/Dahlia.dir/src/Dahlia/GUI
   TARGET_SUPPORT_DIR = CMakeFiles/Dahlia.dir
@@ -228,7 +222,7 @@ build CMakeFiles/Dahlia.dir/src/Dahlia/GUI/Text.cpp.o: CXX_COMPILER__Dahlia_unsc
   DEFINES = -DBOOST_ATOMIC_DYN_LINK -DBOOST_ATOMIC_NO_LIB -DBOOST_FILESYSTEM_DYN_LINK -DBOOST_FILESYSTEM_NO_LIB -DCONFIG_DEBUG -DDH_BUILD -DDH_METAL_ENABLED -DDH_VULKAN_ENABLED -DDahlia_EXPORTS -DGLM_ENABLE_EXPERIMENTAL
   DEP_FILE = CMakeFiles/Dahlia.dir/src/Dahlia/GUI/Text.cpp.o.d
   FLAGS = -g -std=c++20 -arch arm64 -fPIC -F/Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/System/Library/Frameworks
-  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
+  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
   OBJECT_DIR = CMakeFiles/Dahlia.dir
   OBJECT_FILE_DIR = CMakeFiles/Dahlia.dir/src/Dahlia/GUI
   TARGET_SUPPORT_DIR = CMakeFiles/Dahlia.dir
@@ -238,7 +232,7 @@ build CMakeFiles/Dahlia.dir/src/Dahlia/Layers/Layer.cpp.o: CXX_COMPILER__Dahlia_
   DEFINES = -DBOOST_ATOMIC_DYN_LINK -DBOOST_ATOMIC_NO_LIB -DBOOST_FILESYSTEM_DYN_LINK -DBOOST_FILESYSTEM_NO_LIB -DCONFIG_DEBUG -DDH_BUILD -DDH_METAL_ENABLED -DDH_VULKAN_ENABLED -DDahlia_EXPORTS -DGLM_ENABLE_EXPERIMENTAL
   DEP_FILE = CMakeFiles/Dahlia.dir/src/Dahlia/Layers/Layer.cpp.o.d
   FLAGS = -g -std=c++20 -arch arm64 -fPIC -F/Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/System/Library/Frameworks
-  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
+  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
   OBJECT_DIR = CMakeFiles/Dahlia.dir
   OBJECT_FILE_DIR = CMakeFiles/Dahlia.dir/src/Dahlia/Layers
   TARGET_SUPPORT_DIR = CMakeFiles/Dahlia.dir
@@ -248,7 +242,7 @@ build CMakeFiles/Dahlia.dir/src/Dahlia/Layers/LayerStack.cpp.o: CXX_COMPILER__Da
   DEFINES = -DBOOST_ATOMIC_DYN_LINK -DBOOST_ATOMIC_NO_LIB -DBOOST_FILESYSTEM_DYN_LINK -DBOOST_FILESYSTEM_NO_LIB -DCONFIG_DEBUG -DDH_BUILD -DDH_METAL_ENABLED -DDH_VULKAN_ENABLED -DDahlia_EXPORTS -DGLM_ENABLE_EXPERIMENTAL
   DEP_FILE = CMakeFiles/Dahlia.dir/src/Dahlia/Layers/LayerStack.cpp.o.d
   FLAGS = -g -std=c++20 -arch arm64 -fPIC -F/Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/System/Library/Frameworks
-  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
+  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
   OBJECT_DIR = CMakeFiles/Dahlia.dir
   OBJECT_FILE_DIR = CMakeFiles/Dahlia.dir/src/Dahlia/Layers
   TARGET_SUPPORT_DIR = CMakeFiles/Dahlia.dir
@@ -258,7 +252,7 @@ build CMakeFiles/Dahlia.dir/src/Dahlia/Maths/Geometry.cpp.o: CXX_COMPILER__Dahli
   DEFINES = -DBOOST_ATOMIC_DYN_LINK -DBOOST_ATOMIC_NO_LIB -DBOOST_FILESYSTEM_DYN_LINK -DBOOST_FILESYSTEM_NO_LIB -DCONFIG_DEBUG -DDH_BUILD -DDH_METAL_ENABLED -DDH_VULKAN_ENABLED -DDahlia_EXPORTS -DGLM_ENABLE_EXPERIMENTAL
   DEP_FILE = CMakeFiles/Dahlia.dir/src/Dahlia/Maths/Geometry.cpp.o.d
   FLAGS = -g -std=c++20 -arch arm64 -fPIC -F/Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/System/Library/Frameworks
-  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
+  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
   OBJECT_DIR = CMakeFiles/Dahlia.dir
   OBJECT_FILE_DIR = CMakeFiles/Dahlia.dir/src/Dahlia/Maths
   TARGET_SUPPORT_DIR = CMakeFiles/Dahlia.dir
@@ -268,7 +262,7 @@ build CMakeFiles/Dahlia.dir/src/Dahlia/Maths/Maths.cpp.o: CXX_COMPILER__Dahlia_u
   DEFINES = -DBOOST_ATOMIC_DYN_LINK -DBOOST_ATOMIC_NO_LIB -DBOOST_FILESYSTEM_DYN_LINK -DBOOST_FILESYSTEM_NO_LIB -DCONFIG_DEBUG -DDH_BUILD -DDH_METAL_ENABLED -DDH_VULKAN_ENABLED -DDahlia_EXPORTS -DGLM_ENABLE_EXPERIMENTAL
   DEP_FILE = CMakeFiles/Dahlia.dir/src/Dahlia/Maths/Maths.cpp.o.d
   FLAGS = -g -std=c++20 -arch arm64 -fPIC -F/Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/System/Library/Frameworks
-  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
+  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
   OBJECT_DIR = CMakeFiles/Dahlia.dir
   OBJECT_FILE_DIR = CMakeFiles/Dahlia.dir/src/Dahlia/Maths
   TARGET_SUPPORT_DIR = CMakeFiles/Dahlia.dir
@@ -278,7 +272,7 @@ build CMakeFiles/Dahlia.dir/src/Dahlia/Platform/GLFW/GLFWDisplayBase.cpp.o: CXX_
   DEFINES = -DBOOST_ATOMIC_DYN_LINK -DBOOST_ATOMIC_NO_LIB -DBOOST_FILESYSTEM_DYN_LINK -DBOOST_FILESYSTEM_NO_LIB -DCONFIG_DEBUG -DDH_BUILD -DDH_METAL_ENABLED -DDH_VULKAN_ENABLED -DDahlia_EXPORTS -DGLM_ENABLE_EXPERIMENTAL
   DEP_FILE = CMakeFiles/Dahlia.dir/src/Dahlia/Platform/GLFW/GLFWDisplayBase.cpp.o.d
   FLAGS = -g -std=c++20 -arch arm64 -fPIC -F/Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/System/Library/Frameworks
-  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
+  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
   OBJECT_DIR = CMakeFiles/Dahlia.dir
   OBJECT_FILE_DIR = CMakeFiles/Dahlia.dir/src/Dahlia/Platform/GLFW
   TARGET_SUPPORT_DIR = CMakeFiles/Dahlia.dir
@@ -288,7 +282,7 @@ build CMakeFiles/Dahlia.dir/src/Dahlia/Platform/GPUContext.cpp.o: CXX_COMPILER__
   DEFINES = -DBOOST_ATOMIC_DYN_LINK -DBOOST_ATOMIC_NO_LIB -DBOOST_FILESYSTEM_DYN_LINK -DBOOST_FILESYSTEM_NO_LIB -DCONFIG_DEBUG -DDH_BUILD -DDH_METAL_ENABLED -DDH_VULKAN_ENABLED -DDahlia_EXPORTS -DGLM_ENABLE_EXPERIMENTAL
   DEP_FILE = CMakeFiles/Dahlia.dir/src/Dahlia/Platform/GPUContext.cpp.o.d
   FLAGS = -g -std=c++20 -arch arm64 -fPIC -F/Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/System/Library/Frameworks
-  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
+  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
   OBJECT_DIR = CMakeFiles/Dahlia.dir
   OBJECT_FILE_DIR = CMakeFiles/Dahlia.dir/src/Dahlia/Platform
   TARGET_SUPPORT_DIR = CMakeFiles/Dahlia.dir
@@ -298,7 +292,7 @@ build CMakeFiles/Dahlia.dir/src/Dahlia/Platform/OpenGL/OpenGLBuffer.cpp.o: CXX_C
   DEFINES = -DBOOST_ATOMIC_DYN_LINK -DBOOST_ATOMIC_NO_LIB -DBOOST_FILESYSTEM_DYN_LINK -DBOOST_FILESYSTEM_NO_LIB -DCONFIG_DEBUG -DDH_BUILD -DDH_METAL_ENABLED -DDH_VULKAN_ENABLED -DDahlia_EXPORTS -DGLM_ENABLE_EXPERIMENTAL
   DEP_FILE = CMakeFiles/Dahlia.dir/src/Dahlia/Platform/OpenGL/OpenGLBuffer.cpp.o.d
   FLAGS = -g -std=c++20 -arch arm64 -fPIC -F/Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/System/Library/Frameworks
-  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
+  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
   OBJECT_DIR = CMakeFiles/Dahlia.dir
   OBJECT_FILE_DIR = CMakeFiles/Dahlia.dir/src/Dahlia/Platform/OpenGL
   TARGET_SUPPORT_DIR = CMakeFiles/Dahlia.dir
@@ -308,7 +302,7 @@ build CMakeFiles/Dahlia.dir/src/Dahlia/Platform/OpenGL/OpenGLCommandList.cpp.o: 
   DEFINES = -DBOOST_ATOMIC_DYN_LINK -DBOOST_ATOMIC_NO_LIB -DBOOST_FILESYSTEM_DYN_LINK -DBOOST_FILESYSTEM_NO_LIB -DCONFIG_DEBUG -DDH_BUILD -DDH_METAL_ENABLED -DDH_VULKAN_ENABLED -DDahlia_EXPORTS -DGLM_ENABLE_EXPERIMENTAL
   DEP_FILE = CMakeFiles/Dahlia.dir/src/Dahlia/Platform/OpenGL/OpenGLCommandList.cpp.o.d
   FLAGS = -g -std=c++20 -arch arm64 -fPIC -F/Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/System/Library/Frameworks
-  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
+  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
   OBJECT_DIR = CMakeFiles/Dahlia.dir
   OBJECT_FILE_DIR = CMakeFiles/Dahlia.dir/src/Dahlia/Platform/OpenGL
   TARGET_SUPPORT_DIR = CMakeFiles/Dahlia.dir
@@ -318,7 +312,7 @@ build CMakeFiles/Dahlia.dir/src/Dahlia/Platform/OpenGL/OpenGLContext.cpp.o: CXX_
   DEFINES = -DBOOST_ATOMIC_DYN_LINK -DBOOST_ATOMIC_NO_LIB -DBOOST_FILESYSTEM_DYN_LINK -DBOOST_FILESYSTEM_NO_LIB -DCONFIG_DEBUG -DDH_BUILD -DDH_METAL_ENABLED -DDH_VULKAN_ENABLED -DDahlia_EXPORTS -DGLM_ENABLE_EXPERIMENTAL
   DEP_FILE = CMakeFiles/Dahlia.dir/src/Dahlia/Platform/OpenGL/OpenGLContext.cpp.o.d
   FLAGS = -g -std=c++20 -arch arm64 -fPIC -F/Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/System/Library/Frameworks
-  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
+  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
   OBJECT_DIR = CMakeFiles/Dahlia.dir
   OBJECT_FILE_DIR = CMakeFiles/Dahlia.dir/src/Dahlia/Platform/OpenGL
   TARGET_SUPPORT_DIR = CMakeFiles/Dahlia.dir
@@ -328,7 +322,7 @@ build CMakeFiles/Dahlia.dir/src/Dahlia/Platform/OpenGL/OpenGLDisplay.cpp.o: CXX_
   DEFINES = -DBOOST_ATOMIC_DYN_LINK -DBOOST_ATOMIC_NO_LIB -DBOOST_FILESYSTEM_DYN_LINK -DBOOST_FILESYSTEM_NO_LIB -DCONFIG_DEBUG -DDH_BUILD -DDH_METAL_ENABLED -DDH_VULKAN_ENABLED -DDahlia_EXPORTS -DGLM_ENABLE_EXPERIMENTAL
   DEP_FILE = CMakeFiles/Dahlia.dir/src/Dahlia/Platform/OpenGL/OpenGLDisplay.cpp.o.d
   FLAGS = -g -std=c++20 -arch arm64 -fPIC -F/Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/System/Library/Frameworks
-  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
+  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
   OBJECT_DIR = CMakeFiles/Dahlia.dir
   OBJECT_FILE_DIR = CMakeFiles/Dahlia.dir/src/Dahlia/Platform/OpenGL
   TARGET_SUPPORT_DIR = CMakeFiles/Dahlia.dir
@@ -338,7 +332,7 @@ build CMakeFiles/Dahlia.dir/src/Dahlia/Platform/OpenGL/OpenGLFramebuffer.cpp.o: 
   DEFINES = -DBOOST_ATOMIC_DYN_LINK -DBOOST_ATOMIC_NO_LIB -DBOOST_FILESYSTEM_DYN_LINK -DBOOST_FILESYSTEM_NO_LIB -DCONFIG_DEBUG -DDH_BUILD -DDH_METAL_ENABLED -DDH_VULKAN_ENABLED -DDahlia_EXPORTS -DGLM_ENABLE_EXPERIMENTAL
   DEP_FILE = CMakeFiles/Dahlia.dir/src/Dahlia/Platform/OpenGL/OpenGLFramebuffer.cpp.o.d
   FLAGS = -g -std=c++20 -arch arm64 -fPIC -F/Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/System/Library/Frameworks
-  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
+  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
   OBJECT_DIR = CMakeFiles/Dahlia.dir
   OBJECT_FILE_DIR = CMakeFiles/Dahlia.dir/src/Dahlia/Platform/OpenGL
   TARGET_SUPPORT_DIR = CMakeFiles/Dahlia.dir
@@ -348,7 +342,7 @@ build CMakeFiles/Dahlia.dir/src/Dahlia/Platform/OpenGL/OpenGLGraphicsPipeline.cp
   DEFINES = -DBOOST_ATOMIC_DYN_LINK -DBOOST_ATOMIC_NO_LIB -DBOOST_FILESYSTEM_DYN_LINK -DBOOST_FILESYSTEM_NO_LIB -DCONFIG_DEBUG -DDH_BUILD -DDH_METAL_ENABLED -DDH_VULKAN_ENABLED -DDahlia_EXPORTS -DGLM_ENABLE_EXPERIMENTAL
   DEP_FILE = CMakeFiles/Dahlia.dir/src/Dahlia/Platform/OpenGL/OpenGLGraphicsPipeline.cpp.o.d
   FLAGS = -g -std=c++20 -arch arm64 -fPIC -F/Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/System/Library/Frameworks
-  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
+  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
   OBJECT_DIR = CMakeFiles/Dahlia.dir
   OBJECT_FILE_DIR = CMakeFiles/Dahlia.dir/src/Dahlia/Platform/OpenGL
   TARGET_SUPPORT_DIR = CMakeFiles/Dahlia.dir
@@ -358,7 +352,7 @@ build CMakeFiles/Dahlia.dir/src/Dahlia/Platform/OpenGL/OpenGLShaderModule.cpp.o:
   DEFINES = -DBOOST_ATOMIC_DYN_LINK -DBOOST_ATOMIC_NO_LIB -DBOOST_FILESYSTEM_DYN_LINK -DBOOST_FILESYSTEM_NO_LIB -DCONFIG_DEBUG -DDH_BUILD -DDH_METAL_ENABLED -DDH_VULKAN_ENABLED -DDahlia_EXPORTS -DGLM_ENABLE_EXPERIMENTAL
   DEP_FILE = CMakeFiles/Dahlia.dir/src/Dahlia/Platform/OpenGL/OpenGLShaderModule.cpp.o.d
   FLAGS = -g -std=c++20 -arch arm64 -fPIC -F/Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/System/Library/Frameworks
-  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
+  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
   OBJECT_DIR = CMakeFiles/Dahlia.dir
   OBJECT_FILE_DIR = CMakeFiles/Dahlia.dir/src/Dahlia/Platform/OpenGL
   TARGET_SUPPORT_DIR = CMakeFiles/Dahlia.dir
@@ -368,7 +362,7 @@ build CMakeFiles/Dahlia.dir/src/Dahlia/Platform/OpenGL/OpenGLTexture.cpp.o: CXX_
   DEFINES = -DBOOST_ATOMIC_DYN_LINK -DBOOST_ATOMIC_NO_LIB -DBOOST_FILESYSTEM_DYN_LINK -DBOOST_FILESYSTEM_NO_LIB -DCONFIG_DEBUG -DDH_BUILD -DDH_METAL_ENABLED -DDH_VULKAN_ENABLED -DDahlia_EXPORTS -DGLM_ENABLE_EXPERIMENTAL
   DEP_FILE = CMakeFiles/Dahlia.dir/src/Dahlia/Platform/OpenGL/OpenGLTexture.cpp.o.d
   FLAGS = -g -std=c++20 -arch arm64 -fPIC -F/Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/System/Library/Frameworks
-  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
+  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
   OBJECT_DIR = CMakeFiles/Dahlia.dir
   OBJECT_FILE_DIR = CMakeFiles/Dahlia.dir/src/Dahlia/Platform/OpenGL
   TARGET_SUPPORT_DIR = CMakeFiles/Dahlia.dir
@@ -378,7 +372,7 @@ build CMakeFiles/Dahlia.dir/src/Dahlia/Platform/OpenGL/OpenGLImGuiRenderer.cpp.o
   DEFINES = -DBOOST_ATOMIC_DYN_LINK -DBOOST_ATOMIC_NO_LIB -DBOOST_FILESYSTEM_DYN_LINK -DBOOST_FILESYSTEM_NO_LIB -DCONFIG_DEBUG -DDH_BUILD -DDH_METAL_ENABLED -DDH_VULKAN_ENABLED -DDahlia_EXPORTS -DGLM_ENABLE_EXPERIMENTAL
   DEP_FILE = CMakeFiles/Dahlia.dir/src/Dahlia/Platform/OpenGL/OpenGLImGuiRenderer.cpp.o.d
   FLAGS = -g -std=c++20 -arch arm64 -fPIC -F/Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/System/Library/Frameworks
-  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
+  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
   OBJECT_DIR = CMakeFiles/Dahlia.dir
   OBJECT_FILE_DIR = CMakeFiles/Dahlia.dir/src/Dahlia/Platform/OpenGL
   TARGET_SUPPORT_DIR = CMakeFiles/Dahlia.dir
@@ -388,7 +382,7 @@ build CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Windows/Console.cpp.o: CXX_COMPI
   DEFINES = -DBOOST_ATOMIC_DYN_LINK -DBOOST_ATOMIC_NO_LIB -DBOOST_FILESYSTEM_DYN_LINK -DBOOST_FILESYSTEM_NO_LIB -DCONFIG_DEBUG -DDH_BUILD -DDH_METAL_ENABLED -DDH_VULKAN_ENABLED -DDahlia_EXPORTS -DGLM_ENABLE_EXPERIMENTAL
   DEP_FILE = CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Windows/Console.cpp.o.d
   FLAGS = -g -std=c++20 -arch arm64 -fPIC -F/Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/System/Library/Frameworks
-  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
+  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
   OBJECT_DIR = CMakeFiles/Dahlia.dir
   OBJECT_FILE_DIR = CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Windows
   TARGET_SUPPORT_DIR = CMakeFiles/Dahlia.dir
@@ -398,7 +392,7 @@ build CMakeFiles/Dahlia.dir/src/Dahlia/Resources/FontsRes.cpp.o: CXX_COMPILER__D
   DEFINES = -DBOOST_ATOMIC_DYN_LINK -DBOOST_ATOMIC_NO_LIB -DBOOST_FILESYSTEM_DYN_LINK -DBOOST_FILESYSTEM_NO_LIB -DCONFIG_DEBUG -DDH_BUILD -DDH_METAL_ENABLED -DDH_VULKAN_ENABLED -DDahlia_EXPORTS -DGLM_ENABLE_EXPERIMENTAL
   DEP_FILE = CMakeFiles/Dahlia.dir/src/Dahlia/Resources/FontsRes.cpp.o.d
   FLAGS = -g -std=c++20 -arch arm64 -fPIC -F/Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/System/Library/Frameworks
-  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
+  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
   OBJECT_DIR = CMakeFiles/Dahlia.dir
   OBJECT_FILE_DIR = CMakeFiles/Dahlia.dir/src/Dahlia/Resources
   TARGET_SUPPORT_DIR = CMakeFiles/Dahlia.dir
@@ -408,7 +402,7 @@ build CMakeFiles/Dahlia.dir/src/Dahlia/Resources/ShaderSources.cpp.o: CXX_COMPIL
   DEFINES = -DBOOST_ATOMIC_DYN_LINK -DBOOST_ATOMIC_NO_LIB -DBOOST_FILESYSTEM_DYN_LINK -DBOOST_FILESYSTEM_NO_LIB -DCONFIG_DEBUG -DDH_BUILD -DDH_METAL_ENABLED -DDH_VULKAN_ENABLED -DDahlia_EXPORTS -DGLM_ENABLE_EXPERIMENTAL
   DEP_FILE = CMakeFiles/Dahlia.dir/src/Dahlia/Resources/ShaderSources.cpp.o.d
   FLAGS = -g -std=c++20 -arch arm64 -fPIC -F/Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/System/Library/Frameworks
-  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
+  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
   OBJECT_DIR = CMakeFiles/Dahlia.dir
   OBJECT_FILE_DIR = CMakeFiles/Dahlia.dir/src/Dahlia/Resources
   TARGET_SUPPORT_DIR = CMakeFiles/Dahlia.dir
@@ -418,7 +412,7 @@ build CMakeFiles/Dahlia.dir/src/Dahlia/Scene/Camera2D.cpp.o: CXX_COMPILER__Dahli
   DEFINES = -DBOOST_ATOMIC_DYN_LINK -DBOOST_ATOMIC_NO_LIB -DBOOST_FILESYSTEM_DYN_LINK -DBOOST_FILESYSTEM_NO_LIB -DCONFIG_DEBUG -DDH_BUILD -DDH_METAL_ENABLED -DDH_VULKAN_ENABLED -DDahlia_EXPORTS -DGLM_ENABLE_EXPERIMENTAL
   DEP_FILE = CMakeFiles/Dahlia.dir/src/Dahlia/Scene/Camera2D.cpp.o.d
   FLAGS = -g -std=c++20 -arch arm64 -fPIC -F/Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/System/Library/Frameworks
-  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
+  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
   OBJECT_DIR = CMakeFiles/Dahlia.dir
   OBJECT_FILE_DIR = CMakeFiles/Dahlia.dir/src/Dahlia/Scene
   TARGET_SUPPORT_DIR = CMakeFiles/Dahlia.dir
@@ -428,7 +422,7 @@ build CMakeFiles/Dahlia.dir/src/Dahlia/Scene/Camera3D.cpp.o: CXX_COMPILER__Dahli
   DEFINES = -DBOOST_ATOMIC_DYN_LINK -DBOOST_ATOMIC_NO_LIB -DBOOST_FILESYSTEM_DYN_LINK -DBOOST_FILESYSTEM_NO_LIB -DCONFIG_DEBUG -DDH_BUILD -DDH_METAL_ENABLED -DDH_VULKAN_ENABLED -DDahlia_EXPORTS -DGLM_ENABLE_EXPERIMENTAL
   DEP_FILE = CMakeFiles/Dahlia.dir/src/Dahlia/Scene/Camera3D.cpp.o.d
   FLAGS = -g -std=c++20 -arch arm64 -fPIC -F/Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/System/Library/Frameworks
-  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
+  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
   OBJECT_DIR = CMakeFiles/Dahlia.dir
   OBJECT_FILE_DIR = CMakeFiles/Dahlia.dir/src/Dahlia/Scene
   TARGET_SUPPORT_DIR = CMakeFiles/Dahlia.dir
@@ -438,7 +432,7 @@ build CMakeFiles/Dahlia.dir/src/Dahlia/Utilities/IO.cpp.o: CXX_COMPILER__Dahlia_
   DEFINES = -DBOOST_ATOMIC_DYN_LINK -DBOOST_ATOMIC_NO_LIB -DBOOST_FILESYSTEM_DYN_LINK -DBOOST_FILESYSTEM_NO_LIB -DCONFIG_DEBUG -DDH_BUILD -DDH_METAL_ENABLED -DDH_VULKAN_ENABLED -DDahlia_EXPORTS -DGLM_ENABLE_EXPERIMENTAL
   DEP_FILE = CMakeFiles/Dahlia.dir/src/Dahlia/Utilities/IO.cpp.o.d
   FLAGS = -g -std=c++20 -arch arm64 -fPIC -F/Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/System/Library/Frameworks
-  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
+  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
   OBJECT_DIR = CMakeFiles/Dahlia.dir
   OBJECT_FILE_DIR = CMakeFiles/Dahlia.dir/src/Dahlia/Utilities
   TARGET_SUPPORT_DIR = CMakeFiles/Dahlia.dir
@@ -448,7 +442,7 @@ build CMakeFiles/Dahlia.dir/src/Dahlia/GUI/ImGuiBuildVulkan.cpp.o: CXX_COMPILER_
   DEFINES = -DBOOST_ATOMIC_DYN_LINK -DBOOST_ATOMIC_NO_LIB -DBOOST_FILESYSTEM_DYN_LINK -DBOOST_FILESYSTEM_NO_LIB -DCONFIG_DEBUG -DDH_BUILD -DDH_METAL_ENABLED -DDH_VULKAN_ENABLED -DDahlia_EXPORTS -DGLM_ENABLE_EXPERIMENTAL
   DEP_FILE = CMakeFiles/Dahlia.dir/src/Dahlia/GUI/ImGuiBuildVulkan.cpp.o.d
   FLAGS = -g -std=c++20 -arch arm64 -fPIC -F/Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/System/Library/Frameworks
-  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
+  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
   OBJECT_DIR = CMakeFiles/Dahlia.dir
   OBJECT_FILE_DIR = CMakeFiles/Dahlia.dir/src/Dahlia/GUI
   TARGET_SUPPORT_DIR = CMakeFiles/Dahlia.dir
@@ -458,7 +452,7 @@ build CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Vulkan/VulkanBindGroup.cpp.o: CX
   DEFINES = -DBOOST_ATOMIC_DYN_LINK -DBOOST_ATOMIC_NO_LIB -DBOOST_FILESYSTEM_DYN_LINK -DBOOST_FILESYSTEM_NO_LIB -DCONFIG_DEBUG -DDH_BUILD -DDH_METAL_ENABLED -DDH_VULKAN_ENABLED -DDahlia_EXPORTS -DGLM_ENABLE_EXPERIMENTAL
   DEP_FILE = CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Vulkan/VulkanBindGroup.cpp.o.d
   FLAGS = -g -std=c++20 -arch arm64 -fPIC -F/Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/System/Library/Frameworks
-  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
+  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
   OBJECT_DIR = CMakeFiles/Dahlia.dir
   OBJECT_FILE_DIR = CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Vulkan
   TARGET_SUPPORT_DIR = CMakeFiles/Dahlia.dir
@@ -468,7 +462,7 @@ build CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Vulkan/VulkanBuffer.cpp.o: CXX_C
   DEFINES = -DBOOST_ATOMIC_DYN_LINK -DBOOST_ATOMIC_NO_LIB -DBOOST_FILESYSTEM_DYN_LINK -DBOOST_FILESYSTEM_NO_LIB -DCONFIG_DEBUG -DDH_BUILD -DDH_METAL_ENABLED -DDH_VULKAN_ENABLED -DDahlia_EXPORTS -DGLM_ENABLE_EXPERIMENTAL
   DEP_FILE = CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Vulkan/VulkanBuffer.cpp.o.d
   FLAGS = -g -std=c++20 -arch arm64 -fPIC -F/Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/System/Library/Frameworks
-  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
+  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
   OBJECT_DIR = CMakeFiles/Dahlia.dir
   OBJECT_FILE_DIR = CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Vulkan
   TARGET_SUPPORT_DIR = CMakeFiles/Dahlia.dir
@@ -478,7 +472,7 @@ build CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Vulkan/VulkanCommandList.cpp.o: 
   DEFINES = -DBOOST_ATOMIC_DYN_LINK -DBOOST_ATOMIC_NO_LIB -DBOOST_FILESYSTEM_DYN_LINK -DBOOST_FILESYSTEM_NO_LIB -DCONFIG_DEBUG -DDH_BUILD -DDH_METAL_ENABLED -DDH_VULKAN_ENABLED -DDahlia_EXPORTS -DGLM_ENABLE_EXPERIMENTAL
   DEP_FILE = CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Vulkan/VulkanCommandList.cpp.o.d
   FLAGS = -g -std=c++20 -arch arm64 -fPIC -F/Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/System/Library/Frameworks
-  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
+  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
   OBJECT_DIR = CMakeFiles/Dahlia.dir
   OBJECT_FILE_DIR = CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Vulkan
   TARGET_SUPPORT_DIR = CMakeFiles/Dahlia.dir
@@ -488,7 +482,7 @@ build CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Vulkan/VulkanContext.cpp.o: CXX_
   DEFINES = -DBOOST_ATOMIC_DYN_LINK -DBOOST_ATOMIC_NO_LIB -DBOOST_FILESYSTEM_DYN_LINK -DBOOST_FILESYSTEM_NO_LIB -DCONFIG_DEBUG -DDH_BUILD -DDH_METAL_ENABLED -DDH_VULKAN_ENABLED -DDahlia_EXPORTS -DGLM_ENABLE_EXPERIMENTAL
   DEP_FILE = CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Vulkan/VulkanContext.cpp.o.d
   FLAGS = -g -std=c++20 -arch arm64 -fPIC -F/Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/System/Library/Frameworks
-  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
+  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
   OBJECT_DIR = CMakeFiles/Dahlia.dir
   OBJECT_FILE_DIR = CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Vulkan
   TARGET_SUPPORT_DIR = CMakeFiles/Dahlia.dir
@@ -498,7 +492,7 @@ build CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Vulkan/VulkanDisplay.cpp.o: CXX_
   DEFINES = -DBOOST_ATOMIC_DYN_LINK -DBOOST_ATOMIC_NO_LIB -DBOOST_FILESYSTEM_DYN_LINK -DBOOST_FILESYSTEM_NO_LIB -DCONFIG_DEBUG -DDH_BUILD -DDH_METAL_ENABLED -DDH_VULKAN_ENABLED -DDahlia_EXPORTS -DGLM_ENABLE_EXPERIMENTAL
   DEP_FILE = CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Vulkan/VulkanDisplay.cpp.o.d
   FLAGS = -g -std=c++20 -arch arm64 -fPIC -F/Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/System/Library/Frameworks
-  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
+  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
   OBJECT_DIR = CMakeFiles/Dahlia.dir
   OBJECT_FILE_DIR = CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Vulkan
   TARGET_SUPPORT_DIR = CMakeFiles/Dahlia.dir
@@ -508,7 +502,7 @@ build CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Vulkan/VulkanFramebuffer.cpp.o: 
   DEFINES = -DBOOST_ATOMIC_DYN_LINK -DBOOST_ATOMIC_NO_LIB -DBOOST_FILESYSTEM_DYN_LINK -DBOOST_FILESYSTEM_NO_LIB -DCONFIG_DEBUG -DDH_BUILD -DDH_METAL_ENABLED -DDH_VULKAN_ENABLED -DDahlia_EXPORTS -DGLM_ENABLE_EXPERIMENTAL
   DEP_FILE = CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Vulkan/VulkanFramebuffer.cpp.o.d
   FLAGS = -g -std=c++20 -arch arm64 -fPIC -F/Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/System/Library/Frameworks
-  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
+  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
   OBJECT_DIR = CMakeFiles/Dahlia.dir
   OBJECT_FILE_DIR = CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Vulkan
   TARGET_SUPPORT_DIR = CMakeFiles/Dahlia.dir
@@ -518,7 +512,7 @@ build CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Vulkan/VulkanGraphicsPipeline.cp
   DEFINES = -DBOOST_ATOMIC_DYN_LINK -DBOOST_ATOMIC_NO_LIB -DBOOST_FILESYSTEM_DYN_LINK -DBOOST_FILESYSTEM_NO_LIB -DCONFIG_DEBUG -DDH_BUILD -DDH_METAL_ENABLED -DDH_VULKAN_ENABLED -DDahlia_EXPORTS -DGLM_ENABLE_EXPERIMENTAL
   DEP_FILE = CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Vulkan/VulkanGraphicsPipeline.cpp.o.d
   FLAGS = -g -std=c++20 -arch arm64 -fPIC -F/Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/System/Library/Frameworks
-  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
+  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
   OBJECT_DIR = CMakeFiles/Dahlia.dir
   OBJECT_FILE_DIR = CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Vulkan
   TARGET_SUPPORT_DIR = CMakeFiles/Dahlia.dir
@@ -528,7 +522,7 @@ build CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Vulkan/VulkanImGuiRenderer.cpp.o
   DEFINES = -DBOOST_ATOMIC_DYN_LINK -DBOOST_ATOMIC_NO_LIB -DBOOST_FILESYSTEM_DYN_LINK -DBOOST_FILESYSTEM_NO_LIB -DCONFIG_DEBUG -DDH_BUILD -DDH_METAL_ENABLED -DDH_VULKAN_ENABLED -DDahlia_EXPORTS -DGLM_ENABLE_EXPERIMENTAL
   DEP_FILE = CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Vulkan/VulkanImGuiRenderer.cpp.o.d
   FLAGS = -g -std=c++20 -arch arm64 -fPIC -F/Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/System/Library/Frameworks
-  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
+  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
   OBJECT_DIR = CMakeFiles/Dahlia.dir
   OBJECT_FILE_DIR = CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Vulkan
   TARGET_SUPPORT_DIR = CMakeFiles/Dahlia.dir
@@ -538,7 +532,7 @@ build CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Vulkan/VulkanShaderModule.cpp.o:
   DEFINES = -DBOOST_ATOMIC_DYN_LINK -DBOOST_ATOMIC_NO_LIB -DBOOST_FILESYSTEM_DYN_LINK -DBOOST_FILESYSTEM_NO_LIB -DCONFIG_DEBUG -DDH_BUILD -DDH_METAL_ENABLED -DDH_VULKAN_ENABLED -DDahlia_EXPORTS -DGLM_ENABLE_EXPERIMENTAL
   DEP_FILE = CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Vulkan/VulkanShaderModule.cpp.o.d
   FLAGS = -g -std=c++20 -arch arm64 -fPIC -F/Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/System/Library/Frameworks
-  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
+  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
   OBJECT_DIR = CMakeFiles/Dahlia.dir
   OBJECT_FILE_DIR = CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Vulkan
   TARGET_SUPPORT_DIR = CMakeFiles/Dahlia.dir
@@ -548,7 +542,7 @@ build CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Vulkan/VulkanSwapChain.cpp.o: CX
   DEFINES = -DBOOST_ATOMIC_DYN_LINK -DBOOST_ATOMIC_NO_LIB -DBOOST_FILESYSTEM_DYN_LINK -DBOOST_FILESYSTEM_NO_LIB -DCONFIG_DEBUG -DDH_BUILD -DDH_METAL_ENABLED -DDH_VULKAN_ENABLED -DDahlia_EXPORTS -DGLM_ENABLE_EXPERIMENTAL
   DEP_FILE = CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Vulkan/VulkanSwapChain.cpp.o.d
   FLAGS = -g -std=c++20 -arch arm64 -fPIC -F/Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/System/Library/Frameworks
-  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
+  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
   OBJECT_DIR = CMakeFiles/Dahlia.dir
   OBJECT_FILE_DIR = CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Vulkan
   TARGET_SUPPORT_DIR = CMakeFiles/Dahlia.dir
@@ -558,7 +552,7 @@ build CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Vulkan/VulkanTexture.cpp.o: CXX_
   DEFINES = -DBOOST_ATOMIC_DYN_LINK -DBOOST_ATOMIC_NO_LIB -DBOOST_FILESYSTEM_DYN_LINK -DBOOST_FILESYSTEM_NO_LIB -DCONFIG_DEBUG -DDH_BUILD -DDH_METAL_ENABLED -DDH_VULKAN_ENABLED -DDahlia_EXPORTS -DGLM_ENABLE_EXPERIMENTAL
   DEP_FILE = CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Vulkan/VulkanTexture.cpp.o.d
   FLAGS = -g -std=c++20 -arch arm64 -fPIC -F/Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/System/Library/Frameworks
-  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
+  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
   OBJECT_DIR = CMakeFiles/Dahlia.dir
   OBJECT_FILE_DIR = CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Vulkan
   TARGET_SUPPORT_DIR = CMakeFiles/Dahlia.dir
@@ -568,7 +562,7 @@ build CMakeFiles/Dahlia.dir/src/Dahlia/GUI/ImGuiBuildMetal.mm.o: CXX_COMPILER__D
   DEFINES = -DBOOST_ATOMIC_DYN_LINK -DBOOST_ATOMIC_NO_LIB -DBOOST_FILESYSTEM_DYN_LINK -DBOOST_FILESYSTEM_NO_LIB -DCONFIG_DEBUG -DDH_BUILD -DDH_METAL_ENABLED -DDH_VULKAN_ENABLED -DDahlia_EXPORTS -DGLM_ENABLE_EXPERIMENTAL
   DEP_FILE = CMakeFiles/Dahlia.dir/src/Dahlia/GUI/ImGuiBuildMetal.mm.o.d
   FLAGS = -g -std=c++20 -arch arm64 -fPIC -F/Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/System/Library/Frameworks  -fobjc-arc
-  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
+  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
   OBJECT_DIR = CMakeFiles/Dahlia.dir
   OBJECT_FILE_DIR = CMakeFiles/Dahlia.dir/src/Dahlia/GUI
   TARGET_SUPPORT_DIR = CMakeFiles/Dahlia.dir
@@ -578,7 +572,7 @@ build CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Metal/MetalBuffer.cpp.o: CXX_COM
   DEFINES = -DBOOST_ATOMIC_DYN_LINK -DBOOST_ATOMIC_NO_LIB -DBOOST_FILESYSTEM_DYN_LINK -DBOOST_FILESYSTEM_NO_LIB -DCONFIG_DEBUG -DDH_BUILD -DDH_METAL_ENABLED -DDH_VULKAN_ENABLED -DDahlia_EXPORTS -DGLM_ENABLE_EXPERIMENTAL
   DEP_FILE = CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Metal/MetalBuffer.cpp.o.d
   FLAGS = -g -std=c++20 -arch arm64 -fPIC -F/Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/System/Library/Frameworks
-  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
+  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
   OBJECT_DIR = CMakeFiles/Dahlia.dir
   OBJECT_FILE_DIR = CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Metal
   TARGET_SUPPORT_DIR = CMakeFiles/Dahlia.dir
@@ -588,7 +582,7 @@ build CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Metal/MetalCommandList.cpp.o: CX
   DEFINES = -DBOOST_ATOMIC_DYN_LINK -DBOOST_ATOMIC_NO_LIB -DBOOST_FILESYSTEM_DYN_LINK -DBOOST_FILESYSTEM_NO_LIB -DCONFIG_DEBUG -DDH_BUILD -DDH_METAL_ENABLED -DDH_VULKAN_ENABLED -DDahlia_EXPORTS -DGLM_ENABLE_EXPERIMENTAL
   DEP_FILE = CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Metal/MetalCommandList.cpp.o.d
   FLAGS = -g -std=c++20 -arch arm64 -fPIC -F/Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/System/Library/Frameworks
-  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
+  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
   OBJECT_DIR = CMakeFiles/Dahlia.dir
   OBJECT_FILE_DIR = CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Metal
   TARGET_SUPPORT_DIR = CMakeFiles/Dahlia.dir
@@ -598,7 +592,7 @@ build CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Metal/MetalContext.cpp.o: CXX_CO
   DEFINES = -DBOOST_ATOMIC_DYN_LINK -DBOOST_ATOMIC_NO_LIB -DBOOST_FILESYSTEM_DYN_LINK -DBOOST_FILESYSTEM_NO_LIB -DCONFIG_DEBUG -DDH_BUILD -DDH_METAL_ENABLED -DDH_VULKAN_ENABLED -DDahlia_EXPORTS -DGLM_ENABLE_EXPERIMENTAL
   DEP_FILE = CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Metal/MetalContext.cpp.o.d
   FLAGS = -g -std=c++20 -arch arm64 -fPIC -F/Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/System/Library/Frameworks
-  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
+  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
   OBJECT_DIR = CMakeFiles/Dahlia.dir
   OBJECT_FILE_DIR = CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Metal
   TARGET_SUPPORT_DIR = CMakeFiles/Dahlia.dir
@@ -608,7 +602,7 @@ build CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Metal/MetalDisplay.mm.o: CXX_COM
   DEFINES = -DBOOST_ATOMIC_DYN_LINK -DBOOST_ATOMIC_NO_LIB -DBOOST_FILESYSTEM_DYN_LINK -DBOOST_FILESYSTEM_NO_LIB -DCONFIG_DEBUG -DDH_BUILD -DDH_METAL_ENABLED -DDH_VULKAN_ENABLED -DDahlia_EXPORTS -DGLM_ENABLE_EXPERIMENTAL
   DEP_FILE = CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Metal/MetalDisplay.mm.o.d
   FLAGS = -g -std=c++20 -arch arm64 -fPIC -F/Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/System/Library/Frameworks
-  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
+  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
   OBJECT_DIR = CMakeFiles/Dahlia.dir
   OBJECT_FILE_DIR = CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Metal
   TARGET_SUPPORT_DIR = CMakeFiles/Dahlia.dir
@@ -618,7 +612,7 @@ build CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Metal/MetalFramebuffer.cpp.o: CX
   DEFINES = -DBOOST_ATOMIC_DYN_LINK -DBOOST_ATOMIC_NO_LIB -DBOOST_FILESYSTEM_DYN_LINK -DBOOST_FILESYSTEM_NO_LIB -DCONFIG_DEBUG -DDH_BUILD -DDH_METAL_ENABLED -DDH_VULKAN_ENABLED -DDahlia_EXPORTS -DGLM_ENABLE_EXPERIMENTAL
   DEP_FILE = CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Metal/MetalFramebuffer.cpp.o.d
   FLAGS = -g -std=c++20 -arch arm64 -fPIC -F/Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/System/Library/Frameworks
-  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
+  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
   OBJECT_DIR = CMakeFiles/Dahlia.dir
   OBJECT_FILE_DIR = CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Metal
   TARGET_SUPPORT_DIR = CMakeFiles/Dahlia.dir
@@ -628,7 +622,7 @@ build CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Metal/MetalGraphicsPipeline.cpp.
   DEFINES = -DBOOST_ATOMIC_DYN_LINK -DBOOST_ATOMIC_NO_LIB -DBOOST_FILESYSTEM_DYN_LINK -DBOOST_FILESYSTEM_NO_LIB -DCONFIG_DEBUG -DDH_BUILD -DDH_METAL_ENABLED -DDH_VULKAN_ENABLED -DDahlia_EXPORTS -DGLM_ENABLE_EXPERIMENTAL
   DEP_FILE = CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Metal/MetalGraphicsPipeline.cpp.o.d
   FLAGS = -g -std=c++20 -arch arm64 -fPIC -F/Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/System/Library/Frameworks
-  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
+  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
   OBJECT_DIR = CMakeFiles/Dahlia.dir
   OBJECT_FILE_DIR = CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Metal
   TARGET_SUPPORT_DIR = CMakeFiles/Dahlia.dir
@@ -638,7 +632,7 @@ build CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Metal/MetalImGuiRenderer.mm.o: C
   DEFINES = -DBOOST_ATOMIC_DYN_LINK -DBOOST_ATOMIC_NO_LIB -DBOOST_FILESYSTEM_DYN_LINK -DBOOST_FILESYSTEM_NO_LIB -DCONFIG_DEBUG -DDH_BUILD -DDH_METAL_ENABLED -DDH_VULKAN_ENABLED -DDahlia_EXPORTS -DGLM_ENABLE_EXPERIMENTAL
   DEP_FILE = CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Metal/MetalImGuiRenderer.mm.o.d
   FLAGS = -g -std=c++20 -arch arm64 -fPIC -F/Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/System/Library/Frameworks  -fobjc-arc
-  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
+  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
   OBJECT_DIR = CMakeFiles/Dahlia.dir
   OBJECT_FILE_DIR = CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Metal
   TARGET_SUPPORT_DIR = CMakeFiles/Dahlia.dir
@@ -648,7 +642,7 @@ build CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Metal/MetalImpl.cpp.o: CXX_COMPI
   DEFINES = -DBOOST_ATOMIC_DYN_LINK -DBOOST_ATOMIC_NO_LIB -DBOOST_FILESYSTEM_DYN_LINK -DBOOST_FILESYSTEM_NO_LIB -DCONFIG_DEBUG -DDH_BUILD -DDH_METAL_ENABLED -DDH_VULKAN_ENABLED -DDahlia_EXPORTS -DGLM_ENABLE_EXPERIMENTAL
   DEP_FILE = CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Metal/MetalImpl.cpp.o.d
   FLAGS = -g -std=c++20 -arch arm64 -fPIC -F/Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/System/Library/Frameworks
-  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
+  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
   OBJECT_DIR = CMakeFiles/Dahlia.dir
   OBJECT_FILE_DIR = CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Metal
   TARGET_SUPPORT_DIR = CMakeFiles/Dahlia.dir
@@ -658,7 +652,7 @@ build CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Metal/MetalShaderModule.cpp.o: C
   DEFINES = -DBOOST_ATOMIC_DYN_LINK -DBOOST_ATOMIC_NO_LIB -DBOOST_FILESYSTEM_DYN_LINK -DBOOST_FILESYSTEM_NO_LIB -DCONFIG_DEBUG -DDH_BUILD -DDH_METAL_ENABLED -DDH_VULKAN_ENABLED -DDahlia_EXPORTS -DGLM_ENABLE_EXPERIMENTAL
   DEP_FILE = CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Metal/MetalShaderModule.cpp.o.d
   FLAGS = -g -std=c++20 -arch arm64 -fPIC -F/Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/System/Library/Frameworks
-  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
+  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
   OBJECT_DIR = CMakeFiles/Dahlia.dir
   OBJECT_FILE_DIR = CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Metal
   TARGET_SUPPORT_DIR = CMakeFiles/Dahlia.dir
@@ -668,7 +662,7 @@ build CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Metal/MetalTexture.cpp.o: CXX_CO
   DEFINES = -DBOOST_ATOMIC_DYN_LINK -DBOOST_ATOMIC_NO_LIB -DBOOST_FILESYSTEM_DYN_LINK -DBOOST_FILESYSTEM_NO_LIB -DCONFIG_DEBUG -DDH_BUILD -DDH_METAL_ENABLED -DDH_VULKAN_ENABLED -DDahlia_EXPORTS -DGLM_ENABLE_EXPERIMENTAL
   DEP_FILE = CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Metal/MetalTexture.cpp.o.d
   FLAGS = -g -std=c++20 -arch arm64 -fPIC -F/Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/System/Library/Frameworks
-  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
+  INCLUDES = -I/opt/metal-cpp_macOS26_iOS26-beta -I/Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/Users/charlie/dev/C++/Dahlia/Libraries/SPIRV-Cross -isystem /opt/homebrew/include -isystem /opt/homebrew/include/freetype2 -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
   OBJECT_DIR = CMakeFiles/Dahlia.dir
   OBJECT_FILE_DIR = CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Metal
   TARGET_SUPPORT_DIR = CMakeFiles/Dahlia.dir
@@ -681,13 +675,13 @@ build CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Metal/MetalTexture.cpp.o: CXX_CO
 #############################################
 # Link the shared library /Users/charlie/dev/C++/Dahlia/bin/darwin/Debug/libDahlia.dylib
 
-build /Users/charlie/dev/C++/Dahlia/bin/darwin/Debug/libDahlia.dylib: CXX_SHARED_LIBRARY_LINKER__Dahlia_Debug CMakeFiles/Dahlia.dir/src/Dahlia/Graphics/BindGroup.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Graphics/Buffer.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Graphics/Framebuffer.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Graphics/GraphicsPipeline.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Graphics/GPUMesh.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Graphics/ShaderModule.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Graphics/Texture.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Graphics/stb/stb_image.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Application/GraphicsApp.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/GUI/Display.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/GUI/ImGuiBuild.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/GUI/ImGuiLayer.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/GUI/ImGuiRenderer.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/GUI/Text.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Layers/Layer.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Layers/LayerStack.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Maths/Geometry.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Maths/Maths.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Platform/GLFW/GLFWDisplayBase.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Platform/GPUContext.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Platform/OpenGL/OpenGLBuffer.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Platform/OpenGL/OpenGLCommandList.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Platform/OpenGL/OpenGLContext.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Platform/OpenGL/OpenGLDisplay.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Platform/OpenGL/OpenGLFramebuffer.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Platform/OpenGL/OpenGLGraphicsPipeline.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Platform/OpenGL/OpenGLShaderModule.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Platform/OpenGL/OpenGLTexture.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Platform/OpenGL/OpenGLImGuiRenderer.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Windows/Console.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Resources/FontsRes.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Resources/ShaderSources.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Scene/Camera2D.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Scene/Camera3D.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Utilities/IO.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/GUI/ImGuiBuildVulkan.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Vulkan/VulkanBindGroup.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Vulkan/VulkanBuffer.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Vulkan/VulkanCommandList.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Vulkan/VulkanContext.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Vulkan/VulkanDisplay.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Vulkan/VulkanFramebuffer.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Vulkan/VulkanGraphicsPipeline.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Vulkan/VulkanImGuiRenderer.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Vulkan/VulkanShaderModule.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Vulkan/VulkanSwapChain.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Vulkan/VulkanTexture.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/GUI/ImGuiBuildMetal.mm.o CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Metal/MetalBuffer.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Metal/MetalCommandList.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Metal/MetalContext.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Metal/MetalDisplay.mm.o CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Metal/MetalFramebuffer.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Metal/MetalGraphicsPipeline.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Metal/MetalImGuiRenderer.mm.o CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Metal/MetalImpl.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Metal/MetalShaderModule.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Metal/MetalTexture.cpp.o | /opt/homebrew/lib/libvulkan.dylib Libraries/SPIRV-Cross/libspirv-cross-msl.a /Users/charlie/dev/C++/Dahlia/Libraries/ImGui/bin/darwin/Debug/libImGui.a /opt/homebrew/lib/libglfw.3.5.dylib /opt/homebrew/lib/libboost_filesystem.dylib /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/OpenGL.framework /opt/homebrew/lib/libGLEW.2.3.1.dylib /opt/homebrew/lib/libfreetype.dylib Libraries/SPIRV-Cross/libspirv-cross-glsl.a Libraries/SPIRV-Cross/libspirv-cross-core.a /Users/charlie/dev/C++/Dahlia/bin/darwin/Debug/libDahliaTools.a /opt/homebrew/lib/libboost_atomic.dylib || /Users/charlie/dev/C++/Dahlia/Libraries/ImGui/bin/darwin/Debug/libImGui.a /Users/charlie/dev/C++/Dahlia/bin/darwin/Debug/libDahliaTools.a DahliaShaders Libraries/SPIRV-Cross/libspirv-cross-core.a Libraries/SPIRV-Cross/libspirv-cross-glsl.a Libraries/SPIRV-Cross/libspirv-cross-msl.a
+build /Users/charlie/dev/C++/Dahlia/bin/darwin/Debug/libDahlia.dylib: CXX_SHARED_LIBRARY_LINKER__Dahlia_Debug CMakeFiles/Dahlia.dir/src/Dahlia/Graphics/BindGroup.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Graphics/Buffer.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Graphics/Framebuffer.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Graphics/GraphicsPipeline.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Graphics/GPUMesh.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Graphics/ShaderModule.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Graphics/Texture.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Graphics/stb/stb_image.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Application/GraphicsApp.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/GUI/Display.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/GUI/ImGuiBuild.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/GUI/ImGuiLayer.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/GUI/ImGuiRenderer.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/GUI/Text.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Layers/Layer.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Layers/LayerStack.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Maths/Geometry.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Maths/Maths.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Platform/GLFW/GLFWDisplayBase.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Platform/GPUContext.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Platform/OpenGL/OpenGLBuffer.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Platform/OpenGL/OpenGLCommandList.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Platform/OpenGL/OpenGLContext.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Platform/OpenGL/OpenGLDisplay.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Platform/OpenGL/OpenGLFramebuffer.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Platform/OpenGL/OpenGLGraphicsPipeline.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Platform/OpenGL/OpenGLShaderModule.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Platform/OpenGL/OpenGLTexture.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Platform/OpenGL/OpenGLImGuiRenderer.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Windows/Console.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Resources/FontsRes.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Resources/ShaderSources.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Scene/Camera2D.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Scene/Camera3D.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Utilities/IO.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/GUI/ImGuiBuildVulkan.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Vulkan/VulkanBindGroup.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Vulkan/VulkanBuffer.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Vulkan/VulkanCommandList.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Vulkan/VulkanContext.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Vulkan/VulkanDisplay.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Vulkan/VulkanFramebuffer.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Vulkan/VulkanGraphicsPipeline.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Vulkan/VulkanImGuiRenderer.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Vulkan/VulkanShaderModule.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Vulkan/VulkanSwapChain.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Vulkan/VulkanTexture.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/GUI/ImGuiBuildMetal.mm.o CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Metal/MetalBuffer.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Metal/MetalCommandList.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Metal/MetalContext.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Metal/MetalDisplay.mm.o CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Metal/MetalFramebuffer.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Metal/MetalGraphicsPipeline.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Metal/MetalImGuiRenderer.mm.o CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Metal/MetalImpl.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Metal/MetalShaderModule.cpp.o CMakeFiles/Dahlia.dir/src/Dahlia/Platform/Metal/MetalTexture.cpp.o | /opt/homebrew/lib/libvulkan.dylib Libraries/SPIRV-Cross/libspirv-cross-msl.a /opt/homebrew/lib/libglm.dylib /Users/charlie/dev/C++/Dahlia/Libraries/ImGui/bin/darwin/Debug/libImGui.a /opt/homebrew/lib/libglfw.3.5.dylib /opt/homebrew/lib/libboost_filesystem.dylib /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/OpenGL.framework /opt/homebrew/lib/libGLEW.2.3.1.dylib /opt/homebrew/lib/libfreetype.dylib Libraries/SPIRV-Cross/libspirv-cross-glsl.a Libraries/SPIRV-Cross/libspirv-cross-core.a /Users/charlie/dev/C++/Dahlia/bin/darwin/Debug/libDahliaTools.a /opt/homebrew/lib/libboost_atomic.dylib || /Users/charlie/dev/C++/Dahlia/Libraries/ImGui/bin/darwin/Debug/libImGui.a /Users/charlie/dev/C++/Dahlia/bin/darwin/Debug/libDahliaTools.a DahliaShaders Libraries/SPIRV-Cross/libspirv-cross-core.a Libraries/SPIRV-Cross/libspirv-cross-glsl.a Libraries/SPIRV-Cross/libspirv-cross-msl.a
   ARCH_FLAGS = -arch arm64
   CONFIG = Debug
   INSTALLNAME_DIR = @rpath/
   LANGUAGE_COMPILE_FLAGS = -g
   LINK_FLAGS = -dynamiclib -Wl,-headerpad_max_install_names
-  LINK_LIBRARIES = -Wl,-rpath,/opt/homebrew/lib  /opt/homebrew/lib/libvulkan.dylib  Libraries/SPIRV-Cross/libspirv-cross-msl.a  -framework Foundation  -framework QuartzCore  -framework Metal  -framework Cocoa  /Users/charlie/dev/C++/Dahlia/Libraries/ImGui/bin/darwin/Debug/libImGui.a  /opt/homebrew/lib/libglfw.3.5.dylib  /opt/homebrew/lib/libboost_filesystem.dylib  -framework OpenGL  /opt/homebrew/lib/libGLEW.2.3.1.dylib  /opt/homebrew/lib/libfreetype.dylib  Libraries/SPIRV-Cross/libspirv-cross-glsl.a  Libraries/SPIRV-Cross/libspirv-cross-core.a  -framework OpenGL  /Users/charlie/dev/C++/Dahlia/bin/darwin/Debug/libDahliaTools.a  /opt/homebrew/lib/libboost_atomic.dylib  -framework OpenGL
+  LINK_LIBRARIES = -Wl,-rpath,/opt/homebrew/lib  /opt/homebrew/lib/libvulkan.dylib  Libraries/SPIRV-Cross/libspirv-cross-msl.a  -framework Foundation  -framework QuartzCore  -framework Metal  -framework Cocoa  /opt/homebrew/lib/libglm.dylib  /Users/charlie/dev/C++/Dahlia/Libraries/ImGui/bin/darwin/Debug/libImGui.a  /opt/homebrew/lib/libglfw.3.5.dylib  /opt/homebrew/lib/libboost_filesystem.dylib  -framework OpenGL  /opt/homebrew/lib/libGLEW.2.3.1.dylib  /opt/homebrew/lib/libfreetype.dylib  Libraries/SPIRV-Cross/libspirv-cross-glsl.a  Libraries/SPIRV-Cross/libspirv-cross-core.a  -framework OpenGL  /Users/charlie/dev/C++/Dahlia/bin/darwin/Debug/libDahliaTools.a  /opt/homebrew/lib/libboost_atomic.dylib  -framework OpenGL
   LINK_PATH = -F/Library/Developer/CommandLineTools/SDKs/MacOSX26.sdk/System/Library/Frameworks
   OBJECT_DIR = CMakeFiles/Dahlia.dir
   POST_BUILD = :
@@ -697,6 +691,12 @@ build /Users/charlie/dev/C++/Dahlia/bin/darwin/Debug/libDahlia.dylib: CXX_SHARED
   TARGET_FILE = /Users/charlie/dev/C++/Dahlia/bin/darwin/Debug/libDahlia.dylib
   TARGET_PDB = Dahlia.dylib.dbg
   TARGET_SUPPORT_DIR = CMakeFiles/Dahlia.dir
+
+
+#############################################
+# Utility command for DahliaShaders
+
+build DahliaShaders: phony CMakeFiles/DahliaShaders GeneratedShaders/ColourDiffuse.frag.inc GeneratedShaders/ColourDiffuse.vert.inc GeneratedShaders/SolidColour.frag.inc GeneratedShaders/SolidColour.vert.inc GeneratedShaders/Text.frag.inc GeneratedShaders/Text.vert.inc
 
 # =============================================================================
 # Object build statements for EXECUTABLE target DahliaInfo
@@ -712,7 +712,7 @@ build CMakeFiles/DahliaInfo.dir/src/DahliaInfo/Application.cpp.o: CXX_COMPILER__
   DEFINES = -DCONFIG_DEBUG -DGLM_ENABLE_EXPERIMENTAL
   DEP_FILE = CMakeFiles/DahliaInfo.dir/src/DahliaInfo/Application.cpp.o.d
   FLAGS = -g -std=c++20 -arch arm64 -fPIE
-  INCLUDES = -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/src/DahliaInfo -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/opt/homebrew/include -I/opt/homebrew/include/freetype2
+  INCLUDES = -I/Users/charlie/dev/C++/Dahlia/src -I/Users/charlie/dev/C++/Dahlia/src/DahliaInfo -I/Users/charlie/dev/C++/Dahlia/Libraries -I/Users/charlie/dev/C++/Dahlia/Libraries/ImGui -I/opt/homebrew/include/freetype2 -isystem /opt/homebrew/include
   OBJECT_DIR = CMakeFiles/DahliaInfo.dir
   OBJECT_FILE_DIR = CMakeFiles/DahliaInfo.dir/src/DahliaInfo
   TARGET_SUPPORT_DIR = CMakeFiles/DahliaInfo.dir
@@ -725,11 +725,11 @@ build CMakeFiles/DahliaInfo.dir/src/DahliaInfo/Application.cpp.o: CXX_COMPILER__
 #############################################
 # Link the executable /Users/charlie/dev/C++/Dahlia/bin/darwin/Debug/DahliaInfo
 
-build /Users/charlie/dev/C++/Dahlia/bin/darwin/Debug/DahliaInfo: CXX_EXECUTABLE_LINKER__DahliaInfo_Debug CMakeFiles/DahliaInfo.dir/src/DahliaInfo/Application.cpp.o | /Users/charlie/dev/C++/Dahlia/bin/darwin/Debug/libDahlia.dylib /Users/charlie/dev/C++/Dahlia/Libraries/ImGui/bin/darwin/Debug/libImGui.a /Users/charlie/dev/C++/Dahlia/bin/darwin/Debug/libDahliaTools.a || /Users/charlie/dev/C++/Dahlia/Libraries/ImGui/bin/darwin/Debug/libImGui.a /Users/charlie/dev/C++/Dahlia/bin/darwin/Debug/libDahlia.dylib /Users/charlie/dev/C++/Dahlia/bin/darwin/Debug/libDahliaTools.a
+build /Users/charlie/dev/C++/Dahlia/bin/darwin/Debug/DahliaInfo: CXX_EXECUTABLE_LINKER__DahliaInfo_Debug CMakeFiles/DahliaInfo.dir/src/DahliaInfo/Application.cpp.o | /Users/charlie/dev/C++/Dahlia/bin/darwin/Debug/libDahlia.dylib /Users/charlie/dev/C++/Dahlia/Libraries/ImGui/bin/darwin/Debug/libImGui.a /Users/charlie/dev/C++/Dahlia/bin/darwin/Debug/libDahliaTools.a /opt/homebrew/lib/libglm.dylib || /Users/charlie/dev/C++/Dahlia/Libraries/ImGui/bin/darwin/Debug/libImGui.a /Users/charlie/dev/C++/Dahlia/bin/darwin/Debug/libDahlia.dylib /Users/charlie/dev/C++/Dahlia/bin/darwin/Debug/libDahliaTools.a
   CONFIG = Debug
   FLAGS = -g -arch arm64
   LINK_FLAGS = -Wl,-search_paths_first -Wl,-headerpad_max_install_names
-  LINK_LIBRARIES = -Wl,-rpath,/Users/charlie/dev/C++/Dahlia/bin/darwin/Debug  /Users/charlie/dev/C++/Dahlia/bin/darwin/Debug/libDahlia.dylib  /Users/charlie/dev/C++/Dahlia/Libraries/ImGui/bin/darwin/Debug/libImGui.a  /Users/charlie/dev/C++/Dahlia/bin/darwin/Debug/libDahliaTools.a
+  LINK_LIBRARIES = -Wl,-rpath,/Users/charlie/dev/C++/Dahlia/bin/darwin/Debug -Wl,-rpath,/opt/homebrew/lib  /Users/charlie/dev/C++/Dahlia/bin/darwin/Debug/libDahlia.dylib  /Users/charlie/dev/C++/Dahlia/Libraries/ImGui/bin/darwin/Debug/libImGui.a  /Users/charlie/dev/C++/Dahlia/bin/darwin/Debug/libDahliaTools.a  /opt/homebrew/lib/libglm.dylib
   OBJECT_DIR = CMakeFiles/DahliaInfo.dir
   POST_BUILD = :
   PRE_LINK = :
@@ -772,9 +772,9 @@ build CMakeFiles/DahliaShaders | ${cmake_ninja_workdir}CMakeFiles/DahliaShaders:
 # Custom command for GeneratedShaders/ColourDiffuse.frag.inc
 
 build GeneratedShaders/ColourDiffuse.frag.inc | ${cmake_ninja_workdir}GeneratedShaders/ColourDiffuse.frag.inc: CUSTOM_COMMAND /Users/charlie/dev/C++/Dahlia/Shaders/ColourDiffuse.frag
-  COMMAND = cd /Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin && /Applications/CMake.app/Contents/bin/cmake -E make_directory /Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders && /opt/homebrew/bin/glslc --target-env=vulkan1.0 -O -mfmt=c -I /Users/charlie/dev/C++/Dahlia/Shaders -MD -MF /Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders/ColourDiffuse.frag.inc.d -o /Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders/ColourDiffuse.frag.inc /Users/charlie/dev/C++/Dahlia/Shaders/ColourDiffuse.frag
+  COMMAND = cd /Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin && /Applications/CMake.app/Contents/bin/cmake -E make_directory /Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders && /opt/homebrew/bin/glslc --target-env=vulkan1.0 -O -mfmt=c -I /Users/charlie/dev/C++/Dahlia/Shaders -MD -MF /Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders/ColourDiffuse.frag.inc.d -o /Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders/ColourDiffuse.frag.inc /Users/charlie/dev/C++/Dahlia/Shaders/ColourDiffuse.frag && /Applications/CMake.app/Contents/bin/cmake -E cmake_transform_depfile Ninja gccdepfile /Users/charlie/dev/C++/Dahlia /Users/charlie/dev/C++/Dahlia /Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin /Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin /Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders/ColourDiffuse.frag.inc.d /Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/CMakeFiles/d/13ddd370c3560558bf9f5cbf4f7712eee16117f28dc249d3acd8ae9e8fbf44bc.d
   DESC = Compiling shader ColourDiffuse.frag to SPIR-V
-  depfile = GeneratedShaders/ColourDiffuse.frag.inc.d
+  depfile = CMakeFiles/d/13ddd370c3560558bf9f5cbf4f7712eee16117f28dc249d3acd8ae9e8fbf44bc.d
   deps = gcc
   restat = 1
 
@@ -783,9 +783,9 @@ build GeneratedShaders/ColourDiffuse.frag.inc | ${cmake_ninja_workdir}GeneratedS
 # Custom command for GeneratedShaders/ColourDiffuse.vert.inc
 
 build GeneratedShaders/ColourDiffuse.vert.inc | ${cmake_ninja_workdir}GeneratedShaders/ColourDiffuse.vert.inc: CUSTOM_COMMAND /Users/charlie/dev/C++/Dahlia/Shaders/ColourDiffuse.vert
-  COMMAND = cd /Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin && /Applications/CMake.app/Contents/bin/cmake -E make_directory /Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders && /opt/homebrew/bin/glslc --target-env=vulkan1.0 -O -mfmt=c -I /Users/charlie/dev/C++/Dahlia/Shaders -MD -MF /Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders/ColourDiffuse.vert.inc.d -o /Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders/ColourDiffuse.vert.inc /Users/charlie/dev/C++/Dahlia/Shaders/ColourDiffuse.vert
+  COMMAND = cd /Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin && /Applications/CMake.app/Contents/bin/cmake -E make_directory /Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders && /opt/homebrew/bin/glslc --target-env=vulkan1.0 -O -mfmt=c -I /Users/charlie/dev/C++/Dahlia/Shaders -MD -MF /Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders/ColourDiffuse.vert.inc.d -o /Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders/ColourDiffuse.vert.inc /Users/charlie/dev/C++/Dahlia/Shaders/ColourDiffuse.vert && /Applications/CMake.app/Contents/bin/cmake -E cmake_transform_depfile Ninja gccdepfile /Users/charlie/dev/C++/Dahlia /Users/charlie/dev/C++/Dahlia /Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin /Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin /Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders/ColourDiffuse.vert.inc.d /Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/CMakeFiles/d/324d1887ba7f97c5f5da4d1c01eccc145e2f1b55c1679624e55bfda55d2045d7.d
   DESC = Compiling shader ColourDiffuse.vert to SPIR-V
-  depfile = GeneratedShaders/ColourDiffuse.vert.inc.d
+  depfile = CMakeFiles/d/324d1887ba7f97c5f5da4d1c01eccc145e2f1b55c1679624e55bfda55d2045d7.d
   deps = gcc
   restat = 1
 
@@ -794,9 +794,9 @@ build GeneratedShaders/ColourDiffuse.vert.inc | ${cmake_ninja_workdir}GeneratedS
 # Custom command for GeneratedShaders/SolidColour.frag.inc
 
 build GeneratedShaders/SolidColour.frag.inc | ${cmake_ninja_workdir}GeneratedShaders/SolidColour.frag.inc: CUSTOM_COMMAND /Users/charlie/dev/C++/Dahlia/Shaders/SolidColour.frag
-  COMMAND = cd /Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin && /Applications/CMake.app/Contents/bin/cmake -E make_directory /Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders && /opt/homebrew/bin/glslc --target-env=vulkan1.0 -O -mfmt=c -I /Users/charlie/dev/C++/Dahlia/Shaders -MD -MF /Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders/SolidColour.frag.inc.d -o /Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders/SolidColour.frag.inc /Users/charlie/dev/C++/Dahlia/Shaders/SolidColour.frag
+  COMMAND = cd /Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin && /Applications/CMake.app/Contents/bin/cmake -E make_directory /Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders && /opt/homebrew/bin/glslc --target-env=vulkan1.0 -O -mfmt=c -I /Users/charlie/dev/C++/Dahlia/Shaders -MD -MF /Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders/SolidColour.frag.inc.d -o /Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders/SolidColour.frag.inc /Users/charlie/dev/C++/Dahlia/Shaders/SolidColour.frag && /Applications/CMake.app/Contents/bin/cmake -E cmake_transform_depfile Ninja gccdepfile /Users/charlie/dev/C++/Dahlia /Users/charlie/dev/C++/Dahlia /Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin /Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin /Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders/SolidColour.frag.inc.d /Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/CMakeFiles/d/5b260ae9a8db2bac2080ac07b0238359124b4076210929be349580d61eebadff.d
   DESC = Compiling shader SolidColour.frag to SPIR-V
-  depfile = GeneratedShaders/SolidColour.frag.inc.d
+  depfile = CMakeFiles/d/5b260ae9a8db2bac2080ac07b0238359124b4076210929be349580d61eebadff.d
   deps = gcc
   restat = 1
 
@@ -805,9 +805,9 @@ build GeneratedShaders/SolidColour.frag.inc | ${cmake_ninja_workdir}GeneratedSha
 # Custom command for GeneratedShaders/SolidColour.vert.inc
 
 build GeneratedShaders/SolidColour.vert.inc | ${cmake_ninja_workdir}GeneratedShaders/SolidColour.vert.inc: CUSTOM_COMMAND /Users/charlie/dev/C++/Dahlia/Shaders/SolidColour.vert
-  COMMAND = cd /Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin && /Applications/CMake.app/Contents/bin/cmake -E make_directory /Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders && /opt/homebrew/bin/glslc --target-env=vulkan1.0 -O -mfmt=c -I /Users/charlie/dev/C++/Dahlia/Shaders -MD -MF /Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders/SolidColour.vert.inc.d -o /Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders/SolidColour.vert.inc /Users/charlie/dev/C++/Dahlia/Shaders/SolidColour.vert
+  COMMAND = cd /Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin && /Applications/CMake.app/Contents/bin/cmake -E make_directory /Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders && /opt/homebrew/bin/glslc --target-env=vulkan1.0 -O -mfmt=c -I /Users/charlie/dev/C++/Dahlia/Shaders -MD -MF /Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders/SolidColour.vert.inc.d -o /Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders/SolidColour.vert.inc /Users/charlie/dev/C++/Dahlia/Shaders/SolidColour.vert && /Applications/CMake.app/Contents/bin/cmake -E cmake_transform_depfile Ninja gccdepfile /Users/charlie/dev/C++/Dahlia /Users/charlie/dev/C++/Dahlia /Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin /Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin /Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders/SolidColour.vert.inc.d /Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/CMakeFiles/d/40cfb25643d17f821b0de097a8c94bcab3dad5cb11f4c71d3faae179154bd3b7.d
   DESC = Compiling shader SolidColour.vert to SPIR-V
-  depfile = GeneratedShaders/SolidColour.vert.inc.d
+  depfile = CMakeFiles/d/40cfb25643d17f821b0de097a8c94bcab3dad5cb11f4c71d3faae179154bd3b7.d
   deps = gcc
   restat = 1
 
@@ -816,9 +816,9 @@ build GeneratedShaders/SolidColour.vert.inc | ${cmake_ninja_workdir}GeneratedSha
 # Custom command for GeneratedShaders/Text.frag.inc
 
 build GeneratedShaders/Text.frag.inc | ${cmake_ninja_workdir}GeneratedShaders/Text.frag.inc: CUSTOM_COMMAND /Users/charlie/dev/C++/Dahlia/Shaders/Text.frag
-  COMMAND = cd /Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin && /Applications/CMake.app/Contents/bin/cmake -E make_directory /Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders && /opt/homebrew/bin/glslc --target-env=vulkan1.0 -O -mfmt=c -I /Users/charlie/dev/C++/Dahlia/Shaders -MD -MF /Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders/Text.frag.inc.d -o /Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders/Text.frag.inc /Users/charlie/dev/C++/Dahlia/Shaders/Text.frag
+  COMMAND = cd /Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin && /Applications/CMake.app/Contents/bin/cmake -E make_directory /Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders && /opt/homebrew/bin/glslc --target-env=vulkan1.0 -O -mfmt=c -I /Users/charlie/dev/C++/Dahlia/Shaders -MD -MF /Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders/Text.frag.inc.d -o /Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders/Text.frag.inc /Users/charlie/dev/C++/Dahlia/Shaders/Text.frag && /Applications/CMake.app/Contents/bin/cmake -E cmake_transform_depfile Ninja gccdepfile /Users/charlie/dev/C++/Dahlia /Users/charlie/dev/C++/Dahlia /Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin /Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin /Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders/Text.frag.inc.d /Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/CMakeFiles/d/f7a99deb3c8ca2d725965404df4d12651da36ebba9a1ea2128b75827388a8797.d
   DESC = Compiling shader Text.frag to SPIR-V
-  depfile = GeneratedShaders/Text.frag.inc.d
+  depfile = CMakeFiles/d/f7a99deb3c8ca2d725965404df4d12651da36ebba9a1ea2128b75827388a8797.d
   deps = gcc
   restat = 1
 
@@ -827,9 +827,9 @@ build GeneratedShaders/Text.frag.inc | ${cmake_ninja_workdir}GeneratedShaders/Te
 # Custom command for GeneratedShaders/Text.vert.inc
 
 build GeneratedShaders/Text.vert.inc | ${cmake_ninja_workdir}GeneratedShaders/Text.vert.inc: CUSTOM_COMMAND /Users/charlie/dev/C++/Dahlia/Shaders/Text.vert
-  COMMAND = cd /Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin && /Applications/CMake.app/Contents/bin/cmake -E make_directory /Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders && /opt/homebrew/bin/glslc --target-env=vulkan1.0 -O -mfmt=c -I /Users/charlie/dev/C++/Dahlia/Shaders -MD -MF /Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders/Text.vert.inc.d -o /Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders/Text.vert.inc /Users/charlie/dev/C++/Dahlia/Shaders/Text.vert
+  COMMAND = cd /Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin && /Applications/CMake.app/Contents/bin/cmake -E make_directory /Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders && /opt/homebrew/bin/glslc --target-env=vulkan1.0 -O -mfmt=c -I /Users/charlie/dev/C++/Dahlia/Shaders -MD -MF /Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders/Text.vert.inc.d -o /Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders/Text.vert.inc /Users/charlie/dev/C++/Dahlia/Shaders/Text.vert && /Applications/CMake.app/Contents/bin/cmake -E cmake_transform_depfile Ninja gccdepfile /Users/charlie/dev/C++/Dahlia /Users/charlie/dev/C++/Dahlia /Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin /Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin /Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/GeneratedShaders/Text.vert.inc.d /Users/charlie/dev/C++/Dahlia/cmake-build-Debug-darwin/CMakeFiles/d/1d9811db13875793393753e43ab019bb894de2d7eeaa18faac0cdfea01039701.d
   DESC = Compiling shader Text.vert to SPIR-V
-  depfile = GeneratedShaders/Text.vert.inc.d
+  depfile = CMakeFiles/d/1d9811db13875793393753e43ab019bb894de2d7eeaa18faac0cdfea01039701.d
   deps = gcc
   restat = 1
 

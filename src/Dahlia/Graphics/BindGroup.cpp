@@ -1,6 +1,7 @@
 #include <stdexcept>
 
 #include "Dahlia/Graphics/BindGroup.h"
+#include "Dahlia/Graphics/Texture.h"
 #include "Dahlia/Platform/GPUContext.h"
 #ifdef DH_VULKAN_ENABLED
 #include "Dahlia/Platform/Vulkan/VulkanBindGroup.h"
@@ -60,6 +61,18 @@ namespace DH
                 throw std::invalid_argument("BindGroup entry binding " +
                                             std::to_string(entry.binding) +
                                             " does not provide the resource its layout requires");
+
+            if (!isBuffer)
+            {
+                const TextureType expected =
+                  layoutEntry->type == ShaderResourceType::CombinedTextureSampler3D
+                    ? TextureType::Texture3D
+                    : TextureType::Texture2D;
+                if (entry.texture->GetType() != expected)
+                    throw std::invalid_argument(
+                      "BindGroup entry binding " + std::to_string(entry.binding) + " needs a " +
+                      (expected == TextureType::Texture3D ? "Texture3D" : "Texture2D"));
+            }
         }
     }
 

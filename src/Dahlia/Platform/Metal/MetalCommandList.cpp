@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <cstring>
 #include <stdexcept>
 #include <string>
@@ -39,19 +40,22 @@ namespace DH
         // Autoreleased; lives until the frame's autorelease pool is drained
         mPassDesc = MTL::RenderPassDescriptor::renderPassDescriptor();
 
-        auto setColour = [&](uint32_t index, MTL::Texture* texture)
+        auto setColour = [&](uint32_t index, MTL::Texture* texture, uint32_t level, uint32_t depthPlane)
         {
             MTL::RenderPassColorAttachmentDescriptor* colour = mPassDesc->colorAttachments()->object(index);
             colour->setTexture(texture);
+            colour->setLevel(level);
+            colour->setDepthPlane(depthPlane);
             colour->setLoadAction(MTLConv::ToLoadAction(desc.colourLoadOp));
             colour->setStoreAction(MTL::StoreActionStore);
             colour->setClearColor(MTL::ClearColor::Make(
               desc.clearColour.r, desc.clearColour.g, desc.clearColour.b, desc.clearColour.a));
         };
-        auto setDepth = [&](MTL::Texture* texture, bool stencil)
+        auto setDepth = [&](MTL::Texture* texture, bool stencil, uint32_t level)
         {
             MTL::RenderPassDepthAttachmentDescriptor* depth = mPassDesc->depthAttachment();
             depth->setTexture(texture);
+            depth->setLevel(level);
             depth->setLoadAction(MTLConv::ToLoadAction(desc.depthLoadOp));
             depth->setStoreAction(MTL::StoreActionStore);
             depth->setClearDepth(desc.clearDepth);
@@ -59,6 +63,7 @@ namespace DH
             {
                 MTL::RenderPassStencilAttachmentDescriptor* st = mPassDesc->stencilAttachment();
                 st->setTexture(texture);
+                st->setLevel(level);
                 st->setLoadAction(MTLConv::ToLoadAction(desc.depthLoadOp));
                 st->setStoreAction(MTL::StoreActionStore);
                 st->setClearStencil(desc.clearStencil);
@@ -71,17 +76,17 @@ namespace DH
             mTargetWidth = (uint32_t)framebuffer->GetWidth();
             mTargetHeight = (uint32_t)framebuffer->GetHeight();
             uint32_t index = 0;
-            for (const sRef<MetalTexture2D>& texture : framebuffer->GetColourAttachments())
-                setColour(index++, texture->GetMetalTexture());
-            if (const sRef<MetalTexture2D>& depth = framebuffer->GetDepthAttachment())
-                setDepth(depth->GetMetalTexture(), HasStencil(depth->GetFormat()));
+            for (const MetalFramebuffer::Attachment& colour : framebuffer->GetColourAttachments())
+                setColour(index++, colour.texture, colour.level, colour.depthPlane);
+            if (const auto& depth = framebuffer->GetDepthAttachment())
+                setDepth(depth->texture, HasStencil(depth->format), depth->level);
         }
         else
         {
             mTargetWidth = (uint32_t)mBackBuffer->width();
             mTargetHeight = (uint32_t)mBackBuffer->height();
-            setColour(0, mBackBuffer);
-            setDepth(mBackDepth, false);
+            setColour(0, mBackBuffer, 0, 0);
+            setDepth(mBackDepth, false, 0);
         }
 
         mEncoder = mCommandBuffer->renderCommandEncoder(mPassDesc);
@@ -202,10 +207,9 @@ namespace DH
                             else
                                 mEncoder->setFragmentBuffer(buffer, entry.offset, slot->index);
                         }
-                        else if (slot->type == ShaderResourceType::CombinedTextureSampler && entry.texture)
+                        else if (IsTextureResource(slot->type) && entry.texture)
                         {
-                            MTL::Texture* texture =
-                              static_cast<const MetalTexture2D&>(*entry.texture).GetMetalTexture();
+                            MTL::Texture* texture = AsMetalTexture(*entry.texture).GetMetalTexture();
                             MTL::SamplerState* sampler =
                               static_cast<const MetalSampler&>(*entry.sampler).GetSamplerState();
                             if (isVertex)
@@ -225,7 +229,11 @@ namespace DH
             mBindGroupsDirty = false;
         }
 
-        const uint32_t pushSize = mPipeline->GetDesc().pushConstantSize;
+        // MSL pads the push constant struct to its alignment (16 bytes once it holds a vec4/mat4),
+        // so e.g. a 68 byte {mat4, float} block is 80 bytes in MSL. Upload the padded size; the
+        // shadow copy is MAX_PUSH_CONSTANT_SIZE bytes, so this never reads past it.
+        const uint32_t pushSize =
+          std::min((mPipeline->GetDesc().pushConstantSize + 15u) & ~15u, MAX_PUSH_CONSTANT_SIZE);
         if (mPushConstantsDirty && pushSize > 0)
         {
             if (vertex.UsesPushConstants())

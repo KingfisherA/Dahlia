@@ -44,24 +44,16 @@ namespace DH
               pipelineDesc->colorAttachments()->object(i);
             colour->setPixelFormat(MTLConv::ToPixelFormat(target.colourFormats[i], device));
 
-            if (mDesc.blend != BlendPreset::None)
+            const BlendState blend = mDesc.GetBlend(i);
+            if (blend.enabled)
             {
                 colour->setBlendingEnabled(true);
-                colour->setRgbBlendOperation(MTL::BlendOperationAdd);
-                colour->setAlphaBlendOperation(MTL::BlendOperationAdd);
-                colour->setSourceRGBBlendFactor(MTL::BlendFactorSourceAlpha);
-                if (mDesc.blend == BlendPreset::Alpha)
-                {
-                    colour->setDestinationRGBBlendFactor(MTL::BlendFactorOneMinusSourceAlpha);
-                    colour->setSourceAlphaBlendFactor(MTL::BlendFactorOne);
-                    colour->setDestinationAlphaBlendFactor(MTL::BlendFactorOneMinusSourceAlpha);
-                }
-                else // Additive, matching glBlendFunc(GL_SRC_ALPHA, GL_ONE)
-                {
-                    colour->setDestinationRGBBlendFactor(MTL::BlendFactorOne);
-                    colour->setSourceAlphaBlendFactor(MTL::BlendFactorSourceAlpha);
-                    colour->setDestinationAlphaBlendFactor(MTL::BlendFactorOne);
-                }
+                colour->setRgbBlendOperation(MTLConv::ToBlendOperation(blend.colourOp));
+                colour->setAlphaBlendOperation(MTLConv::ToBlendOperation(blend.alphaOp));
+                colour->setSourceRGBBlendFactor(MTLConv::ToBlendFactor(blend.srcColour));
+                colour->setDestinationRGBBlendFactor(MTLConv::ToBlendFactor(blend.dstColour));
+                colour->setSourceAlphaBlendFactor(MTLConv::ToBlendFactor(blend.srcAlpha));
+                colour->setDestinationAlphaBlendFactor(MTLConv::ToBlendFactor(blend.dstAlpha));
             }
         }
         if (IsDepthFormat(target.depthFormat))

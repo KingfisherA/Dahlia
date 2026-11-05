@@ -120,30 +120,29 @@ namespace DH
         depth.depthWriteEnable = mDesc.depth.testEnabled && mDesc.depth.writeEnabled ? VK_TRUE : VK_FALSE;
         depth.depthCompareOp = VK::ToCompareOp(mDesc.depth.compareOp);
 
-        VkPipelineColorBlendAttachmentState blendAttachment{};
-        blendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT |
-                                         VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
-        if (mDesc.blend != BlendPreset::None)
+        for (size_t i = 1; i < mDesc.blend.size(); i++)
         {
-            blendAttachment.blendEnable = VK_TRUE;
-            blendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
-            blendAttachment.colorBlendOp = VK_BLEND_OP_ADD;
-            blendAttachment.alphaBlendOp = VK_BLEND_OP_ADD;
-            if (mDesc.blend == BlendPreset::Alpha)
-            {
-                blendAttachment.dstColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
-                blendAttachment.srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
-                blendAttachment.dstAlphaBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
-            }
-            else // Additive, matching glBlendFunc(GL_SRC_ALPHA, GL_ONE)
-            {
-                blendAttachment.dstColorBlendFactor = VK_BLEND_FACTOR_ONE;
-                blendAttachment.srcAlphaBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
-                blendAttachment.dstAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
-            }
+            if (mDesc.blend[i] != mDesc.blend[0] && !ctx->SupportsIndependentBlend())
+                throw std::runtime_error(
+                  "This Vulkan device does not support a different blend state per colour "
+                  "attachment (independentBlend)");
         }
-        const std::vector<VkPipelineColorBlendAttachmentState> blendAttachments(
-          mDesc.targetLayout.colourFormats.size(), blendAttachment);
+        std::vector<VkPipelineColorBlendAttachmentState> blendAttachments;
+        for (size_t i = 0; i < mDesc.targetLayout.colourFormats.size(); i++)
+        {
+            const BlendState state = mDesc.GetBlend(i);
+            VkPipelineColorBlendAttachmentState attachment{};
+            attachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT |
+                                        VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
+            attachment.blendEnable = state.enabled ? VK_TRUE : VK_FALSE;
+            attachment.srcColorBlendFactor = VK::ToBlendFactor(state.srcColour);
+            attachment.dstColorBlendFactor = VK::ToBlendFactor(state.dstColour);
+            attachment.colorBlendOp = VK::ToBlendOp(state.colourOp);
+            attachment.srcAlphaBlendFactor = VK::ToBlendFactor(state.srcAlpha);
+            attachment.dstAlphaBlendFactor = VK::ToBlendFactor(state.dstAlpha);
+            attachment.alphaBlendOp = VK::ToBlendOp(state.alphaOp);
+            blendAttachments.push_back(attachment);
+        }
         VkPipelineColorBlendStateCreateInfo blend{};
         blend.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
         blend.attachmentCount = (uint32_t)blendAttachments.size();

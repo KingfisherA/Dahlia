@@ -54,6 +54,11 @@ namespace DH
         // Linear, clamp to edge. Used to show render target textures in ImGui.
         [[nodiscard]] VkSampler GetDefaultSampler() const { return mDefaultSampler; }
         [[nodiscard]] bool SupportsNonSolidFill() const { return mFillModeNonSolid; }
+        // Different blend state per colour attachment
+        [[nodiscard]] bool SupportsIndependentBlend() const { return mIndependentBlend; }
+        // Rendering into a slice of a 3D image through a 2D view. Core Vulkan; optional on
+        // portability subset devices (MoltenVK)
+        [[nodiscard]] bool SupportsImageView2DOn3D() const { return mImageView2DOn3D; }
 
         uint32_t FindMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties) const;
 
@@ -61,6 +66,7 @@ namespace DH
         // component and D24S8 is substituted when unsupported (e.g. on Apple GPUs)
         [[nodiscard]] VkFormat ToTextureFormat(Format format) const;
         [[nodiscard]] bool SupportsLinearBlit(VkFormat format) const;
+        [[nodiscard]] bool SupportsLinearFilter(VkFormat format) const;
 
         // Records commands into a one-off command buffer, submits it and waits for the queue to
         // go idle. A full barrier is recorded first so earlier submissions are complete.
@@ -84,6 +90,8 @@ namespace DH
         bool mValidationEnabled = false;
         bool mPortabilitySubset = false;
         bool mFillModeNonSolid = false;
+        bool mIndependentBlend = false;
+        bool mImageView2DOn3D = true;
 
         VkInstance mInstance = VK_NULL_HANDLE;
         VkDebugUtilsMessengerEXT mDebugMessenger = VK_NULL_HANDLE;

@@ -171,20 +171,41 @@ namespace DH
         if (force || s.depth.compareOp != desc.depth.compareOp)
             glDepthFunc(GL::ToCompareFunc(desc.depth.compareOp));
 
-        // Blending
+        // Blending. The non-indexed calls set every draw buffer; per-attachment state uses the
+        // indexed (GL 4.0) variants.
         if (force || s.blend != desc.blend)
         {
-            SetCapability(GL_BLEND, desc.blend != BlendPreset::None);
-            if (desc.blend == BlendPreset::Alpha)
+            if (desc.blend.size() <= 1)
             {
-                glBlendEquation(GL_FUNC_ADD);
-                glBlendFuncSeparate(
-                  GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+                const BlendState blend = desc.GetBlend(0);
+                SetCapability(GL_BLEND, blend.enabled);
+                if (blend.enabled)
+                {
+                    glBlendEquationSeparate(GL::ToBlendOp(blend.colourOp),
+                                            GL::ToBlendOp(blend.alphaOp));
+                    glBlendFuncSeparate(GL::ToBlendFactor(blend.srcColour),
+                                        GL::ToBlendFactor(blend.dstColour),
+                                        GL::ToBlendFactor(blend.srcAlpha),
+                                        GL::ToBlendFactor(blend.dstAlpha));
+                }
             }
-            else if (desc.blend == BlendPreset::Additive)
+            else
             {
-                glBlendEquation(GL_FUNC_ADD);
-                glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+                for (GLuint i = 0; i < (GLuint)desc.blend.size(); i++)
+                {
+                    const BlendState& blend = desc.blend[i];
+                    if (blend.enabled)
+                        glEnablei(GL_BLEND, i);
+                    else
+                        glDisablei(GL_BLEND, i);
+                    glBlendEquationSeparatei(
+                      i, GL::ToBlendOp(blend.colourOp), GL::ToBlendOp(blend.alphaOp));
+                    glBlendFuncSeparatei(i,
+                                         GL::ToBlendFactor(blend.srcColour),
+                                         GL::ToBlendFactor(blend.dstColour),
+                                         GL::ToBlendFactor(blend.srcAlpha),
+                                         GL::ToBlendFactor(blend.dstAlpha));
+                }
             }
         }
 
@@ -320,10 +341,9 @@ namespace DH
                                           (GLintptr)entry.offset,
                                           (GLsizeiptr)size);
                     }
-                    else if (slot->type == ShaderResourceType::CombinedTextureSampler &&
-                             entry.texture)
+                    else if (IsTextureResource(slot->type) && entry.texture)
                     {
-                        const auto& texture = static_cast<const OpenGLTexture2D&>(*entry.texture);
+                        const OpenGLTextureBase& texture = AsOpenGLTexture(*entry.texture);
                         glActiveTexture(GL_TEXTURE0 + slot->slot);
                         glBindTexture(texture.GetTarget(), texture.GetID());
                         glBindSampler(slot->slot,

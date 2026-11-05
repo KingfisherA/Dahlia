@@ -101,25 +101,41 @@ endif()
 add_dependencies("Dahlia"
     "ImGui"
     "DahliaTools"
-    "DahliaShaders"
 )
 
-target_include_directories("Dahlia" PRIVATE
+# Engine shaders, #included by src/Dahlia/Resources/ShaderSources.cpp
+dahlia_compile_shaders("Dahlia"
+  OUTPUT_DIR ${DH_SHADER_OUT_DIR}
+  SOURCES
+    ${DH_DIR}/Shaders/ColourDiffuse.vert
+    ${DH_DIR}/Shaders/ColourDiffuse.frag
+    ${DH_DIR}/Shaders/SolidColour.vert
+    ${DH_DIR}/Shaders/SolidColour.frag
+    ${DH_DIR}/Shaders/Text.vert
+    ${DH_DIR}/Shaders/Text.frag
+)
+
+# Public headers include glm and ImGui, so applications linking Dahlia get these too
+target_include_directories("Dahlia" PUBLIC
   ${DH_SRC_DIR}
-  ${DH_SHADER_OUT_DIR}
-  ${IMGUI_DIR}
   ${DH_LIB_DIR}
-  ${Boost_INCLUDE_DIRS}
+  ${IMGUI_DIR}
   ${GLM_INCLUDE_DIRS}
-  ${FREETYPE_INCLUDE_DIRS}
   ${GLEW_INCLUDE_DIRS}
 )
-target_compile_definitions("Dahlia" PRIVATE
+target_include_directories("Dahlia" PRIVATE
+  ${Boost_INCLUDE_DIRS}
+  ${FREETYPE_INCLUDE_DIRS}
+)
+target_compile_definitions("Dahlia" PUBLIC
   GLM_ENABLE_EXPERIMENTAL
+)
+target_compile_definitions("Dahlia" PRIVATE
   DH_BUILD
   $<$<CONFIG:Debug>:CONFIG_DEBUG>
   $<$<CONFIG:Release>:CONFIG_RELEASE>
 )
+target_link_libraries("Dahlia" PUBLIC glm::glm)
 
 target_link_libraries("Dahlia" PRIVATE
   ImGui
@@ -141,7 +157,6 @@ if((CMAKE_CXX_COMPILER_ID STREQUAL Clang) OR
       -fPIC
       -Wno-elaborated-enum-base
       -std=c++20
-      -target arm64-apple-darwin
     )
     if(CMAKE_BUILD_TYPE STREQUAL Debug)
       list(APPEND COMPILE_OPTIONS

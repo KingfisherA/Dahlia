@@ -20,6 +20,16 @@ endif()
 
 project("Dahlia" LANGUAGES CXX)
 
+# The demo/info app is only built by default when Dahlia is the top level project, so another
+# project can add_subdirectory(Dahlia) and get just the library. The target architecture comes
+# from CMAKE_OSX_ARCHITECTURES (or the host) rather than being hard-coded.
+if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
+  set(DH_IS_TOP_LEVEL ON)
+else()
+  set(DH_IS_TOP_LEVEL OFF)
+endif()
+option(DH_BUILD_INFO_APP "Build the DahliaInfo demo application" ${DH_IS_TOP_LEVEL})
+
 get_filename_component(DH_DIR ${CMAKE_CURRENT_SOURCE_DIR} ABSOLUTE)
 set(DH_PLATFORM ${CMAKE_SYSTEM_NAME})
 string(TOLOWER ${DH_PLATFORM} DH_PLATFORM)
@@ -68,5 +78,7 @@ endif()
 include(Projects/DahliaTools.cmake)
 include(Projects/DahliaShaders.cmake)
 include(Projects/Dahlia.cmake)
-include(Projects/DahliaInfo.cmake)
+if(DH_BUILD_INFO_APP)
+  include(Projects/DahliaInfo.cmake)
+endif()
 

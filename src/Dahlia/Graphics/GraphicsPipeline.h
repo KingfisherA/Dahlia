@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <initializer_list>
 #include <vector>
 
 #include "Dahlia/Dahlia-API.h"
@@ -44,6 +45,57 @@ namespace DH
         CompareOp compareOp = CompareOp::Less;
     };
 
+    // Blend state for a pipeline's colour attachments, indexed like
+    // RenderTargetLayout::colourFormats:
+    //   empty      blending disabled for every attachment
+    //   1 entry    applied to every attachment
+    //   N entries  one per colour attachment (N must equal the attachment count)
+    // Assign a single preset/state or a list:
+    //   desc.blend = BlendPreset::Alpha;
+    //   desc.blend = { BlendPreset::None, BlendPreset::AdditiveOne };
+    class DH_API BlendDesc
+    {
+      public:
+        BlendDesc() = default;
+        BlendDesc(BlendPreset preset) // NOLINT(google-explicit-constructor)
+        {
+            if (preset != BlendPreset::None)
+                mAttachments.emplace_back(preset);
+        }
+        BlendDesc(const BlendState& state) // NOLINT(google-explicit-constructor)
+          : mAttachments{ state }
+        {
+        }
+        BlendDesc(std::initializer_list<BlendState> attachments)
+          : mAttachments(attachments)
+        {
+        }
+        BlendDesc(std::vector<BlendState> attachments) // NOLINT(google-explicit-constructor)
+          : mAttachments(std::move(attachments))
+        {
+        }
+
+        // Blend state of colour attachment `index`
+        [[nodiscard]] BlendState Get(size_t index) const
+        {
+            if (mAttachments.empty())
+                return {};
+            return mAttachments.size() == 1 ? mAttachments[0] : mAttachments.at(index);
+        }
+
+        [[nodiscard]] size_t size() const { return mAttachments.size(); }
+        [[nodiscard]] bool empty() const { return mAttachments.empty(); }
+        [[nodiscard]] const BlendState& operator[](size_t index) const { return mAttachments[index]; }
+        [[nodiscard]] auto begin() const { return mAttachments.begin(); }
+        [[nodiscard]] auto end() const { return mAttachments.end(); }
+        [[nodiscard]] const std::vector<BlendState>& GetAttachments() const { return mAttachments; }
+
+        bool operator==(const BlendDesc&) const = default;
+
+      private:
+        std::vector<BlendState> mAttachments;
+    };
+
     constexpr uint32_t MAX_BIND_GROUPS = 4;
     constexpr uint32_t MAX_PUSH_CONSTANT_SIZE = 128;
 
@@ -63,7 +115,9 @@ namespace DH
         PrimitiveTopology topology = PrimitiveTopology::Triangles;
         RasterState raster;
         DepthState depth;
-        BlendPreset blend = BlendPreset::None;
+
+        // A preset, or one blend state per colour attachment (see BlendDesc)
+        BlendDesc blend;
 
         RenderTargetLayout targetLayout;
 
@@ -71,6 +125,9 @@ namespace DH
         std::vector<sRef<BindGroupLayout>> bindGroupLayouts;
         // Visible to all graphics stages. At most MAX_PUSH_CONSTANT_SIZE bytes
         uint32_t pushConstantSize = 0;
+
+        // Blend state of colour attachment `index`
+        [[nodiscard]] BlendState GetBlend(size_t index) const { return blend.Get(index); }
     };
 
     class DH_API GraphicsPipeline

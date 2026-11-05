@@ -29,6 +29,8 @@ namespace DH::MTLConv
                 return MTL::PixelFormatRG32Float;
             case Format::RGBA32F:
                 return MTL::PixelFormatRGBA32Float;
+            case Format::RGBA16F:
+                return MTL::PixelFormatRGBA16Float;
             case Format::D24S8:
                 return device->depth24Stencil8PixelFormatSupported()
                          ? MTL::PixelFormatDepth24Unorm_Stencil8
@@ -62,6 +64,8 @@ namespace DH::MTLConv
                 return MTL::VertexFormatFloat3;
             case Format::RGBA32F:
                 return MTL::VertexFormatFloat4;
+            case Format::RGBA16F:
+                return MTL::VertexFormatHalf4;
             default:
                 return MTL::VertexFormatInvalid;
         }
@@ -154,6 +158,68 @@ namespace DH::MTLConv
                 return MTL::SamplerAddressModeMirrorRepeat;
             case AddressMode::ClampToEdge:
                 return MTL::SamplerAddressModeClampToEdge;
+            case AddressMode::ClampToBorder:
+                return MTL::SamplerAddressModeClampToBorderColor;
+        }
+    }
+
+    inline MTL::SamplerBorderColor ToBorderColor(BorderColour colour) noexcept
+    {
+        switch (colour)
+        {
+            default:
+            case BorderColour::TransparentBlack:
+                return MTL::SamplerBorderColorTransparentBlack;
+            case BorderColour::OpaqueBlack:
+                return MTL::SamplerBorderColorOpaqueBlack;
+            case BorderColour::OpaqueWhite:
+                return MTL::SamplerBorderColorOpaqueWhite;
+        }
+    }
+
+    inline MTL::BlendFactor ToBlendFactor(BlendFactor factor) noexcept
+    {
+        switch (factor)
+        {
+            case BlendFactor::Zero:
+                return MTL::BlendFactorZero;
+            default:
+            case BlendFactor::One:
+                return MTL::BlendFactorOne;
+            case BlendFactor::SrcColour:
+                return MTL::BlendFactorSourceColor;
+            case BlendFactor::OneMinusSrcColour:
+                return MTL::BlendFactorOneMinusSourceColor;
+            case BlendFactor::DstColour:
+                return MTL::BlendFactorDestinationColor;
+            case BlendFactor::OneMinusDstColour:
+                return MTL::BlendFactorOneMinusDestinationColor;
+            case BlendFactor::SrcAlpha:
+                return MTL::BlendFactorSourceAlpha;
+            case BlendFactor::OneMinusSrcAlpha:
+                return MTL::BlendFactorOneMinusSourceAlpha;
+            case BlendFactor::DstAlpha:
+                return MTL::BlendFactorDestinationAlpha;
+            case BlendFactor::OneMinusDstAlpha:
+                return MTL::BlendFactorOneMinusDestinationAlpha;
+        }
+    }
+
+    inline MTL::BlendOperation ToBlendOperation(BlendOp op) noexcept
+    {
+        switch (op)
+        {
+            default:
+            case BlendOp::Add:
+                return MTL::BlendOperationAdd;
+            case BlendOp::Subtract:
+                return MTL::BlendOperationSubtract;
+            case BlendOp::ReverseSubtract:
+                return MTL::BlendOperationReverseSubtract;
+            case BlendOp::Min:
+                return MTL::BlendOperationMin;
+            case BlendOp::Max:
+                return MTL::BlendOperationMax;
         }
     }
 

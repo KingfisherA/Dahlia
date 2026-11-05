@@ -53,7 +53,24 @@ namespace DH
             }
         };
         addResources(resources.uniform_buffers, ShaderResourceType::UniformBuffer);
-        addResources(resources.sampled_images, ShaderResourceType::CombinedTextureSampler);
+
+        for (const spirv_cross::Resource& resource : resources.sampled_images)
+        {
+            const spirv_cross::SPIRType& type = compiler.get_type(resource.type_id);
+            if (type.image.arrayed || type.image.ms ||
+                (type.image.dim != spv::Dim2D && type.image.dim != spv::Dim3D))
+            {
+                throw std::runtime_error("Shader sampler '" + resource.name +
+                                         "' is not a sampler2D or sampler3D, which are the only "
+                                         "sampler types Dahlia supports");
+            }
+            reflection.resources.push_back(
+              { resource.name,
+                compiler.get_decoration(resource.id, spv::DecorationDescriptorSet),
+                compiler.get_decoration(resource.id, spv::DecorationBinding),
+                type.image.dim == spv::Dim3D ? ShaderResourceType::CombinedTextureSampler3D
+                                             : ShaderResourceType::CombinedTextureSampler });
+        }
 
         for (const spirv_cross::Resource& pc : resources.push_constant_buffers)
         {

@@ -43,6 +43,8 @@ namespace DH::VK
                 return VK_FORMAT_R32G32B32_SFLOAT;
             case Format::RGBA32F:
                 return VK_FORMAT_R32G32B32A32_SFLOAT;
+            case Format::RGBA16F:
+                return VK_FORMAT_R16G16B16A16_SFLOAT;
             default:
                 return VK_FORMAT_UNDEFINED;
         }
@@ -150,6 +152,68 @@ namespace DH::VK
                 return VK_SAMPLER_ADDRESS_MODE_MIRRORED_REPEAT;
             case AddressMode::ClampToEdge:
                 return VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
+            case AddressMode::ClampToBorder:
+                return VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_BORDER;
+        }
+    }
+
+    inline VkBorderColor ToBorderColor(BorderColour colour) noexcept
+    {
+        switch (colour)
+        {
+            default:
+            case BorderColour::TransparentBlack:
+                return VK_BORDER_COLOR_FLOAT_TRANSPARENT_BLACK;
+            case BorderColour::OpaqueBlack:
+                return VK_BORDER_COLOR_FLOAT_OPAQUE_BLACK;
+            case BorderColour::OpaqueWhite:
+                return VK_BORDER_COLOR_FLOAT_OPAQUE_WHITE;
+        }
+    }
+
+    inline VkBlendFactor ToBlendFactor(BlendFactor factor) noexcept
+    {
+        switch (factor)
+        {
+            case BlendFactor::Zero:
+                return VK_BLEND_FACTOR_ZERO;
+            default:
+            case BlendFactor::One:
+                return VK_BLEND_FACTOR_ONE;
+            case BlendFactor::SrcColour:
+                return VK_BLEND_FACTOR_SRC_COLOR;
+            case BlendFactor::OneMinusSrcColour:
+                return VK_BLEND_FACTOR_ONE_MINUS_SRC_COLOR;
+            case BlendFactor::DstColour:
+                return VK_BLEND_FACTOR_DST_COLOR;
+            case BlendFactor::OneMinusDstColour:
+                return VK_BLEND_FACTOR_ONE_MINUS_DST_COLOR;
+            case BlendFactor::SrcAlpha:
+                return VK_BLEND_FACTOR_SRC_ALPHA;
+            case BlendFactor::OneMinusSrcAlpha:
+                return VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+            case BlendFactor::DstAlpha:
+                return VK_BLEND_FACTOR_DST_ALPHA;
+            case BlendFactor::OneMinusDstAlpha:
+                return VK_BLEND_FACTOR_ONE_MINUS_DST_ALPHA;
+        }
+    }
+
+    inline VkBlendOp ToBlendOp(BlendOp op) noexcept
+    {
+        switch (op)
+        {
+            default:
+            case BlendOp::Add:
+                return VK_BLEND_OP_ADD;
+            case BlendOp::Subtract:
+                return VK_BLEND_OP_SUBTRACT;
+            case BlendOp::ReverseSubtract:
+                return VK_BLEND_OP_REVERSE_SUBTRACT;
+            case BlendOp::Min:
+                return VK_BLEND_OP_MIN;
+            case BlendOp::Max:
+                return VK_BLEND_OP_MAX;
         }
     }
 
@@ -212,7 +276,9 @@ namespace DH::VK
         barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
         barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
         barrier.image = image;
-        barrier.subresourceRange = { aspect, baseMip, mipCount, 0, 1 };
+        // Every layer: for 2D array compatible 3D images this covers all depth slices both with
+        // and without VK_KHR_maintenance9
+        barrier.subresourceRange = { aspect, baseMip, mipCount, 0, VK_REMAINING_ARRAY_LAYERS };
 
         vkCmdPipelineBarrier(cmd,
                              VK_PIPELINE_STAGE_ALL_COMMANDS_BIT,

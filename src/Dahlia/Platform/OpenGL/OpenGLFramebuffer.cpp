@@ -36,7 +36,7 @@ namespace DH
     }
 
     OpenGLFramebuffer::OpenGLFramebuffer(const FramebufferSpecification& spec)
-      : mSpecification(spec)
+      : mSpecification(Prepare(spec))
     {
         CreateFramebuffer();
     }
@@ -94,6 +94,25 @@ namespace DH
             {
                 attachPoint = GL_COLOR_ATTACHMENT0 + colourIndex++;
                 drawBuffers.push_back(attachPoint);
+            }
+
+            if (attachment.IsExisting())
+            {
+                // The specification keeps the texture alive for as long as it is attached
+                const OpenGLTextureBase& texture = AsOpenGLTexture(*attachment.texture);
+                if (attachment.texture->GetType() == TextureType::Texture3D)
+                    glFramebufferTextureLayer(GL_FRAMEBUFFER,
+                                              attachPoint,
+                                              texture.GetID(),
+                                              (GLint)attachment.mipLevel,
+                                              (GLint)attachment.layer);
+                else
+                    glFramebufferTexture2D(GL_FRAMEBUFFER,
+                                           attachPoint,
+                                           GL_TEXTURE_2D,
+                                           texture.GetID(),
+                                           (GLint)attachment.mipLevel);
+                continue;
             }
 
             if (attachment.renderbuffer)
@@ -181,6 +200,9 @@ namespace DH
 
     void OpenGLFramebuffer::Resize(size_t newWidth, size_t newHeight)
     {
+        if (HasExistingAttachments())
+            throw std::logic_error(
+              "Framebuffers with existing attachments cannot be resized; create a new one");
         mSpecification.width = newWidth;
         mSpecification.height = newHeight;
 
@@ -192,6 +214,6 @@ namespace DH
         if (auto it = mTextureAttachments.find(index); it != mTextureAttachments.end())
             return it->second;
 
-        return nullptr;
+        return GetExistingTexture2D(index);
     }
 }

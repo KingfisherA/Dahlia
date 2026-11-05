@@ -11,7 +11,7 @@
 namespace DH
 {
     class Buffer;
-    class Texture2D;
+    class Texture;
     class Sampler;
 
     // A bind group is a set of shader resources bound together, matching one
@@ -53,8 +53,8 @@ namespace DH
         size_t offset = 0;
         size_t size = 0; // 0 means the whole buffer from offset
 
-        // CombinedTextureSampler
-        sRef<Texture2D> texture;
+        // CombinedTextureSampler (a Texture2D) or CombinedTextureSampler3D (a Texture3D)
+        sRef<Texture> texture;
         sRef<Sampler> sampler;
 
         static BindGroupEntry UniformBuffer(uint32_t binding,
@@ -71,7 +71,7 @@ namespace DH
         }
 
         static BindGroupEntry TextureSampler(uint32_t binding,
-                                             const sRef<Texture2D>& texture,
+                                             const sRef<Texture>& texture,
                                              const sRef<Sampler>& sampler)
         {
             BindGroupEntry entry;

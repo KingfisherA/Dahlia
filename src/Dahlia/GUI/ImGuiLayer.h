@@ -9,7 +9,7 @@
 
 
 namespace ImGui {
-    DH_API void TextCentered(const char *fmt);
+    DH_API void TextCentered(const char *text);
 }
 
 namespace DH {

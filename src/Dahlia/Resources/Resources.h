@@ -10,7 +10,7 @@ namespace DH {
 }
 
 namespace DH::Res {
-    // SPIR-V for the engine's built-in shaders (see Shaders/ and Projects/DahliaShaders.cmake)
+    // SPIR-V for the engine's built-in shaders (see Shaders/ and cmake/DahliaShaders.cmake)
     class DH_API ShaderSources {
     public:
         static std::span<const uint32_t> GetColourDiffuseVert();

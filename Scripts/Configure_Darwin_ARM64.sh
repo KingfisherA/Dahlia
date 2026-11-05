@@ -1,19 +1,14 @@
 #!/bin/bash
+# Configures the build in ./build. Usage: Scripts/Configure_Darwin_ARM64.sh [-c Debug|Release]
+CONFIG=Debug
 while getopts ":c:" opt; do
   case $opt in
-    c) CONFIG="$OPTARG"
-    ;;
-    \?) echo "Invalid option -$OPTARG" >&2
-    exit 1
-    ;;
-  esac
-
-  case $OPTARG in
-    -*) echo "Option $opt needs a valid argument"
-    exit 1
-    ;;
+    c) CONFIG="$OPTARG" ;;
+    *) echo "Usage: $0 [-c Debug|Release]" >&2; exit 1 ;;
   esac
 done
 
-cmake -DCMAKE_BUILD_TYPE=$CONFIG -DCMAKE_MAKE_PROGRAM=ninja -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -G Ninja -S ../ -B ../cmake-build-"${CONFIG}"-darwin
-
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+cmake -G Ninja -DCMAKE_BUILD_TYPE="$CONFIG" -DCMAKE_OSX_ARCHITECTURES=arm64 \
+      -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ \
+      -S "$ROOT" -B "$ROOT/build"

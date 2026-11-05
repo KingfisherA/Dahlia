@@ -1,5 +1,5 @@
 // Engine shaders, compiled from Shaders/*.vert|frag to SPIR-V at build time by
-// Projects/DahliaShaders.cmake (glslc -mfmt=c emits each module as a C initializer list).
+// cmake/DahliaShaders.cmake (glslc -mfmt=c emits each module as a C initializer list).
 
 #include "Resources.h"
 

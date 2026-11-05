@@ -29,10 +29,6 @@ if(POLICY CMP0116)
 endif()
 
 find_program(GLSLC glslc HINTS $ENV{VULKAN_SDK}/bin)
-
-# Kept for scripts that used the previous shader build's variables
-set(DH_SHADER_SRC_DIR ${DH_DIR}/Shaders)
-set(DH_SHADER_OUT_DIR ${CMAKE_CURRENT_BINARY_DIR}/GeneratedShaders)
 if(NOT GLSLC)
   message(FATAL_ERROR
     "glslc not found. Install the Vulkan SDK or shaderc (macOS: brew install shaderc).")

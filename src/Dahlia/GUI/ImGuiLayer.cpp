@@ -9,9 +9,9 @@
 #include "Dahlia/Resources/Resources.h"
 
 namespace ImGui {
-    void TextCentered(const char *fmt) {
-        ImGui::SetCursorPosX((ImGui::GetWindowWidth() - ImGui::CalcTextSize(fmt).x) * 0.5f);
-        ImGui::Text(fmt);
+    void TextCentered(const char *text) {
+        ImGui::SetCursorPosX((ImGui::GetWindowWidth() - ImGui::CalcTextSize(text).x) * 0.5f);
+        ImGui::TextUnformatted(text);
     }
 }
 

@@ -1,84 +1,90 @@
-﻿#  Build Script for Dahlia Graphics Engine
+﻿# Build script for the Dahlia graphics engine
+#
+#   cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug
+#   cmake --build build
+#
+# Outputs: build/Dahlia (libDahlia, libDahliaTools) and build/DahliaInfo (DahliaInfo,
+# and DahliaInfo.app on macOS via the DahliaInfoApp target).
 
-cmake_minimum_required(VERSION 3.16)
+# 3.24 for $<LINK_LIBRARY:FRAMEWORK,...>. Newer policies (up to 4.0) are used when available, e.g.
+# CMP0156 stops static libraries being repeated on the link line (ld "duplicate libraries" warning).
+cmake_minimum_required(VERSION 3.24...4.0)
 
-set(DH_BUILD_TYPES "Debug" "Release")
-if(CMAKE_CONFIGURATION_TYPES)
-#  set(CMAKE_CONFIGURATION_TYPES DH_BUILD_TYPES)
-  message(NOTICE "---Multiconfiguration build generator selected---")
-elseif(NOT CMAKE_BUILD_TYPE IN_LIST DH_BUILD_TYPES)
-  message(FATAL_ERROR
-    "Invalid build type '${CMAKE_BUILD_TYPE}'.
-    CMAKE_BUILD_TYPE must be any one of the possible values:
-    ${DH_BUILD_TYPES}"
-  )
+project(Dahlia VERSION 0.1.0 LANGUAGES C CXX)
+if(APPLE)
+  # The Metal backend has Objective-C++ (.mm) sources
+  enable_language(OBJCXX)
 endif()
 
-if(NOT DH_INCLUDE_IMGUI)
-    set(DH_INCLUDE_IMGUI true)
-endif()
-
-project("Dahlia" LANGUAGES CXX)
-
-# The demo/info app is only built by default when Dahlia is the top level project, so another
-# project can add_subdirectory(Dahlia) and get just the library. The target architecture comes
-# from CMAKE_OSX_ARCHITECTURES (or the host) rather than being hard-coded.
-if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
-  set(DH_IS_TOP_LEVEL ON)
+# ---- Build type -----------------------------------------------------------------------------------
+get_property(DH_MULTI_CONFIG GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
+set(DH_BUILD_TYPES Debug Release)
+if(DH_MULTI_CONFIG)
+  set(CMAKE_CONFIGURATION_TYPES ${DH_BUILD_TYPES} CACHE STRING "" FORCE)
 else()
-  set(DH_IS_TOP_LEVEL OFF)
+  if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Debug CACHE STRING "Build type" FORCE)
+  endif()
+  set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS ${DH_BUILD_TYPES})
+  if(NOT CMAKE_BUILD_TYPE IN_LIST DH_BUILD_TYPES)
+    message(FATAL_ERROR "CMAKE_BUILD_TYPE must be one of: ${DH_BUILD_TYPES} (got '${CMAKE_BUILD_TYPE}')")
+  endif()
 endif()
-option(DH_BUILD_INFO_APP "Build the DahliaInfo demo application" ${DH_IS_TOP_LEVEL})
 
-get_filename_component(DH_DIR ${CMAKE_CURRENT_SOURCE_DIR} ABSOLUTE)
-set(DH_PLATFORM ${CMAKE_SYSTEM_NAME})
-string(TOLOWER ${DH_PLATFORM} DH_PLATFORM)
-set(DH_SRC_DIR ${DH_DIR}/src)
-set(DH_BIN_DIR ${DH_DIR}/bin/${DH_PLATFORM})
-set(DH_LIB_DIR ${DH_DIR}/Libraries)
+# ---- Options --------------------------------------------------------------------------------------
+# The demo app is only built by default when Dahlia is the top level project, so another project can
+# add_subdirectory(Dahlia) and get just the library.
+option(DH_BUILD_INFO_APP "Build the DahliaInfo demo application" ${PROJECT_IS_TOP_LEVEL})
 
-add_subdirectory(${DH_DIR}/Libraries/ImGui_Build)
-set(IMGUI_DIR ${DH_LIB_DIR}/ImGui)
+find_package(Vulkan QUIET)
+option(DH_ENABLE_VULKAN "Build the Vulkan backend (needs Vulkan 1.3)" ${Vulkan_FOUND})
+option(DH_ENABLE_METAL "Build the Metal backend (Apple only)" ${APPLE})
+set(DH_METAL_CPP_DIR "/opt/metal-cpp_macOS26_iOS26-beta" CACHE PATH "metal-cpp headers")
 
-# SPIRV-Cross: translates SPIR-V shaders to GLSL 410 (OpenGL) and MSL (Metal) at runtime.
-# Built static and position independent so it can be linked into the Dahlia shared library.
-set(SPIRV_CROSS_CLI OFF CACHE BOOL "" FORCE)
-set(SPIRV_CROSS_ENABLE_TESTS OFF CACHE BOOL "" FORCE)
-set(SPIRV_CROSS_ENABLE_GLSL ON CACHE BOOL "" FORCE)
-set(SPIRV_CROSS_ENABLE_MSL ON CACHE BOOL "" FORCE)
-set(SPIRV_CROSS_ENABLE_HLSL OFF CACHE BOOL "" FORCE)
-set(SPIRV_CROSS_ENABLE_CPP OFF CACHE BOOL "" FORCE)
-set(SPIRV_CROSS_ENABLE_REFLECT OFF CACHE BOOL "" FORCE)
-set(SPIRV_CROSS_ENABLE_C_API OFF CACHE BOOL "" FORCE)
-set(SPIRV_CROSS_ENABLE_UTIL OFF CACHE BOOL "" FORCE)
-set(SPIRV_CROSS_SHARED OFF CACHE BOOL "" FORCE)
-set(SPIRV_CROSS_STATIC ON CACHE BOOL "" FORCE)
-set(SPIRV_CROSS_SKIP_INSTALL ON CACHE BOOL "" FORCE)
+if(DH_ENABLE_VULKAN AND NOT Vulkan_FOUND)
+  message(FATAL_ERROR "DH_ENABLE_VULKAN is ON but no Vulkan SDK/loader was found")
+endif()
+if(DH_ENABLE_METAL AND NOT APPLE)
+  message(FATAL_ERROR "The Metal backend can only be built on Apple platforms")
+endif()
+
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+# Third party static libraries are linked into the Dahlia shared library
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
-add_subdirectory(${DH_LIB_DIR}/SPIRV-Cross EXCLUDE_FROM_ALL)
 
+list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
+include(DahliaHelpers)
+include(DahliaShaders)
+
+# ---- Dependencies ---------------------------------------------------------------------------------
 find_package(Boost CONFIG REQUIRED COMPONENTS filesystem)
 find_package(glfw3 CONFIG REQUIRED)
 find_package(glm CONFIG REQUIRED)
 find_package(OpenGL REQUIRED)
-
-#set(GLEW_USE_STATIC_LIBS true)
-find_package(GLEW CONFIG)
+find_package(GLEW CONFIG QUIET)
 if(NOT GLEW_FOUND)
-    find_package(GLEW REQUIRED)
-    message(NOTICE "Found GLEW with Find.cmake")
+  find_package(GLEW REQUIRED)
+endif()
+# Homebrew's GLEW package links OpenGL.framework by absolute path inside the SDK it was built with.
+# That adds the SDK as a non-system -F path (so SDK headers emit warnings) and can mix two SDKs,
+# so link the OpenGL found for this build instead.
+if(APPLE)
+  foreach(GLEW_TARGET GLEW::GLEW GLEW::glew GLEW::glew_s)
+    if(TARGET ${GLEW_TARGET})
+      set_property(TARGET ${GLEW_TARGET} PROPERTY INTERFACE_LINK_LIBRARIES OpenGL::GL)
+    endif()
+  endforeach()
+endif()
+find_package(Freetype CONFIG QUIET)
+if(NOT Freetype_FOUND)
+  find_package(Freetype REQUIRED)
 endif()
 
-find_package(Freetype CONFIG)
-if(NOT ${Freetype_FOUND})
-    find_package(Freetype REQUIRED)
-    message(NOTICE "Found Freetype with Find.cmake")
-endif()
+# Git submodules: ImGui and SPIRV-Cross
+add_subdirectory(Libraries)
 
-include(Projects/DahliaTools.cmake)
-include(Projects/DahliaShaders.cmake)
-include(Projects/Dahlia.cmake)
+# ---- Targets --------------------------------------------------------------------------------------
+add_subdirectory(src/Dahlia Dahlia)
 if(DH_BUILD_INFO_APP)
-  include(Projects/DahliaInfo.cmake)
+  add_subdirectory(src/DahliaInfo DahliaInfo)
 endif()
-

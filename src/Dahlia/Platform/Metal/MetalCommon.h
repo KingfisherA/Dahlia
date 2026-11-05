@@ -32,7 +32,7 @@ namespace DH::MTLConv
             case Format::RGBA16F:
                 return MTL::PixelFormatRGBA16Float;
             case Format::D24S8:
-                return device->depth24Stencil8PixelFormatSupported()
+                return device->isDepth24Stencil8PixelFormatSupported()
                          ? MTL::PixelFormatDepth24Unorm_Stencil8
                          : MTL::PixelFormatDepth32Float_Stencil8;
             case Format::D32F:

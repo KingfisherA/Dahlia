@@ -140,6 +140,11 @@ namespace DH {
         //
         static Mesh_F32 CreateUVSphere(float radius, unsigned int lattitudes, unsigned int longitudes);
         static Mesh_F32 CreateQuadsphere(float radius, unsigned int subdivisions);
+        // A triaxial ellipsoid with semi-axes `radii` along x, y and z, built from a quadsphere. y is
+        // the polar axis: an oblate planet is { equatorial, polar, equatorial }. Normals are the
+        // ellipsoid's true surface normals. Texture coordinates are planetocentric (from the direction
+        // of each vertex from the centre), matching equirectangular planet maps.
+        static Mesh_F32 CreateEllipsoid(const glm::vec3 &radii, unsigned int subdivisions);
         //
         static Mesh_F32 CreateIcosahedron(float size);
         static Mesh_F32 CreateIcosphere(float radius, unsigned int subdivisions);

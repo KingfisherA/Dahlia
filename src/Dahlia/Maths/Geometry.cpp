@@ -257,6 +257,42 @@ namespace DH {
     }
 
     //
+    Mesh_F32 Geometry::CreateEllipsoid(const glm::vec3 &radii, uint32_t subdivisions) {
+        DH_ASSERT(!(radii.x > 0.0f && radii.y > 0.0f && radii.z > 0.0f), Geometry, "Ellipsoid radii must be positive");
+
+        // A unit quadsphere scaled along each axis
+        Mesh_F32 ellipsoidMesh = CreateQuadsphere(1.0f, subdivisions);
+
+        std::vector<float> &vertices = ellipsoidMesh.GetVertexArray();
+        std::vector<float> &normals = ellipsoidMesh.GetNormalsArray();
+        std::vector<float> &texCoords = ellipsoidMesh.GetTexCoordsArray();
+
+        const glm::vec3 invRadii2 = 1.0f / (radii * radii);
+        for (size_t i = 0; i < vertices.size() / 3; i++) {
+            const glm::vec3 unit = {vertices[i * 3 + 0], vertices[i * 3 + 1], vertices[i * 3 + 2]};
+            const glm::vec3 vertex = unit * radii;
+            // The gradient of x²/a² + y²/b² + z²/c²
+            const glm::vec3 normal = glm::normalize(vertex * invRadii2);
+            const glm::vec3 direction = glm::normalize(vertex);
+
+            vertices[i * 3 + 0] = vertex.x;
+            vertices[i * 3 + 1] = vertex.y;
+            vertices[i * 3 + 2] = vertex.z;
+
+            normals[i * 3 + 0] = normal.x;
+            normals[i * 3 + 1] = normal.y;
+            normals[i * 3 + 2] = normal.z;
+
+            // As CreateQuadsphere, but from the planetocentric direction rather than the unit sphere
+            // position (they differ in latitude once the sphere is squashed)
+            texCoords[i * 2 + 0] = ((atan2(direction.x, direction.z) + Maths::PI) / Maths::PI) * 0.5f;
+            texCoords[i * 2 + 1] = acos(glm::clamp(direction.y, -1.0f, 1.0f)) / Maths::PI;
+        }
+
+        return ellipsoidMesh;
+    }
+
+    //
     Mesh_F32 Geometry::CreateIcosahedron(float size) {
         Mesh_F32 icosahedronMesh(3,
                                  ICOSAHEDRON_VERTS.size(),
